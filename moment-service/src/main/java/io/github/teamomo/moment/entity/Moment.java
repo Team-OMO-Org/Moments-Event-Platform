@@ -75,5 +75,4 @@ public class Moment {
   @NotNull
   @Column(name = "ticket_count", nullable = false)
   private Integer ticketCount;
-
 }
