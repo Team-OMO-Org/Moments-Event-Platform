@@ -1,7 +1,5 @@
 package io.github.teamomo.moment.dto;
 
-import io.github.teamomo.moment.entity.Recurrence;
-import io.github.teamomo.moment.entity.Status;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -13,9 +11,9 @@ public record MomentDto(
     String title,
     byte[] thumbnail,
     Instant startDate,
-    Recurrence recurrence,
+    String recurrence,
     BigDecimal price,
-    Status status,
+    String status,
     Integer ticketCount
 ) {
 

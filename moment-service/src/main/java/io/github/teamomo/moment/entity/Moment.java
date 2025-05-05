@@ -2,8 +2,6 @@ package io.github.teamomo.moment.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,7 +15,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @Setter
@@ -57,20 +54,16 @@ public class Moment {
   private Instant startDate;
 
   @NotNull
-  @ColumnDefault("'onetime'")
-  @Enumerated(EnumType.STRING)
   @Column(name = "recurrence", nullable = false)
-  private Recurrence recurrence;
+  private String recurrence;
 
   @NotNull
   @Column(name = "price", nullable = false, precision = 10, scale = 2)
   private BigDecimal price;
 
   @NotNull
-  @ColumnDefault("'draft'")
-  @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false)
-  private Status status;
+  private String status;
 
   @NotNull
   @Column(name = "ticket_count", nullable = false)
