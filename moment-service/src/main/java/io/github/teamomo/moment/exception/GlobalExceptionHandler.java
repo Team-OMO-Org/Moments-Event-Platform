@@ -24,7 +24,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
-      MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+      MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status,
+      WebRequest request) {
     Map<String, String> validationErrors = new HashMap<>();
     List<ObjectError> validationErrorList = ex.getBindingResult().getAllErrors();
 
@@ -33,13 +34,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
       String validationMsg = error.getDefaultMessage();
       validationErrors.put(fieldName, validationMsg);
     });
+    // ToDO: questions does this return timestamp and so one exactly once?
     return new ResponseEntity<>(validationErrors, HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(MomentAlreadyExistsException.class)
   public ResponseEntity<ErrorResponseDto> handleCustomerAlreadyExistsException(
       MomentAlreadyExistsException exception,
-      WebRequest webRequest){
+      WebRequest webRequest) {
     ErrorResponseDto errorResponseDTO = new ErrorResponseDto(
         webRequest.getDescription(false),
         HttpStatus.BAD_REQUEST,
@@ -50,7 +52,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   }
 
   @ExceptionHandler(ResourceNotFoundException.class)
-  public ResponseEntity<ErrorResponseDto> handleResourceNotFoundException(ResourceNotFoundException exception,
+  public ResponseEntity<ErrorResponseDto> handleResourceNotFoundException(
+      ResourceNotFoundException exception,
       WebRequest webRequest) {
     ErrorResponseDto errorResponseDTO = new ErrorResponseDto(
         webRequest.getDescription(false),

@@ -8,9 +8,9 @@ import org.springframework.http.HttpStatus;
 
 @Data @AllArgsConstructor
 @Schema(
-    name = "ErrorResponse",
-    description = "Schema to hold error response information"
-)
+     name = "ErrorResponse",
+     description = "Schema to hold error response information"
+ )
 public class ErrorResponseDto {
 
   @Schema(

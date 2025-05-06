@@ -2,11 +2,10 @@ package io.github.teamomo.moment.controller;
 
 import io.github.teamomo.moment.dto.MomentDto;
 import io.github.teamomo.moment.service.MomentService;
+import jakarta.validation.Valid;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,13 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/moments")
 @RequiredArgsConstructor
 public class MomentController {
-
   private final MomentService momentService;
-
-  @GetMapping("/home")
-  public Map<String, String> home() {
-    return Map.of("Home", "damn right");
-  }
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
@@ -35,7 +28,7 @@ public class MomentController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public void createMoment(@RequestBody MomentDto momentDto) {
+  public void createMoment(@Valid @RequestBody MomentDto momentDto) {
     momentService.createMoment(momentDto);
   }
 
