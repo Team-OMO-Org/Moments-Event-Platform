@@ -30,10 +30,10 @@ public class MomentService {
   public void createMoment(MomentDto momentDto) {
     Moment moment = momentMapper.toEntity(momentDto);
     // Check if the moment already exists in the database
-    if (momentRepository.findByTitle(moment.getTitle()).isPresent()) {
-      throw new MomentAlreadyExistsException("Moment already exists with given Title "
-          + moment.getTitle());
-    }
+//    if (momentRepository.findByTitle(moment.getTitle()).isPresent()) {
+//      throw new MomentAlreadyExistsException("Moment already exists with given Title "
+//          + moment.getTitle());
+//    }
     momentRepository.save(moment); //should we return the saved moment as some ResponseMomentDto?
   }
 

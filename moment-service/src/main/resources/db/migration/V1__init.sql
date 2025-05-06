@@ -1,6 +1,8 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
 CREATE TABLE moments
 (
-    id           BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id           BIGINT AUTO_INCREMENT,
     host_id      BIGINT                           NOT NULL,
     category_id  BIGINT                           NOT NULL,
     location_id  BIGINT                           NOT NULL,
@@ -14,20 +16,55 @@ CREATE TABLE moments
     created_at   TIMESTAMP                        NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_by   VARCHAR(100)                     NOT NULL,
     updated_at   TIMESTAMP                        NULL ON UPDATE CURRENT_TIMESTAMP,
-    updated_by   VARCHAR(100)                     NULL
+    updated_by   VARCHAR(100)                     NULL,
+    CONSTRAINT pk_moments_id PRIMARY KEY (id),
+    CONSTRAINT fk_moments_category_id FOREIGN KEY (category_id) REFERENCES categories(id),
+    CONSTRAINT fk_moments_location_id FOREIGN KEY (location_id) REFERENCES locations(id)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
   CHARACTER SET latin1;
 
-INSERT INTO moments (host_id, category_id, location_id, title, start_date, recurrence, price, status, ticket_count, created_by, updated_by)
-VALUES
-    (1, 101, 201, 'Concert in the Park', '2025-06-01 19:00:00', 'ONETIME', 50.00, 'LIVE', 500, 'admin', 'admin'),
-    (2, 102, 202, 'Art Exhibition', '2025-07-10 18:00:00', 'REGULAR', 25.00, 'LIVE', 200, 'admin', 'admin'),
-    (3, 103, 203, 'Comedy Show', '2025-08-15 20:00:00', 'ONETIME', 30.00, 'DRAFT', 150, 'admin', 'admin'),
-    (4, 104, 204, 'Food Festival', '2025-09-05 10:00:00', 'REGULAR', 15.00, 'LIVE', 800, 'admin', 'admin'),
-    (5, 101, 205, 'Jazz Night', '2025-10-01 21:00:00', 'ONETIME', 40.00, 'PAUSED', 100, 'admin', 'admin'),
-    (6, 102, 206, 'Science Fair', '2025-11-15 09:00:00', 'REGULAR', 20.00, 'DRAFT', 300, 'admin', 'admin'),
-    (7, 105, 207, 'Tech Conference', '2025-12-01 09:00:00', 'REGULAR', 100.00, 'LIVE', 150, 'admin', 'admin'),
-    (8, 106, 208, 'Yoga Retreat', '2025-01-10 08:00:00', 'ONETIME', 200.00, 'DRAFT', 50, 'admin', 'admin'),
-    (9, 107, 209, 'Book Launch', '2025-02-20 18:00:00', 'ONETIME', 10.00, 'LIVE', 100, 'admin', 'admin'),
-    (10, 108, 210, 'Music Festival', '2025-03-30 12:00:00', 'REGULAR', 70.00, 'PAUSED', 1200, 'admin', 'admin');
+CREATE TABLE moment_details
+(
+    id          BIGINT AUTO_INCREMENT,
+    moment_id   BIGINT NOT NULL,
+    description TEXT,
+    created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by  VARCHAR(100) NOT NULL,
+    updated_at  TIMESTAMP    NULL     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_by  VARCHAR(100) NULL,
+    CONSTRAINT pk_moments_id PRIMARY KEY (id),
+    CONSTRAINT fk_moment_details_moment_id FOREIGN KEY (moment_id) REFERENCES moments(id)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 1
+  CHARACTER SET latin1;
+
+CREATE TABLE categories
+(
+    id          BIGINT AUTO_INCREMENT,
+    name        VARCHAR(100) NOT NULL,
+    description TEXT,
+    created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by  VARCHAR(100) NOT NULL,
+    updated_at  TIMESTAMP    NULL     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_by  VARCHAR(100) NULL,
+    CONSTRAINT pk_categories_id PRIMARY KEY (id)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 1
+  CHARACTER SET latin1;
+
+CREATE TABLE locations
+(
+    id         BIGINT AUTO_INCREMENT,
+    city       VARCHAR(50)  NOT NULL,
+    address    VARCHAR(100),
+    created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by VARCHAR(100) NOT NULL,
+    updated_at TIMESTAMP    NULL     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_by VARCHAR(100) NULL,
+    CONSTRAINT pk_locations_id PRIMARY KEY (id)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 1
+  CHARACTER SET latin1;
+
+SET FOREIGN_KEY_CHECKS = 1;
