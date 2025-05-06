@@ -5,6 +5,9 @@ import io.github.teamomo.moment.entity.Moment;
 import io.github.teamomo.moment.exception.MomentAlreadyExistsException;
 import io.github.teamomo.moment.exception.ResourceNotFoundException;
 import io.github.teamomo.moment.mapper.MomentMapper;
+import io.github.teamomo.moment.repository.CategoryRepository;
+import io.github.teamomo.moment.repository.LocationRepository;
+import io.github.teamomo.moment.repository.MomentDetailRepository;
 import io.github.teamomo.moment.repository.MomentRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +18,9 @@ import org.springframework.stereotype.Service;
 public class MomentService {
   private final MomentRepository momentRepository;
   private final MomentMapper momentMapper;
+  private final MomentDetailRepository momentDetailRepository;
+  private final LocationRepository locationRepository;
+  private final CategoryRepository categoryRepository;
 
    public List<MomentDto> getAllMoments() {
 
@@ -23,7 +29,6 @@ public class MomentService {
          .map(momentMapper::toDto)
          .toList();
    }
-
 
    // Method to create a Moment with example of checking if the moment already exists and
    // throwing our custom MomentAlreadyExistsException

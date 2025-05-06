@@ -1,5 +1,6 @@
 package io.github.teamomo.moment.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,7 +15,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.LinkedHashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,13 +37,13 @@ public class Moment {
   @Column(name = "host_id")
   private Long hostId;
 
-  @NotNull
-  @Column(name = "category_id", nullable = false)
-  private Long categoryId;
+  @OneToOne
+  @JoinColumn(name = "category_id")
+  private Category category;
 
-  @NotNull
-  @Column(name = "location_id", nullable = false)
-  private Long locationId;
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "location_id")
+  private Location location;
 
   @Size(max = 100)
   @NotNull
@@ -74,6 +74,6 @@ public class Moment {
   @Column(name = "ticket_count", nullable = false)
   private Integer ticketCount;
 
-  @OneToOne(mappedBy = "moment")
+  @OneToOne(mappedBy = "moment", cascade = CascadeType.ALL)
   private MomentDetail momentDetails;
 }
