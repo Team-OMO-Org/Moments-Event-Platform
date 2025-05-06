@@ -8,6 +8,7 @@ import io.github.teamomo.moment.repository.CategoryRepository;
 import io.github.teamomo.moment.repository.LocationRepository;
 import io.github.teamomo.moment.repository.MomentDetailRepository;
 import io.github.teamomo.moment.repository.MomentRepository;
+import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,9 +23,9 @@ public class MomentService {
   private final LocationRepository locationRepository;
   private final CategoryRepository categoryRepository;
 
-   public Page<MomentDto> getAllMoments(Pageable pageable) {
-     return  momentRepository.findAll(pageable)
-         .map(momentMapper::toDto);
+   public Page<Moment> getAllMoments(Instant startDate, Pageable pageable) {
+     return  momentRepository.findAllByStartDateAfter(startDate, pageable);
+//         .map(momentMapper::toDto);
    }
 
    // Method to create a Moment with example of checking if the moment already exists and

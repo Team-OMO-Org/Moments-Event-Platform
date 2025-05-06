@@ -1,16 +1,14 @@
 package io.github.teamomo.moment.repository;
 
 import io.github.teamomo.moment.entity.Moment;
-import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MomentRepository extends JpaRepository<Moment, Long> {
 
-  Page<Moment> findAllByStartDate(Instant startDate, Pageable pageable);
+  Page<Moment> findAllByStartDateAfter(Instant startDate, Pageable pageable);
 
   Page<Moment> findByTitleAndStartDateAfter(String title, Instant start, Pageable pageable);
 

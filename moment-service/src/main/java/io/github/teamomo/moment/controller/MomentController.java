@@ -23,12 +23,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/moments")
 @RequiredArgsConstructor
 public class MomentController {
+
   private final MomentService momentService;
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public Page<MomentDto> getAllMoments(Pageable pageable) {
-    return momentService.getAllMoments(pageable);
+  public Page<Moment> getAllMoments(@RequestParam(required = false) Instant startDate,
+      Pageable pageable) {
+    if (startDate == null) {
+      startDate = Instant.now();
+    }
+    return momentService.getAllMoments(startDate, pageable);
   }
 
   @PostMapping
