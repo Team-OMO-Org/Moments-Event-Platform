@@ -1,5 +1,6 @@
 package io.github.teamomo.moment.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,6 +31,7 @@ public class MomentDetail {
   @Column(name = "id")
   private Long id;
 
+  @JsonIgnore
   @OneToOne
   @JoinColumn(name = "moment_id")
   private Moment moment;
