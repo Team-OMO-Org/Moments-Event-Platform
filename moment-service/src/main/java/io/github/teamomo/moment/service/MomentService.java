@@ -1,6 +1,8 @@
 package io.github.teamomo.moment.service;
 
 import io.github.teamomo.moment.dto.MomentDto;
+import io.github.teamomo.moment.dto.MomentFilterRequestDto;
+import io.github.teamomo.moment.dto.MomentFilterResponseDto;
 import io.github.teamomo.moment.entity.Moment;
 import io.github.teamomo.moment.exception.ResourceNotFoundException;
 import io.github.teamomo.moment.mapper.MomentMapper;
@@ -8,9 +10,8 @@ import io.github.teamomo.moment.repository.CategoryRepository;
 import io.github.teamomo.moment.repository.LocationRepository;
 import io.github.teamomo.moment.repository.MomentDetailRepository;
 import io.github.teamomo.moment.repository.MomentRepository;
-import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDateTime;
+import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,6 +48,31 @@ public class MomentService {
          .map(momentMapper::toDto)
          .orElseThrow(() -> new ResourceNotFoundException("Moment", "Id", id.toString()));
    }
+
+  public Page<MomentFilterResponseDto> getAllMoments(MomentFilterRequestDto momentRequestDto, Pageable pageable) {
+
+    Instant startDateFrom = momentRequestDto.getStartDateFrom() != null
+        ? momentRequestDto.getStartDateFrom().atZone(ZoneId.systemDefault()).toInstant()
+        : null;
+
+    Instant startDateTo = momentRequestDto.getStartDateTo() != null
+        ? momentRequestDto.getStartDateTo().atZone(ZoneId.systemDefault()).toInstant()
+        : null;
+
+     Page<Moment> moments = momentRepository.findByFilters(
+        momentRequestDto.getCategory(),
+        momentRequestDto.getLocation(),
+        momentRequestDto.getPriceFrom(),
+        momentRequestDto.getPriceTo(),
+        startDateFrom,
+        startDateTo,
+        momentRequestDto.getRecurrence(),
+        momentRequestDto.getStatus(),
+        momentRequestDto.getSearch(),
+        pageable
+    );
+    return moments.map(momentMapper::toFilterResponseDto);
+  }
 
 //  public Page<Moment> getAllMoments(
 //      String category,

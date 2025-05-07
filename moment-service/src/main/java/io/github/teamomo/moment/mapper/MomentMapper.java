@@ -1,6 +1,7 @@
 package io.github.teamomo.moment.mapper;
 
 import io.github.teamomo.moment.dto.MomentDto;
+import io.github.teamomo.moment.dto.MomentFilterResponseDto;
 import io.github.teamomo.moment.entity.Category;
 import io.github.teamomo.moment.entity.Location;
 import io.github.teamomo.moment.entity.Moment;
@@ -18,6 +19,17 @@ public interface MomentMapper {
     @Mapping(target = "category", source = "categoryId", qualifiedByName = "mapCategory")
     @Mapping(target = "location", source = "locationId", qualifiedByName = "mapLocation")
     Moment toEntity(MomentDto momentDto);
+
+    @Mapping(target = "category", source = "category.name")
+    @Mapping(target = "location", source = "location.city")
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "title", source = "title")
+    @Mapping(target = "price", source = "price")
+    @Mapping(target = "startDate", source = "startDate")
+    @Mapping(target = "recurrence", source = "recurrence")
+    @Mapping(target = "status", source = "status")
+    @Mapping(target = "description", source = "momentDetails.description")
+    MomentFilterResponseDto toFilterResponseDto(Moment moment);
 
     @Named("mapCategory")
     default Category mapCategory(Long categoryId) {

@@ -4,13 +4,13 @@ import io.github.teamomo.moment.entity.Moment;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import java.time.Instant;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,8 +26,8 @@ public class MomentCustomRepositoryImpl implements MomentCustomRepository {
       String location,
       BigDecimal priceFrom,
       BigDecimal priceTo,
-      LocalDateTime startDateFrom,
-      LocalDateTime startDateTo,
+      Instant startDateFrom,
+      Instant startDateTo,
       String recurrence,
       String status,
       String search,
@@ -37,39 +37,41 @@ public class MomentCustomRepositoryImpl implements MomentCustomRepository {
     List<Object> parameters = new ArrayList<>();
 
     if (category != null) {
-      queryBuilder.append(" AND m.category.name = ?1");
+      queryBuilder.append(" AND m.category.name = ?").append(parameters.size() + 1);
       parameters.add(category);
     }
     if (location != null) {
-      queryBuilder.append(" AND m.location.name = ?2");
+      queryBuilder.append(" AND m.location.city = ?").append(parameters.size() + 1);
       parameters.add(location);
     }
     if (priceFrom != null) {
-      queryBuilder.append(" AND m.price >= ?3");
+      queryBuilder.append(" AND m.price >= ?").append(parameters.size() + 1);
       parameters.add(priceFrom);
     }
     if (priceTo != null) {
-      queryBuilder.append(" AND m.price <= ?4");
+      queryBuilder.append(" AND m.price <= ?").append(parameters.size() + 1);
       parameters.add(priceTo);
     }
     if (startDateFrom != null) {
-      queryBuilder.append(" AND m.startDate >= ?5");
+      queryBuilder.append(" AND m.startDate >= ?").append(parameters.size() + 1);
       parameters.add(startDateFrom);
     }
     if (startDateTo != null) {
-      queryBuilder.append(" AND m.startDate <= ?6");
+      queryBuilder.append(" AND m.startDate <= ?").append(parameters.size() + 1);
       parameters.add(startDateTo);
     }
     if (recurrence != null) {
-      queryBuilder.append(" AND m.recurrence = ?7");
+      queryBuilder.append(" AND m.recurrence = ?").append(parameters.size() + 1);
       parameters.add(recurrence);
     }
     if (status != null) {
-      queryBuilder.append(" AND m.status = ?8");
+      queryBuilder.append(" AND m.status = ?").append(parameters.size() + 1);
       parameters.add(status);
     }
     if (search != null) {
-      queryBuilder.append(" AND (m.title LIKE ?9 OR m.description LIKE ?9)");
+      queryBuilder.append(" AND (m.title LIKE ?").append(parameters.size() + 1)
+          .append(" OR m.momentDetails.description LIKE ?").append(parameters.size() + 1)
+          .append(")");
       parameters.add("%" + search + "%");
     }
 
@@ -85,4 +87,5 @@ public class MomentCustomRepositoryImpl implements MomentCustomRepository {
     List<Moment> moments = query.getResultList();
     return new PageImpl<>(moments, pageable, totalRows);
   }
+
 }

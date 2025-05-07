@@ -1,6 +1,8 @@
 package io.github.teamomo.moment.controller;
 
 import io.github.teamomo.moment.dto.MomentDto;
+import io.github.teamomo.moment.dto.MomentFilterRequestDto;
+import io.github.teamomo.moment.dto.MomentFilterResponseDto;
 import io.github.teamomo.moment.entity.Moment;
 import io.github.teamomo.moment.service.MomentService;
 import jakarta.validation.Valid;
@@ -50,6 +52,15 @@ public class MomentController {
   @ResponseStatus(HttpStatus.OK)
   public MomentDto getMomentById(@PathVariable Long id) {
     return momentService.getMomentById(id);
+  }
+
+  @GetMapping("/filtered")
+  @ResponseStatus(HttpStatus.OK)
+  public Page<MomentFilterResponseDto> getAllFilteredMoments(
+      MomentFilterRequestDto momentFilterRequestDto,
+      @PageableDefault(size = 10, sort = "startDate") Pageable pageable
+  ) {
+    return momentService.getAllMoments(momentFilterRequestDto, pageable);
   }
 
 //  @GetMapping
