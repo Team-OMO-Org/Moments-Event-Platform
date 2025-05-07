@@ -8,7 +8,9 @@ import io.github.teamomo.moment.repository.CategoryRepository;
 import io.github.teamomo.moment.repository.LocationRepository;
 import io.github.teamomo.moment.repository.MomentDetailRepository;
 import io.github.teamomo.moment.repository.MomentRepository;
+import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,4 +47,21 @@ public class MomentService {
          .map(momentMapper::toDto)
          .orElseThrow(() -> new ResourceNotFoundException("Moment", "Id", id.toString()));
    }
+
+//  public Page<Moment> getAllMoments(
+//      String category,
+//      String location,
+//      BigDecimal priceFrom,
+//      BigDecimal priceTo,
+//      LocalDateTime startDateFrom,
+//      LocalDateTime startDateTo,
+//      String recurrence,
+//      String status,
+//      String search,
+//      Pageable pageable
+//  ) {
+//    return momentRepository.findByFilters(
+//        category, location, priceFrom, priceTo, startDateFrom, startDateTo, recurrence, status, search, pageable
+//    );
+//  }
 }

@@ -6,7 +6,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MomentRepository extends JpaRepository<Moment, Long> {
+public interface MomentRepository extends JpaRepository<Moment, Long>
+//, MomentCustomRepository
+{
 
   Page<Moment> findAllByStartDateAfter(Instant startDate, Pageable pageable);
 

@@ -4,11 +4,15 @@ import io.github.teamomo.moment.dto.MomentDto;
 import io.github.teamomo.moment.entity.Moment;
 import io.github.teamomo.moment.service.MomentService;
 import jakarta.validation.Valid;
+import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,4 +52,22 @@ public class MomentController {
     return momentService.getMomentById(id);
   }
 
+//  @GetMapping
+//  @ResponseStatus(HttpStatus.OK)
+//  public Page<Moment> getAllMoments(
+//      @RequestParam(required = false) String category,
+//      @RequestParam(required = false) String location,
+//      @RequestParam(required = false) BigDecimal priceFrom,
+//      @RequestParam(required = false) BigDecimal priceTo,
+//      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDateFrom,
+//      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDateTo,
+//      @RequestParam(required = false) String recurrence,
+//      @RequestParam(required = false) String status,
+//      @RequestParam(required = false) String search,
+//      @PageableDefault(size = 10, sort = "startDate") Pageable pageable
+//  ) {
+//    return momentService.getAllMoments(
+//        category, location, priceFrom, priceTo, startDateFrom, startDateTo, recurrence, status, search, pageable
+//    );
+//  }
 }
