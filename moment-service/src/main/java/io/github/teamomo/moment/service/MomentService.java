@@ -73,21 +73,4 @@ public class MomentService {
     );
     return moments.map(momentMapper::toFilterResponseDto);
   }
-
-//  public Page<Moment> getAllMoments(
-//      String category,
-//      String location,
-//      BigDecimal priceFrom,
-//      BigDecimal priceTo,
-//      LocalDateTime startDateFrom,
-//      LocalDateTime startDateTo,
-//      String recurrence,
-//      String status,
-//      String search,
-//      Pageable pageable
-//  ) {
-//    return momentRepository.findByFilters(
-//        category, location, priceFrom, priceTo, startDateFrom, startDateTo, recurrence, status, search, pageable
-//    );
-//  }
 }

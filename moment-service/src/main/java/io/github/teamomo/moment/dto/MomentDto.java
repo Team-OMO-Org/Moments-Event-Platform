@@ -1,6 +1,8 @@
 package io.github.teamomo.moment.dto;
 
 
+import io.github.teamomo.moment.entity.Recurrence;
+import io.github.teamomo.moment.entity.Status;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -39,7 +41,7 @@ public record MomentDto(
 
     @NotNull(message = "Recurrence cannot be null")
     @Pattern(regexp = "ONETIME|REGULAR", message = "Recurrence must be either 'ONETIME' or 'REGULAR'")
-    String recurrence,
+    Recurrence recurrence,
 
     @NotNull(message = "Price cannot be null")
     @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
@@ -47,7 +49,7 @@ public record MomentDto(
 
     @NotNull(message = "Status cannot be null")
     @Pattern(regexp = "DRAFT|LIVE|PAUSED", message = "Status must be one of 'DRAFT', 'LIVE', or 'PAUSED'")
-    String status,
+    Status status,
 
     @NotNull(message = "Ticket count cannot be null")
     @PositiveOrZero(message = "Ticket count must be positive or zero")

@@ -1,5 +1,7 @@
 package io.github.teamomo.moment.dto;
 
+import io.github.teamomo.moment.entity.Recurrence;
+import io.github.teamomo.moment.entity.Status;
 import java.math.BigDecimal;
 import java.time.Instant;
 import lombok.Data;
@@ -12,7 +14,7 @@ public class MomentFilterResponseDto {
   private String location;
   private BigDecimal price;
   private Instant startDate;
-  private String recurrence;
-  private String status;
+  private Recurrence recurrence;
+  private Status status;
   private String description;
 }

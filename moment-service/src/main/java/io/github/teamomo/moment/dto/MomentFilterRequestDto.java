@@ -1,5 +1,7 @@
 package io.github.teamomo.moment.dto;
 
+import io.github.teamomo.moment.entity.Recurrence;
+import io.github.teamomo.moment.entity.Status;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -16,7 +18,7 @@ public class MomentFilterRequestDto {
     private LocalDateTime startDateFrom;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime startDateTo;
-    private String recurrence;
-    private String status;
+    private Recurrence recurrence;
+    private Status status;
     private String search;
 }

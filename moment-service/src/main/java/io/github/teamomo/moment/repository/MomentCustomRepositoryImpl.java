@@ -1,6 +1,8 @@
 package io.github.teamomo.moment.repository;
 
 import io.github.teamomo.moment.entity.Moment;
+import io.github.teamomo.moment.entity.Recurrence;
+import io.github.teamomo.moment.entity.Status;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
@@ -28,8 +30,8 @@ public class MomentCustomRepositoryImpl implements MomentCustomRepository {
       BigDecimal priceTo,
       Instant startDateFrom,
       Instant startDateTo,
-      String recurrence,
-      String status,
+      Recurrence recurrence,
+      Status status,
       String search,
       Pageable pageable
   ) {

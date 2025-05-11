@@ -3,6 +3,8 @@ package io.github.teamomo.moment.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -60,7 +62,8 @@ public class Moment {
 
   @NotNull
   @Column(name = "recurrence", nullable = false)
-  private String recurrence;
+  @Enumerated(EnumType.STRING)
+  private Recurrence recurrence;
 
   @NotNull
   @Column(name = "price", nullable = false, precision = 10, scale = 2)
@@ -68,7 +71,8 @@ public class Moment {
 
   @NotNull
   @Column(name = "status", nullable = false)
-  private String status;
+  @Enumerated(EnumType.STRING)
+  private Status status;
 
   @NotNull
   @Column(name = "ticket_count", nullable = false)

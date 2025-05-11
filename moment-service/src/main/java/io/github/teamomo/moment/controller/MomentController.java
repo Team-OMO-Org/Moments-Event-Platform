@@ -62,23 +62,4 @@ public class MomentController {
   ) {
     return momentService.getAllMoments(momentFilterRequestDto, pageable);
   }
-
-//  @GetMapping
-//  @ResponseStatus(HttpStatus.OK)
-//  public Page<Moment> getAllMoments(
-//      @RequestParam(required = false) String category,
-//      @RequestParam(required = false) String location,
-//      @RequestParam(required = false) BigDecimal priceFrom,
-//      @RequestParam(required = false) BigDecimal priceTo,
-//      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDateFrom,
-//      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDateTo,
-//      @RequestParam(required = false) String recurrence,
-//      @RequestParam(required = false) String status,
-//      @RequestParam(required = false) String search,
-//      @PageableDefault(size = 10, sort = "startDate") Pageable pageable
-//  ) {
-//    return momentService.getAllMoments(
-//        category, location, priceFrom, priceTo, startDateFrom, startDateTo, recurrence, status, search, pageable
-//    );
-//  }
 }
