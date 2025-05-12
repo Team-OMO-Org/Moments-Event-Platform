@@ -34,12 +34,12 @@ public class MomentController {
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public Page<Moment> getAllMoments(@RequestParam(required = false) Instant startDate,
-      Pageable pageable) {
-    if (startDate == null) {
-      startDate = Instant.now();
-    }
-    return momentService.getAllMoments(startDate, pageable);
+  public Page<MomentFilterResponseDto> getAllMoments(
+      MomentFilterRequestDto momentFilterRequestDto,
+      @PageableDefault(size = 10, sort = "startDate") Pageable pageable
+  ) {
+    // ToDo: Default filtering: LIVE, FUTURE
+    return momentService.getAllMoments(momentFilterRequestDto, pageable);
   }
 
   @PostMapping
@@ -52,14 +52,5 @@ public class MomentController {
   @ResponseStatus(HttpStatus.OK)
   public MomentDto getMomentById(@PathVariable Long id) {
     return momentService.getMomentById(id);
-  }
-
-  @GetMapping("/filtered")
-  @ResponseStatus(HttpStatus.OK)
-  public Page<MomentFilterResponseDto> getAllFilteredMoments(
-      MomentFilterRequestDto momentFilterRequestDto,
-      @PageableDefault(size = 10, sort = "startDate") Pageable pageable
-  ) {
-    return momentService.getAllMoments(momentFilterRequestDto, pageable);
   }
 }
