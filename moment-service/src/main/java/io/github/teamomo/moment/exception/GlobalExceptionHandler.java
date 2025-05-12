@@ -34,7 +34,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
       String validationMsg = error.getDefaultMessage();
       validationErrors.put(fieldName, validationMsg);
     });
-    // ToDO: questions does this return timestamp and so one exactly once?
+    // ToDO: Time missing, ErrorResponseDTO
     return new ResponseEntity<>(validationErrors, HttpStatus.BAD_REQUEST);
   }
 

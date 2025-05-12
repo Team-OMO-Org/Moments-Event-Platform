@@ -22,12 +22,6 @@ public interface MomentMapper {
 
     @Mapping(target = "category", source = "category.name")
     @Mapping(target = "location", source = "location.city")
-    @Mapping(target = "id", source = "id")
-    @Mapping(target = "title", source = "title")
-    @Mapping(target = "price", source = "price")
-    @Mapping(target = "startDate", source = "startDate")
-    @Mapping(target = "recurrence", source = "recurrence")
-    @Mapping(target = "status", source = "status")
     @Mapping(target = "description", source = "momentDetails.description")
     MomentFilterResponseDto toFilterResponseDto(Moment moment);
 
