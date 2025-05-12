@@ -36,7 +36,7 @@ public class MomentController {
   @ResponseStatus(HttpStatus.OK)
   public Page<MomentFilterResponseDto> getAllMoments(
       MomentFilterRequestDto momentFilterRequestDto,
-      @PageableDefault(size = 10, sort = "startDate") Pageable pageable
+      @PageableDefault(size = 12, sort = "startDate") Pageable pageable
   ) {
     // ToDo: Default filtering: LIVE, FUTURE
     return momentService.getAllMoments(momentFilterRequestDto, pageable);
