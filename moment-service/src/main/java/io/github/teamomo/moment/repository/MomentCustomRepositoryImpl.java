@@ -7,6 +7,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageImpl;
@@ -28,8 +29,8 @@ public class MomentCustomRepositoryImpl implements MomentCustomRepository {
       String location,
       BigDecimal priceFrom,
       BigDecimal priceTo,
-      Instant startDateFrom,
-      Instant startDateTo,
+      LocalDateTime startDateFrom,
+      LocalDateTime startDateTo,
       Recurrence recurrence,
       Status status,
       String search,
@@ -73,6 +74,7 @@ public class MomentCustomRepositoryImpl implements MomentCustomRepository {
     if (search != null) {
       queryBuilder.append(" AND (m.title LIKE ?").append(parameters.size() + 1)
           .append(" OR m.momentDetails.description LIKE ?").append(parameters.size() + 1)
+          .append(" OR m.shortDescription LIKE ?").append(parameters.size() + 1)
           .append(")");
       parameters.add("%" + search + "%");
     }

@@ -11,7 +11,7 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 public record MomentDto(
@@ -35,11 +35,14 @@ public record MomentDto(
     @Size(min = 1, max = 100, message = "Title must be between 1 and 100 characters")
     String title,
 
-    @Size(min = 1, max = 16777216, message = "Thumbnail size must be between 1 byte and 16 MB")
-    byte[] thumbnail,
+    @Size(min = 1, max = 255, message = "Short description must be between 1 and 255 characters")
+    String shortDescription,
+
+    @Size(min = 1, max = 255, message = "Thumbnail URL size must be between 1 and 255 characters")
+    String thumbnail,
 
     @NotNull(message = "Start date cannot be null")
-    Instant startDate,
+    LocalDateTime startDate,
 
     @NotNull(message = "Recurrence cannot be null")
     @Pattern(regexp = "ONETIME|REGULAR", message = "Recurrence must be either 'ONETIME' or 'REGULAR'")

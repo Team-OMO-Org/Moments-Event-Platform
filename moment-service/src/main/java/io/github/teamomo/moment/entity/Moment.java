@@ -17,6 +17,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -52,13 +53,17 @@ public class Moment {
   @Column(name = "title", nullable = false, length = 100)
   private String title;
 
+  @Size(max = 255)
+  @Column(name = "short_description", length = 255)
+  private String shortDescription;
+
+  @Size(max = 255)
   @Column(name = "thumbnail")
-  @Lob
-  private byte[] thumbnail;
+  private String thumbnail;
 
   @NotNull
   @Column(name = "start_date", nullable = false)
-  private Instant startDate;
+  private LocalDateTime startDate;
 
   @NotNull
   @Column(name = "recurrence", nullable = false)

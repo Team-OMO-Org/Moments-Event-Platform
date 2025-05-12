@@ -4,6 +4,7 @@ import io.github.teamomo.moment.entity.Recurrence;
 import io.github.teamomo.moment.entity.Status;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import lombok.Data;
 
 @Data
@@ -13,8 +14,8 @@ public class MomentResponseDto {
   private String category;
   private String location;  // city
   private BigDecimal price;
-  private Instant startDate;
+  private LocalDateTime startDate;
   private Recurrence recurrence;
   private Status status;
-  private String description;
+  private String shortDescription;
 }

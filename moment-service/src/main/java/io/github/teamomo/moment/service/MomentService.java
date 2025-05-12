@@ -20,19 +20,20 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class MomentService {
+
   private final MomentRepository momentRepository;
   private final MomentMapper momentMapper;
   private final MomentDetailRepository momentDetailRepository;  // ToDo: check if we need this
   private final LocationRepository locationRepository;
   private final CategoryRepository categoryRepository;
 
-   public Page<Moment> getAllMoments(Instant startDate, Pageable pageable) {
-     return  momentRepository.findAllByStartDateAfter(startDate, pageable);
+  public Page<Moment> getAllMoments(Instant startDate, Pageable pageable) {
+    return momentRepository.findAllByStartDateAfter(startDate, pageable);
 //         .map(momentMapper::toDto);
-   }
+  }
 
-   // Method to create a Moment with example of checking if the moment already exists and
-   // throwing our custom MomentAlreadyExistsException
+  // Method to create a Moment with example of checking if the moment already exists and
+  // throwing our custom MomentAlreadyExistsException
   public void createMoment(MomentDto momentDto) {
     Moment moment = momentMapper.toEntity(momentDto);
     // Check if the moment already exists in the database
@@ -43,29 +44,22 @@ public class MomentService {
     momentRepository.save(moment); //should we return the saved moment as some ResponseMomentDto?
   }
 
-   public MomentDto getMomentById(Long id) {
-     return momentRepository.findById(id)
-         .map(momentMapper::toDto)
-         .orElseThrow(() -> new ResourceNotFoundException("Moment", "Id", id.toString()));
-   }
+  public MomentDto getMomentById(Long id) {
+    return momentRepository.findById(id)
+        .map(momentMapper::toDto)
+        .orElseThrow(() -> new ResourceNotFoundException("Moment", "Id", id.toString()));
+  }
 
-  public Page<MomentResponseDto> getAllMoments(MomentRequestDto momentRequestDto, Pageable pageable) {
+  public Page<MomentResponseDto> getAllMoments(MomentRequestDto momentRequestDto,
+      Pageable pageable) {
 
-    Instant startDateFrom = momentRequestDto.getStartDateFrom() != null
-        ? momentRequestDto.getStartDateFrom().atZone(ZoneId.systemDefault()).toInstant()
-        : null;
-
-    Instant startDateTo = momentRequestDto.getStartDateTo() != null
-        ? momentRequestDto.getStartDateTo().atZone(ZoneId.systemDefault()).toInstant()
-        : null;
-
-     Page<Moment> moments = momentRepository.findByFilters(
+    Page<Moment> moments = momentRepository.findByFilters(
         momentRequestDto.getCategory(),
         momentRequestDto.getLocation(),
         momentRequestDto.getPriceFrom(),
         momentRequestDto.getPriceTo(),
-        startDateFrom,
-        startDateTo,
+        momentRequestDto.getStartDateFrom(),
+        momentRequestDto.getStartDateTo(),
         momentRequestDto.getRecurrence(),
         momentRequestDto.getStatus(),
         momentRequestDto.getSearch(),

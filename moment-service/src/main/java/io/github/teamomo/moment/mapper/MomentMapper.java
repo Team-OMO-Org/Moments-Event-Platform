@@ -22,7 +22,6 @@ public interface MomentMapper {
 
     @Mapping(target = "category", source = "category.name")
     @Mapping(target = "location", source = "location.city")
-    @Mapping(target = "description", source = "momentDetails.description")
     MomentResponseDto toFilterResponseDto(Moment moment);
 
     @Named("mapCategory")

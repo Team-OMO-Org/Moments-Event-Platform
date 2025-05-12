@@ -4,6 +4,7 @@ import io.github.teamomo.moment.entity.Moment;
 import io.github.teamomo.moment.entity.Recurrence;
 import io.github.teamomo.moment.entity.Status;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.math.BigDecimal;
@@ -14,8 +15,8 @@ public interface MomentCustomRepository {
       String location,
       BigDecimal priceFrom,
       BigDecimal priceTo,
-      Instant startDateFrom,
-      Instant startDateTo,
+      LocalDateTime startDateFrom,
+      LocalDateTime startDateTo,
       Recurrence recurrence,
       Status status,
       String search,
