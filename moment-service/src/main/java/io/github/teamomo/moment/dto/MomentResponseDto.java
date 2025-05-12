@@ -7,15 +7,14 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import lombok.Data;
 
-@Data
-public class MomentResponseDto {
-  private Long id;
-  private String title;
-  private String category;
-  private String location;  // city
-  private BigDecimal price;
-  private LocalDateTime startDate;
-  private Recurrence recurrence;
-  private Status status;
-  private String shortDescription;
-}
+public record MomentResponseDto(
+    Long id,
+    String title,
+    String category,
+    String location,  // city
+    BigDecimal price,
+    LocalDateTime startDate,
+    Recurrence recurrence,
+    Status status,
+    String shortDescription
+) {}
