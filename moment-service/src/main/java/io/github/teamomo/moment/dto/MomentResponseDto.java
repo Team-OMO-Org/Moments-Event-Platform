@@ -7,7 +7,7 @@ import java.time.Instant;
 import lombok.Data;
 
 @Data
-public class MomentFilterResponseDto {
+public class MomentResponseDto {
   private Long id;
   private String title;
   private String category;

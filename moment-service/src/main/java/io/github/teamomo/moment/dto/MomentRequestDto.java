@@ -3,13 +3,12 @@ package io.github.teamomo.moment.dto;
 import io.github.teamomo.moment.entity.Recurrence;
 import io.github.teamomo.moment.entity.Status;
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
-public class MomentFilterRequestDto {
+public class MomentRequestDto {
     private String category;
     private String location;
     private BigDecimal priceFrom;

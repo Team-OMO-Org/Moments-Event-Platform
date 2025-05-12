@@ -1,8 +1,8 @@
 package io.github.teamomo.moment.service;
 
 import io.github.teamomo.moment.dto.MomentDto;
-import io.github.teamomo.moment.dto.MomentFilterRequestDto;
-import io.github.teamomo.moment.dto.MomentFilterResponseDto;
+import io.github.teamomo.moment.dto.MomentRequestDto;
+import io.github.teamomo.moment.dto.MomentResponseDto;
 import io.github.teamomo.moment.entity.Moment;
 import io.github.teamomo.moment.exception.ResourceNotFoundException;
 import io.github.teamomo.moment.mapper.MomentMapper;
@@ -49,7 +49,7 @@ public class MomentService {
          .orElseThrow(() -> new ResourceNotFoundException("Moment", "Id", id.toString()));
    }
 
-  public Page<MomentFilterResponseDto> getAllMoments(MomentFilterRequestDto momentRequestDto, Pageable pageable) {
+  public Page<MomentResponseDto> getAllMoments(MomentRequestDto momentRequestDto, Pageable pageable) {
 
     Instant startDateFrom = momentRequestDto.getStartDateFrom() != null
         ? momentRequestDto.getStartDateFrom().atZone(ZoneId.systemDefault()).toInstant()
