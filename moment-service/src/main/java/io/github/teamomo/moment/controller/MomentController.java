@@ -3,6 +3,7 @@ package io.github.teamomo.moment.controller;
 import io.github.teamomo.moment.dto.MomentDto;
 import io.github.teamomo.moment.dto.MomentRequestDto;
 import io.github.teamomo.moment.dto.MomentResponseDto;
+import io.github.teamomo.moment.entity.Moment;
 import io.github.teamomo.moment.service.MomentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,8 +38,8 @@ public class MomentController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public void createMoment(@Valid @RequestBody MomentDto momentDto) {
-    momentService.createMoment(momentDto);
+  public MomentDto createMoment(@Valid @RequestBody MomentDto momentDto) {
+    return momentService.createMoment(momentDto);
   }
 
   @GetMapping("/{id}")

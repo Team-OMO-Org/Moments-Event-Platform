@@ -3,7 +3,9 @@ package io.github.teamomo.moment.service;
 import io.github.teamomo.moment.dto.MomentDto;
 import io.github.teamomo.moment.dto.MomentRequestDto;
 import io.github.teamomo.moment.dto.MomentResponseDto;
+import io.github.teamomo.moment.entity.Category;
 import io.github.teamomo.moment.entity.Moment;
+import io.github.teamomo.moment.exception.MomentAlreadyExistsException;
 import io.github.teamomo.moment.exception.ResourceNotFoundException;
 import io.github.teamomo.moment.mapper.MomentMapper;
 import io.github.teamomo.moment.repository.CategoryRepository;
@@ -34,14 +36,23 @@ public class MomentService {
 
   // Method to create a Moment with example of checking if the moment already exists and
   // throwing our custom MomentAlreadyExistsException
-  public void createMoment(MomentDto momentDto) {
+  public MomentDto createMoment(MomentDto momentDto) {
+
+    //check if moment with the same title and day already exists
+    if(momentRepository.findByTitleAndStartDate(momentDto.title(), momentDto.startDate()).isPresent()){
+      throw new MomentAlreadyExistsException("Moment already exists with given Title '"
+          + momentDto.title() + "' and start date: " + momentDto.startDate());
+    }
+    Category category = categoryRepository.findById(momentDto.categoryId()).orElseThrow(() -> new ResourceNotFoundException("Category", "Id", momentDto.categoryId().toString()));
+
     Moment moment = momentMapper.toEntity(momentDto);
-    // Check if the moment already exists in the database
-//    if (momentRepository.findByTitle(moment.getTitle()).isPresent()) {
-//      throw new MomentAlreadyExistsException("Moment already exists with given Title "
-//          + moment.getTitle());
-//    }
-    momentRepository.save(moment); //should we return the saved moment as some ResponseMomentDto?
+
+    moment.setCategory(category);
+
+    momentRepository.save(moment);//should we return the saved moment as some ResponseMomentDto?
+
+
+    return momentMapper.toDto(moment);
   }
 
   public MomentDto getMomentById(Long id) {

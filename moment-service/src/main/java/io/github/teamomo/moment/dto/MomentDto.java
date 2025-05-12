@@ -14,6 +14,7 @@ import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
+import validation.ValidEnum;
 
 public record MomentDto(
     // ToDo: rename to MomentDetailsResponseDto, also need request Dtp,
@@ -43,16 +44,16 @@ public record MomentDto(
     @NotNull(message = "Start date cannot be null")
     LocalDateTime startDate,
 
+    @ValidEnum(enumClass = Recurrence.class, message = "Recurrence must be one of 'ONETIME' or 'REGULAR'")
     @NotNull(message = "Recurrence cannot be null")
-    @Pattern(regexp = "ONETIME|REGULAR", message = "Recurrence must be either 'ONETIME' or 'REGULAR'")
     Recurrence recurrence,
 
     @NotNull(message = "Price cannot be null")
     @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
     BigDecimal price,
 
+    @ValidEnum(enumClass = Status.class, message = "Status must be one of 'DRAFT', 'LIVE', or 'PAUSED'")
     @NotNull(message = "Status cannot be null")
-    @Pattern(regexp = "DRAFT|LIVE|PAUSED", message = "Status must be one of 'DRAFT', 'LIVE', or 'PAUSED'")
     Status status,
 
     @NotNull(message = "Ticket count cannot be null")
