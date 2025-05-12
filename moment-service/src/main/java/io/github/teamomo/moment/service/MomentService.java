@@ -65,15 +65,15 @@ public class MomentService {
       Pageable pageable) {
 
     Page<Moment> moments = momentRepository.findByFilters(
-        momentRequestDto.getCategory(),
-        momentRequestDto.getLocation(),
-        momentRequestDto.getPriceFrom(),
-        momentRequestDto.getPriceTo(),
-        momentRequestDto.getStartDateFrom(),
-        momentRequestDto.getStartDateTo(),
-        momentRequestDto.getRecurrence(),
-        momentRequestDto.getStatus(),
-        momentRequestDto.getSearch(),
+        momentRequestDto.category(),
+        momentRequestDto.location(),
+        momentRequestDto.priceFrom(),
+        momentRequestDto.priceTo(),
+        momentRequestDto.startDateFrom(),
+        momentRequestDto.startDateTo(),
+        momentRequestDto.recurrence(),
+        momentRequestDto.status(),
+        momentRequestDto.search(),
         pageable
     );
     return moments.map(momentMapper::toFilterResponseDto);

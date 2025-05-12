@@ -34,8 +34,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
       String validationMsg = error.getDefaultMessage();
       validationErrors.put(fieldName, validationMsg);
     });
-    // ToDO: Time missing, ErrorResponseDTO
-    return new ResponseEntity<>(validationErrors, HttpStatus.BAD_REQUEST);
+
+    ErrorResponseDto errorResponseDTO = new ErrorResponseDto(
+        request.getDescription(false),
+        HttpStatus.BAD_REQUEST,
+        validationErrors.toString(),
+        LocalDateTime.now()
+    );
+    return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(MomentAlreadyExistsException.class)

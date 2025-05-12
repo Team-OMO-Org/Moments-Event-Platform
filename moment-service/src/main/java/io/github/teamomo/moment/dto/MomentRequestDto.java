@@ -7,17 +7,21 @@ import java.time.LocalDateTime;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
-@Data
-public class MomentRequestDto {
-    private String category;
-    private String location;
-    private BigDecimal priceFrom;
-    private BigDecimal priceTo;
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime startDateFrom;
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime startDateTo;
-    private Recurrence recurrence;
-    private Status status;
-    private String search;
-}
+/**
+ * MomentRequestDto is a Data Transfer Object (DTO) used for transferring moment-related data
+ * between the client and server.
+ *
+ * <p>This DTO contains various fields that can be used to filter or search for moments based on
+ * different criteria.
+ */
+public record MomentRequestDto(
+    String category,
+    String location,
+    BigDecimal priceFrom,
+    BigDecimal priceTo,
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDateFrom,
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDateTo,
+    Recurrence recurrence,
+    Status status,
+    String search
+) {}
