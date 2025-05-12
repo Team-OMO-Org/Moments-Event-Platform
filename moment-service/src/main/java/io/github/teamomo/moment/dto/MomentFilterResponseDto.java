@@ -11,7 +11,7 @@ public class MomentFilterResponseDto {
   private Long id;
   private String title;
   private String category;
-  private String location;
+  private String location;  // city
   private BigDecimal price;
   private Instant startDate;
   private Recurrence recurrence;
