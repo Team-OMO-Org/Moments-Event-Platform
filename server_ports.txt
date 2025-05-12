@@ -1,1 +1,2 @@
-moment-service localhost:8081
+moments-web-app	localhost:8090
+moment-service	localhost:8081
