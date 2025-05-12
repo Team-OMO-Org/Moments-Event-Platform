@@ -13,11 +13,9 @@ import org.mapstruct.Named;
 public interface MomentMapper {
 
     @Mapping(target = "categoryId", source = "category.id")
-    @Mapping(target = "locationId", source = "location.id")
     MomentDto toDto(Moment moment);
 
     @Mapping(target = "category", source = "categoryId", qualifiedByName = "mapCategory")
-    @Mapping(target = "location", source = "locationId", qualifiedByName = "mapLocation")
     Moment toEntity(MomentDto momentDto);
 
     @Mapping(target = "category", source = "category.name")
@@ -34,13 +32,13 @@ public interface MomentMapper {
         return category;
     }
 
-    @Named("mapLocation")
-    default Location mapLocation(Long locationId) {
-        if (locationId == null) {
-            return null;
-        }
-        Location location = new Location();
-        location.setId(locationId);
-        return location;
-    }
+//    @Named("mapLocation")
+//    default Location mapLocation(Long locationId) {
+//        if (locationId == null) {
+//            return null;
+//        }
+//        Location location = new Location();
+//        location.setId(locationId);
+//        return location;
+//    }
 }

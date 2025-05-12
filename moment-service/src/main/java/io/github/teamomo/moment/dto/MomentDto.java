@@ -1,6 +1,7 @@
 package io.github.teamomo.moment.dto;
 
 
+import io.github.teamomo.moment.entity.Location;
 import io.github.teamomo.moment.entity.Recurrence;
 import io.github.teamomo.moment.entity.Status;
 import jakarta.validation.constraints.DecimalMin;
@@ -27,9 +28,7 @@ public record MomentDto(
     @Positive(message = "Category ID must be positive")
     Long categoryId,
 
-    @NotNull(message = "Location ID cannot be null")
-    @Positive(message = "Location ID must be positive")
-    Long locationId,
+    Location location,
 
     @NotNull(message = "Title cannot be null")
     @Size(min = 1, max = 100, message = "Title must be between 1 and 100 characters")
