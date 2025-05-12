@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <!-- Common meta tags fragment -->
+  <th:block th:fragment="meta">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="UTF-8">
+    <meta name="author" content="CodePixar">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link rel="shortcut icon" th:href="@{/img/fav.png}">
+  </th:block>
+
+  <!-- Common CSS fragment -->
+  <th:block th:fragment="common-css">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+  </th:block>
+</head>
+</html>
