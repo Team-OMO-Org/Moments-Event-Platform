@@ -1,5 +1,6 @@
 package io.github.teamomo.moment.controller;
 
+import io.github.teamomo.moment.dto.CategoryDto;
 import io.github.teamomo.moment.dto.ErrorResponseDto;
 import io.github.teamomo.moment.dto.MomentDto;
 import io.github.teamomo.moment.dto.MomentRequestDto;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -153,5 +155,11 @@ public class MomentController {
   @ResponseStatus(HttpStatus.OK)
   public MomentDto getMomentById(@PathVariable Long id) {
     return momentService.getMomentById(id);
+  }
+
+  @GetMapping("/categories")
+  @ResponseStatus(HttpStatus.OK)
+  public List<CategoryDto> getAllCategoriesByMomentsCount(){
+    return momentService.getAllCategoriesByMomentsCount();
   }
 }

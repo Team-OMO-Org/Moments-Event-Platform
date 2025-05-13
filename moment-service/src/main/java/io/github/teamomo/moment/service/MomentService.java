@@ -1,5 +1,6 @@
 package io.github.teamomo.moment.service;
 
+import io.github.teamomo.moment.dto.CategoryDto;
 import io.github.teamomo.moment.dto.MomentDto;
 import io.github.teamomo.moment.dto.MomentRequestDto;
 import io.github.teamomo.moment.dto.MomentResponseDto;
@@ -14,6 +15,7 @@ import io.github.teamomo.moment.repository.LocationRepository;
 import io.github.teamomo.moment.repository.MomentDetailRepository;
 import io.github.teamomo.moment.repository.MomentRepository;
 import java.time.Instant;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -110,5 +112,9 @@ public class MomentService {
         pageable
     );
     return moments.map(momentMapper::toFilterResponseDto);
+  }
+
+  public List<CategoryDto> getAllCategoriesByMomentsCount(){
+    return categoryRepository.findAllByMomentsCount();
   }
 }

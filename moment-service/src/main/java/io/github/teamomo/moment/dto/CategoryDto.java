@@ -3,7 +3,7 @@ package io.github.teamomo.moment.dto;
 public record CategoryDto(
 
   Long categoryId,
-      String categoryName,
-          Long eventCount
+  String categoryName,
+  Long momentCount
 
 ){}
