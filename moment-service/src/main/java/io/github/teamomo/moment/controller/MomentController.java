@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -115,6 +116,12 @@ public class MomentController {
   @ResponseStatus(HttpStatus.CREATED)
   public MomentDto createMoment(@Valid @RequestBody MomentDto momentDto) {
     return momentService.createMoment(momentDto);
+  }
+
+  @PutMapping("/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  public MomentDto updateMoment(@PathVariable Long id, @Valid @RequestBody MomentDto momentDto) {
+    return momentService.updateMoment(id, momentDto);
   }
 
   @Operation(
