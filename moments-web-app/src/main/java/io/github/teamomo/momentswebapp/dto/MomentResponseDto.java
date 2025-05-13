@@ -1,9 +1,8 @@
-package io.github.teamomo.moment.dto;
+package io.github.teamomo.momentswebapp.dto;
 
-import io.github.teamomo.moment.entity.Recurrence;
-import io.github.teamomo.moment.entity.Status;
+import io.github.teamomo.momentswebapp.entity.Recurrence;
+import io.github.teamomo.momentswebapp.entity.Status;
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import lombok.Data;
 

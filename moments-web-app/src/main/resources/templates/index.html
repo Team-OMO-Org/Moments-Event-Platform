@@ -55,54 +55,20 @@
 
       <!--   PRODUCT FILTER SECTION    -->
       <div class="sidebar-filter mt-50">
-        <div class="top-filter-head">Product Filters</div>
+        <div class="top-filter-head">Filters</div>
 
-        <!--   BRANDS FILTER    -->
+        <!--   CITIES FILTER    -->
         <div class="common-filter">
-          <div class="head">Brands</div>
-          <form action="#">
+          <div class="head">Cities</div>
             <ul>
-              <li class="filter-list"><input class="pixel-radio" type="radio" id="apple"
-                                             name="brand"><label for="apple">Apple<span>(29)</span></label>
-              </li>
-              <li class="filter-list"><input class="pixel-radio" type="radio" id="asus"
-                                             name="brand"><label
-                  for="asus">Asus<span>(29)</span></label></li>
-              <li class="filter-list"><input class="pixel-radio" type="radio" id="gionee"
-                                             name="brand"><label
-                  for="gionee">Gionee<span>(19)</span></label></li>
-              <li class="filter-list"><input class="pixel-radio" type="radio" id="micromax"
-                                             name="brand"><label
-                  for="micromax">Micromax<span>(19)</span></label></li>
-              <li class="filter-list"><input class="pixel-radio" type="radio" id="samsung"
-                                             name="brand"><label
-                  for="samsung">Samsung<span>(19)</span></label></li>
-            </ul>
-          </form>
-        </div>
 
-        <!--   COLOR FILTER    -->
-        <div class="common-filter">
-          <div class="head">Color</div>
-          <form action="#">
-            <ul>
-              <li class="filter-list"><input class="pixel-radio" type="radio" id="black"
-                                             name="color"><label for="black">Black<span>(29)</span></label>
-              </li>
-              <li class="filter-list"><input class="pixel-radio" type="radio" id="balckleather"
-                                             name="color"><label for="balckleather">Black
-                Leather<span>(29)</span></label></li>
-              <li class="filter-list"><input class="pixel-radio" type="radio" id="blackred"
-                                             name="color"><label for="blackred">Black
-                with red<span>(19)</span></label></li>
-              <li class="filter-list"><input class="pixel-radio" type="radio" id="gold"
-                                             name="color"><label
-                  for="gold">Gold<span>(19)</span></label></li>
-              <li class="filter-list"><input class="pixel-radio" type="radio" id="spacegrey"
-                                             name="color"><label
-                  for="spacegrey">Spacegrey<span>(19)</span></label></li>
+              <div th:replace="~{fragments/index/category-item :: categoryItem(
+              href='#city',
+              title='Berlin',
+              count=60)}">
+              </div>
+
             </ul>
-          </form>
         </div>
 
         <!--   PRICE FILTER    -->
@@ -159,31 +125,24 @@
         <div class="row">
 
           <!-- single product -->
-          <div th:include="fragments/product :: product(
-              'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-              'addidas New Hammer sole for Sports person',
-              '$150.00',
-              '/add-to-bag', '/wishlist', '/compare', '/view-more')"
-               class="col-lg-4 col-md-6">
+          <div th:each="moment : ${moments}" class="col-lg-4 col-md-6">
+          <div th:insert="~{fragments/product :: product(
+              ${moment.thumbnail},
+              ${moment.title},
+              ${#numbers.formatCurrency(moment.price)},
+              '/add-to-bag', '/wishlist', '/compare', '/view-more')}">
           </div>
-
-          <!-- single product -->
-          <div th:include="fragments/product :: product(
-              'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-              'addidas New Hammer sole for Sports person',
-              '$150.00',
-              '/add-to-bag', '/wishlist', '/compare', '/view-more')"
-               class="col-lg-4 col-md-6">
           </div>
-
-          <!-- single product -->
-          <div th:include="fragments/product :: product(
-              'https://images.unsplash.com/photo-1527529482837-4698179dc6ce?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-              'addidas New Hammer sole for Sports person',
-              '$150.00',
-              '/add-to-bag', '/wishlist', '/compare', '/view-more')"
-               class="col-lg-4 col-md-6">
-          </div>
+          <!--          <div th:each="moment : ${moments}" th:include="~{fragments/product :: product(-->
+          <!--              'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',-->
+          <!--              ${moment.title},-->
+          <!--              ${moment.price},-->
+          <!--              |/moment/${moment.id}/reserve|,-->
+          <!--              |/moment/${moment.id}/wishlist|,-->
+          <!--              |/moment/${moment.id}/compare|,-->
+          <!--              |/moment/${moment.id}/details|)}"-->
+          <!--               class="col-lg-4 col-md-6">-->
+          <!--          </div>-->
 
         </div>
       </section>
@@ -216,7 +175,7 @@
 </div>
 
 <!-- Include footer fragment -->
-<div th:replace="fragments/footer :: footer"></div>
+<div th:replace="~{fragments/footer :: footer}"></div>
 
 <!-- JS Scripts -->
 <div th:replace="~{fragments/common-scripts}"></div>
