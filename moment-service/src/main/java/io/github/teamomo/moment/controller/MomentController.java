@@ -1,6 +1,7 @@
 package io.github.teamomo.moment.controller;
 
 import io.github.teamomo.moment.dto.CategoryDto;
+import io.github.teamomo.moment.dto.CityDto;
 import io.github.teamomo.moment.dto.ErrorResponseDto;
 import io.github.teamomo.moment.dto.MomentDto;
 import io.github.teamomo.moment.dto.MomentRequestDto;
@@ -195,5 +196,11 @@ public class MomentController {
   @ResponseStatus(HttpStatus.OK)
   public List<CategoryDto> getAllCategoriesByMomentsCount(){
     return momentService.getAllCategoriesByMomentsCount();
+  }
+
+  @GetMapping("/cities")
+  @ResponseStatus(HttpStatus.OK)
+  public List<CityDto> getAllCitiesByMomentsCount(){
+    return momentService.getAllCitiesByMomentsCount();
   }
 }
