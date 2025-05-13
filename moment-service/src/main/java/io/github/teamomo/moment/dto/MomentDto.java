@@ -58,7 +58,10 @@ public record MomentDto(
 
     @NotNull(message = "Ticket count cannot be null")
     @PositiveOrZero(message = "Ticket count must be positive or zero")
-    Integer ticketCount
+    Integer ticketCount,
+
+    @Size(max = 1000, message = "Description must be at most 1000 characters long")
+    String description
 ) {
 
 }
