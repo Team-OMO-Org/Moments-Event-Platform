@@ -1,0 +1,9 @@
+<!-- File: fragments/index/category-item.html -->
+<div xmlns:th="http://www.thymeleaf.org" th:fragment="categoryItem(href, title, count)">
+  <li class="main-nav-list">
+    <a th:href="${href}">
+      <span th:text="${title}">Category Title</span>
+      <span class="number" th:text="'(' + ${count} + ')'">(0)</span>
+    </a>
+  </li>
+</div>
