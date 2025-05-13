@@ -4,7 +4,6 @@ import io.github.teamomo.moment.dto.ErrorResponseDto;
 import io.github.teamomo.moment.dto.MomentDto;
 import io.github.teamomo.moment.dto.MomentRequestDto;
 import io.github.teamomo.moment.dto.MomentResponseDto;
-import io.github.teamomo.moment.entity.Moment;
 import io.github.teamomo.moment.service.MomentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,6 +14,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -38,6 +39,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/moments")
 @RequiredArgsConstructor
 public class MomentController {
+
+  private static final Logger logger = LoggerFactory.getLogger(MomentController.class);
 
   private final MomentService momentService;
 
@@ -85,7 +88,12 @@ public class MomentController {
       @PageableDefault(size = 12, sort = "startDate") Pageable pageable
   ) {
     // ToDo: Default filtering: LIVE, FUTURE
-    return momentService.getAllMoments(momentRequestDto, pageable);
+    logger.info("Fetching all moments with filters: {}", momentRequestDto);
+    Page<MomentResponseDto> momentsResponseDto = momentService.getAllMoments(momentRequestDto, pageable);
+    logger.info("Successfully fetched {} moments", momentsResponseDto.getTotalElements());
+
+    return momentsResponseDto;
+
   }
 
   @Operation(
@@ -116,19 +124,33 @@ public class MomentController {
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public MomentDto createMoment(@Valid @RequestBody MomentDto momentDto) {
-    return momentService.createMoment(momentDto);
+
+    logger.info("Creating new moment with details: {}", momentDto);
+    MomentDto createdMomentDto = momentService.createMoment(momentDto);
+    logger.info("Successfully created moment with ID: {}", createdMomentDto.id());
+
+    return createdMomentDto;
   }
 
   @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   public MomentDto updateMoment(@PathVariable Long id, @Valid @RequestBody MomentDto momentDto) {
-    return momentService.updateMoment(id, momentDto);
+
+
+    logger.info("Updating moment with ID: {}", id);
+    MomentDto updatedMomentDto = momentService.updateMoment(id, momentDto);
+    logger.info("Successfully updated moment with ID: {}", id);
+
+    return updatedMomentDto;
   }
 
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   public void deleteMoment(@PathVariable Long id) {
-     momentService.deleteMoment(id);
+
+    logger.info("Deleting moment with ID: {}", id);
+    momentService.deleteMoment(id);
+    logger.info("Successfully deleted moment with ID: {}", id);
   }
 
   @Operation(
@@ -159,6 +181,11 @@ public class MomentController {
   @GetMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   public MomentDto getMomentById(@PathVariable Long id) {
-    return momentService.getMomentById(id);
+
+    logger.info("Fetching momentDto with ID: {}", id);
+    MomentDto momentDto = momentService.getMomentById(id);
+    logger.info("Successfully fetched momentDto: {}", momentDto);
+
+    return momentDto;
   }
 }
