@@ -1,6 +1,7 @@
 package io.github.teamomo.moment.service;
 
 import io.github.teamomo.moment.dto.CategoryDto;
+import io.github.teamomo.moment.dto.CityDto;
 import io.github.teamomo.moment.dto.MomentDto;
 import io.github.teamomo.moment.dto.MomentRequestDto;
 import io.github.teamomo.moment.dto.MomentResponseDto;
@@ -126,5 +127,9 @@ public class MomentService {
 
   public List<CategoryDto> getAllCategoriesByMomentsCount(){
     return categoryRepository.findAllByMomentsCount();
+  }
+
+  public List<CityDto> getAllCitiesByMomentsCount(){
+    return locationRepository.findAllByMomentsCount();
   }
 }
