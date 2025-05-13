@@ -122,7 +122,8 @@ class MomentControllerTest {
         Recurrence.ONETIME, // recurrence
         BigDecimal.valueOf(50.00), // price
         Status.LIVE, // status
-        100 // ticketCount
+        100 ,
+        null// ticketCount
     );
 
     Mockito.when(momentService.getMomentById(1L)).thenReturn(momentDto);
