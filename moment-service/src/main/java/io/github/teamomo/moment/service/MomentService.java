@@ -56,10 +56,10 @@ public class MomentService {
     }
       momentDetails.setMoment(moment);
       moment.setMomentDetails(momentDetails);
-    momentRepository.save(moment);
+    Moment savedMoment = momentRepository.save(moment);
 
 
-    return momentMapper.toDto(moment);
+    return momentMapper.toDto(savedMoment);
   }
 
   public MomentDto updateMoment(Long id, MomentDto momentDto) {
