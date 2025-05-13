@@ -16,7 +16,7 @@ public class EnumValidator implements ConstraintValidator<ValidEnum, Object> {
   @Override
   public boolean isValid(Object value, ConstraintValidatorContext context) {
     if (value == null) {
-      return true; // Allow null values; use @NotNull for non-null validation
+      return true;
     }
 
     if (value instanceof String) {
@@ -26,9 +26,8 @@ public class EnumValidator implements ConstraintValidator<ValidEnum, Object> {
         }
       }
     } else if (enumClass.isInstance(value)) {
-      return true; // Value is already a valid enum instance
+      return true;
     }
-
     return false;
   }
 }

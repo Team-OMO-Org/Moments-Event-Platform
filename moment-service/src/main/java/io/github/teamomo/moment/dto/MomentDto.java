@@ -2,6 +2,7 @@ package io.github.teamomo.moment.dto;
 
 
 import io.github.teamomo.moment.entity.Location;
+import io.github.teamomo.moment.entity.MomentDetail;
 import io.github.teamomo.moment.entity.Recurrence;
 import io.github.teamomo.moment.entity.Status;
 import jakarta.validation.constraints.DecimalMin;
@@ -60,8 +61,7 @@ public record MomentDto(
     @PositiveOrZero(message = "Ticket count must be positive or zero")
     Integer ticketCount,
 
-    @Size(max = 1000, message = "Description must be at most 1000 characters long")
-    String description
+    MomentDetail momentDetails
 ) {
 
 }

@@ -5,6 +5,7 @@ import io.github.teamomo.moment.dto.MomentRequestDto;
 import io.github.teamomo.moment.dto.MomentResponseDto;
 import io.github.teamomo.moment.entity.Category;
 import io.github.teamomo.moment.entity.Moment;
+import io.github.teamomo.moment.entity.MomentDetail;
 import io.github.teamomo.moment.exception.MomentAlreadyExistsException;
 import io.github.teamomo.moment.exception.ResourceNotFoundException;
 import io.github.teamomo.moment.mapper.MomentMapper;
@@ -13,7 +14,6 @@ import io.github.teamomo.moment.repository.LocationRepository;
 import io.github.teamomo.moment.repository.MomentDetailRepository;
 import io.github.teamomo.moment.repository.MomentRepository;
 import java.time.Instant;
-import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,8 +34,7 @@ public class MomentService {
 //         .map(momentMapper::toDto);
   }
 
-  // Method to create a Moment with example of checking if the moment already exists and
-  // throwing our custom MomentAlreadyExistsException
+
   public MomentDto createMoment(MomentDto momentDto) {
 
     //check if moment with the same title and day already exists
@@ -43,13 +42,26 @@ public class MomentService {
       throw new MomentAlreadyExistsException("Moment already exists with given Title '"
           + momentDto.title() + "' and start date: " + momentDto.startDate());
     }
-    Category category = categoryRepository.findById(momentDto.categoryId()).orElseThrow(() -> new ResourceNotFoundException("Category", "Id", momentDto.categoryId().toString()));
+    Category category = categoryRepository.findById(momentDto.categoryId())
+        .orElseThrow(() -> new ResourceNotFoundException("Category", "Id", momentDto.categoryId().toString()));
+
 
     Moment moment = momentMapper.toEntity(momentDto);
 
     moment.setCategory(category);
 
-    momentRepository.save(moment);//should we return the saved moment as some ResponseMomentDto?
+    MomentDetail momentDetails = momentDto.momentDetails();
+
+    if (momentDetails == null) {
+      momentDetails = new MomentDetail();
+      momentDetails.setDescription("");
+    }
+
+      momentDetails.setMoment(moment);
+      moment.setMomentDetails(momentDetails);
+
+
+    momentRepository.save(moment);
 
 
     return momentMapper.toDto(moment);
