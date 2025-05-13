@@ -5,6 +5,7 @@ import io.github.teamomo.moment.dto.MomentResponseDto;
 import io.github.teamomo.moment.entity.Category;
 import io.github.teamomo.moment.entity.Location;
 import io.github.teamomo.moment.entity.Moment;
+import io.github.teamomo.moment.entity.Recurrence;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -31,6 +32,9 @@ public interface MomentMapper {
         category.setId(categoryId);
         return category;
     }
+
+
+
 
 //    @Named("mapLocation")
 //    default Location mapLocation(Long locationId) {
