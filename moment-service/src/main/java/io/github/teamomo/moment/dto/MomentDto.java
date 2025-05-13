@@ -50,7 +50,7 @@ public record MomentDto(
     Recurrence recurrence,
 
     @NotNull(message = "Price cannot be null")
-    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
+    @DecimalMin(value = "0.0", inclusive = true, message = "Price must be greater than 0")
     BigDecimal price,
 
     @ValidEnum(enumClass = Status.class, message = "Status must be one of 'DRAFT', 'LIVE', or 'PAUSED'")

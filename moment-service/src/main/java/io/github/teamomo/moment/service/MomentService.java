@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Service
 @RequiredArgsConstructor
@@ -57,10 +58,10 @@ public class MomentService {
     }
       momentDetails.setMoment(moment);
       moment.setMomentDetails(momentDetails);
-    momentRepository.save(moment);
+    Moment savedMoment = momentRepository.save(moment);
 
 
-    return momentMapper.toDto(moment);
+    return momentMapper.toDto(savedMoment);
   }
 
   public MomentDto updateMoment(Long id, MomentDto momentDto) {
@@ -89,6 +90,15 @@ public class MomentService {
     return momentMapper.toDto(savedMoment);
   }
 
+  //should add here DeleteMomentDto(message, id) as a return?
+  public void deleteMoment(Long id) {
+    Moment moment = momentRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("Moment", "Id", id.toString()));
+
+    momentRepository.delete(moment);
+    //todo: add logging with message
+
+  }
 
   public MomentDto getMomentById(Long id) {
     return momentRepository.findById(id)
