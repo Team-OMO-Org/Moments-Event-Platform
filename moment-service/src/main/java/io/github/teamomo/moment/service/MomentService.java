@@ -34,7 +34,7 @@ public class MomentService {
 //         .map(momentMapper::toDto);
   }
 
-
+//todo: maybe findByHostIdAndTitleAndStartDate will be better
   public MomentDto createMoment(MomentDto momentDto) {
 
     //check if moment with the same title and day already exists
@@ -45,27 +45,48 @@ public class MomentService {
     Category category = categoryRepository.findById(momentDto.categoryId())
         .orElseThrow(() -> new ResourceNotFoundException("Category", "Id", momentDto.categoryId().toString()));
 
-
     Moment moment = momentMapper.toEntity(momentDto);
-
     moment.setCategory(category);
-
     MomentDetail momentDetails = momentDto.momentDetails();
 
     if (momentDetails == null) {
       momentDetails = new MomentDetail();
       momentDetails.setDescription("");
     }
-
       momentDetails.setMoment(moment);
       moment.setMomentDetails(momentDetails);
-
-
     momentRepository.save(moment);
 
 
     return momentMapper.toDto(moment);
   }
+
+  public MomentDto updateMoment(Long id, MomentDto momentDto) {
+    Moment moment = momentRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("Moment", "Id", id.toString()));
+
+    Moment updatedMoment = momentMapper.toEntity(momentDto);
+    updatedMoment.setId(moment.getId());
+
+    if(momentDto.categoryId() != null){
+      Category category = categoryRepository.findById(momentDto.categoryId())
+          .orElseThrow(() -> new ResourceNotFoundException("Category", "Id", momentDto.categoryId().toString()));
+      updatedMoment.setCategory(category);
+    }
+
+    MomentDetail existMomentDetails = moment.getMomentDetails();
+
+    if(momentDto.momentDetails() != null){
+      existMomentDetails.setDescription(momentDto.momentDetails().getDescription());
+    }
+
+    updatedMoment.setMomentDetails(existMomentDetails);
+
+    Moment savedMoment = momentRepository.save(updatedMoment);
+
+    return momentMapper.toDto(savedMoment);
+  }
+
 
   public MomentDto getMomentById(Long id) {
     return momentRepository.findById(id)
