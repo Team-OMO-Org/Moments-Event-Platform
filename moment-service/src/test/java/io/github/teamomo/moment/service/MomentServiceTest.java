@@ -164,7 +164,8 @@ class MomentServiceTest {
         LocalDateTime.now(),
         null,
         null,
-        "A live music concert in the park."
+        "A live music concert in the park.",
+        "thumbnail_url"
     );
 
     Page<Moment> momentPage = new PageImpl<>(List.of(moment));

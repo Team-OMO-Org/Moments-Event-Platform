@@ -77,7 +77,8 @@ class MomentControllerTest {
         LocalDateTime.of(2025, 6, 1, 19, 0),
         Recurrence.ONETIME,
         Status.LIVE,
-        "A live music concert in the park."
+        "A live music concert in the park.",
+        ""
     );
 
     // Use an actual Pageable instance instead of Unpaged
