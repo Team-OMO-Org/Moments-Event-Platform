@@ -1,0 +1,32 @@
+<!-- File: fragments/product.html -->
+<div th:fragment="product(imagePath, shortDescription, price, href1, href2, href3, href4)">
+    <div class="single-product">
+
+      <img class="img-fluid" th:src="${imagePath}" alt="product image"/>
+      <div class="product-details">
+        <h6 th:text="${shortDescription}">Product Description</h6>
+        <div class="price">
+          <h6 th:text="${price}">$0.00</h6>
+          <!--        <h6 class="l-through">$210.00</h6>-->
+        </div>
+        <div class="prd-bottom">
+          <a th:href="${href1}" class="social-info">
+            <span class="ti-bag"></span>
+            <p class="hover-text">add to bag</p>
+          </a>
+          <a th:href="${href2}" class="social-info">
+            <span class="lnr lnr-heart"></span>
+            <p class="hover-text">Wishlist</p>
+          </a>
+          <a th:href="${href3}" class="social-info">
+            <span class="lnr lnr-sync"></span>
+            <p class="hover-text">compare</p>
+          </a>
+          <a th:href="${href4}" class="social-info">
+            <span class="lnr lnr-move"></span>
+            <p class="hover-text">view more</p>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
