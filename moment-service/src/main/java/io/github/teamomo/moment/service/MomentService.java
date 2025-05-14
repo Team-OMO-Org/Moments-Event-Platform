@@ -1,9 +1,14 @@
 package io.github.teamomo.moment.service;
 
+import io.github.teamomo.moment.dto.CategoryDto;
+import io.github.teamomo.moment.dto.CityDto;
 import io.github.teamomo.moment.dto.MomentDto;
 import io.github.teamomo.moment.dto.MomentRequestDto;
 import io.github.teamomo.moment.dto.MomentResponseDto;
+import io.github.teamomo.moment.entity.Category;
 import io.github.teamomo.moment.entity.Moment;
+import io.github.teamomo.moment.entity.MomentDetail;
+import io.github.teamomo.moment.exception.MomentAlreadyExistsException;
 import io.github.teamomo.moment.exception.ResourceNotFoundException;
 import io.github.teamomo.moment.mapper.MomentMapper;
 import io.github.teamomo.moment.repository.CategoryRepository;
@@ -11,11 +16,12 @@ import io.github.teamomo.moment.repository.LocationRepository;
 import io.github.teamomo.moment.repository.MomentDetailRepository;
 import io.github.teamomo.moment.repository.MomentRepository;
 import java.time.Instant;
-import java.time.ZoneId;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Service
 @RequiredArgsConstructor
@@ -32,16 +38,67 @@ public class MomentService {
 //         .map(momentMapper::toDto);
   }
 
-  // Method to create a Moment with example of checking if the moment already exists and
-  // throwing our custom MomentAlreadyExistsException
-  public void createMoment(MomentDto momentDto) {
+//todo: maybe findByHostIdAndTitleAndStartDate will be better
+  public MomentDto createMoment(MomentDto momentDto) {
+
+    //check if moment with the same title and day already exists
+    if(momentRepository.findByTitleAndStartDate(momentDto.title(), momentDto.startDate()).isPresent()){
+      throw new MomentAlreadyExistsException("Moment already exists with given Title '"
+          + momentDto.title() + "' and start date: " + momentDto.startDate());
+    }
+    Category category = categoryRepository.findById(momentDto.categoryId())
+        .orElseThrow(() -> new ResourceNotFoundException("Category", "Id", momentDto.categoryId().toString()));
+
     Moment moment = momentMapper.toEntity(momentDto);
-    // Check if the moment already exists in the database
-//    if (momentRepository.findByTitle(moment.getTitle()).isPresent()) {
-//      throw new MomentAlreadyExistsException("Moment already exists with given Title "
-//          + moment.getTitle());
-//    }
-    momentRepository.save(moment); //should we return the saved moment as some ResponseMomentDto?
+    moment.setCategory(category);
+    MomentDetail momentDetails = momentDto.momentDetails();
+
+    if (momentDetails == null) {
+      momentDetails = new MomentDetail();
+      momentDetails.setDescription("");
+    }
+      momentDetails.setMoment(moment);
+      moment.setMomentDetails(momentDetails);
+    Moment savedMoment = momentRepository.save(moment);
+
+
+    return momentMapper.toDto(savedMoment);
+  }
+
+  public MomentDto updateMoment(Long id, MomentDto momentDto) {
+    Moment moment = momentRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("Moment", "Id", id.toString()));
+
+    Moment updatedMoment = momentMapper.toEntity(momentDto);
+    updatedMoment.setId(moment.getId());
+
+    if(momentDto.categoryId() != null){
+      Category category = categoryRepository.findById(momentDto.categoryId())
+          .orElseThrow(() -> new ResourceNotFoundException("Category", "Id", momentDto.categoryId().toString()));
+      updatedMoment.setCategory(category);
+    }
+
+    MomentDetail existMomentDetails = moment.getMomentDetails();
+
+    if(momentDto.momentDetails() != null){
+      existMomentDetails.setDescription(momentDto.momentDetails().getDescription());
+    }
+
+    updatedMoment.setMomentDetails(existMomentDetails);
+
+    Moment savedMoment = momentRepository.save(updatedMoment);
+
+    return momentMapper.toDto(savedMoment);
+  }
+
+  //should add here DeleteMomentDto(message, id) as a return?
+  public void deleteMoment(Long id) {
+    Moment moment = momentRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("Moment", "Id", id.toString()));
+
+    momentRepository.delete(moment);
+    //todo: add logging with message
+
   }
 
   public MomentDto getMomentById(Long id) {
@@ -54,17 +111,25 @@ public class MomentService {
       Pageable pageable) {
 
     Page<Moment> moments = momentRepository.findByFilters(
-        momentRequestDto.getCategory(),
-        momentRequestDto.getLocation(),
-        momentRequestDto.getPriceFrom(),
-        momentRequestDto.getPriceTo(),
-        momentRequestDto.getStartDateFrom(),
-        momentRequestDto.getStartDateTo(),
-        momentRequestDto.getRecurrence(),
-        momentRequestDto.getStatus(),
-        momentRequestDto.getSearch(),
+        momentRequestDto.category(),
+        momentRequestDto.location(),
+        momentRequestDto.priceFrom(),
+        momentRequestDto.priceTo(),
+        momentRequestDto.startDateFrom(),
+        momentRequestDto.startDateTo(),
+        momentRequestDto.recurrence(),
+        momentRequestDto.status(),
+        momentRequestDto.search(),
         pageable
     );
     return moments.map(momentMapper::toFilterResponseDto);
+  }
+
+  public List<CategoryDto> getAllCategoriesByMomentsCount(){
+    return categoryRepository.findAllByMomentsCount();
+  }
+
+  public List<CityDto> getAllCitiesByMomentsCount(){
+    return locationRepository.findAllByMomentsCount();
   }
 }

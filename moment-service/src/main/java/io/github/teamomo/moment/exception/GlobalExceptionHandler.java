@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -21,21 +23,31 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+  private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
-      MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status,
+      MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatusCode status,
       WebRequest request) {
     Map<String, String> validationErrors = new HashMap<>();
-    List<ObjectError> validationErrorList = ex.getBindingResult().getAllErrors();
+    List<ObjectError> validationErrorList = exception.getBindingResult().getAllErrors();
 
     validationErrorList.forEach((error) -> {
       String fieldName = ((FieldError) error).getField();
       String validationMsg = error.getDefaultMessage();
       validationErrors.put(fieldName, validationMsg);
     });
-    // ToDO: Time missing, ErrorResponseDTO
-    return new ResponseEntity<>(validationErrors, HttpStatus.BAD_REQUEST);
+
+    ErrorResponseDto errorResponseDTO = new ErrorResponseDto(
+        request.getDescription(false),
+        HttpStatus.BAD_REQUEST,
+        validationErrors.toString(),
+        LocalDateTime.now()
+    );
+
+    logger.error("Validation failed for request: {}. Errors: {}", request.getDescription(false), validationErrors, exception);
+
+    return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(MomentAlreadyExistsException.class)
@@ -48,6 +60,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         exception.getMessage(),
         LocalDateTime.now()
     );
+
+    logger.error("Moment already exists: {}. Request details: {}", exception.getMessage(), webRequest.getDescription(false), exception);
+
     return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
   }
 
@@ -61,6 +76,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         exception.getMessage(),
         LocalDateTime.now()
     );
+
+    logger.error("Resource not found: {}. Request details: {}", exception.getMessage(), webRequest.getDescription(false), exception);
+
     return new ResponseEntity<>(errorResponseDTO, HttpStatus.NOT_FOUND);
   }
 
@@ -73,6 +91,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         exception.getMessage(),
         LocalDateTime.now()
     );
+
+    logger.error("Unexpected error occurred: {}. Request details: {}", exception.getMessage(), webRequest.getDescription(false), exception);
+
     return new ResponseEntity<>(errorResponseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
