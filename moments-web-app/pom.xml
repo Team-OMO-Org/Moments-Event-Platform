@@ -68,12 +68,6 @@
       <artifactId>spring-data-commons</artifactId>
     </dependency>
 
-    <!--  for pagination  -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-rest</artifactId>
-    </dependency>
-
     <!--  resilience4j circuit-breaker to use with RestClient  -->
     <dependency>
       <groupId>org.springframework.cloud</groupId>

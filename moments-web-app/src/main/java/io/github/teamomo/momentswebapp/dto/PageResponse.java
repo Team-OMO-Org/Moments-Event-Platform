@@ -24,5 +24,4 @@ public class PageResponse<T> extends PageImpl<T> {
       @JsonProperty("numberOfElements") int numberOfElements) {
     super(content, PageRequest.of(number, numberOfElements), totalElements);
   }
-
 }
