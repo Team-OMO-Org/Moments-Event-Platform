@@ -30,6 +30,7 @@ public record MomentDto(
     @Positive(message = "Category ID must be positive")
     Long categoryId,
 
+    @NotNull(message = "Location cannot be null")
     Location location,
 
     @NotNull(message = "Title cannot be null")
@@ -61,6 +62,7 @@ public record MomentDto(
     @PositiveOrZero(message = "Ticket count must be positive or zero")
     Integer ticketCount,
 
+    @NotNull(message = "Location cannot be null")
     MomentDetail momentDetails
 ) {
 
