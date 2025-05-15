@@ -1,6 +1,6 @@
 package io.github.teamomo.order.config;
 
-import io.github.teamomo.momentswebapp.client.BackendClient;
+import io.github.teamomo.order.client.MomentClient;
 import java.time.Duration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.ClientHttpRequestFactories;
@@ -15,7 +15,7 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 @Configuration
 public class RestClientConfig {
     @Value("${backend-service.url}")
-    private String backendUrl;
+    private String momentClientUrl;
 
     /**
      * Creates a RestClient bean for the Inventory service.
@@ -24,15 +24,15 @@ public class RestClientConfig {
      * @return a RestClient instance configured with the inventory service URL.
      */
     @Bean
-    public BackendClient backendClient() {
+    public MomentClient momentClient() {
         RestClient restClient = RestClient.builder()
-                .baseUrl(backendUrl)
+                .baseUrl(momentClientUrl)
                 .requestFactory(getClientRequestFactory())  // to define timeouts
                 .build();
         RestClientAdapter adapter = RestClientAdapter.create(restClient);
         HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
 
-        return factory.createClient(BackendClient.class);
+        return factory.createClient(MomentClient.class);
     }
 
     // define timeouts for RestClient connection
