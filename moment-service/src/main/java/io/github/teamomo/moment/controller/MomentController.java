@@ -1,5 +1,6 @@
 package io.github.teamomo.moment.controller;
 
+import io.github.teamomo.moment.dto.CartItemDto;
 import io.github.teamomo.moment.dto.CategoryDto;
 import io.github.teamomo.moment.dto.CityDto;
 import io.github.teamomo.moment.dto.ErrorResponseDto;
@@ -195,12 +196,33 @@ public class MomentController {
   @GetMapping("/categories")
   @ResponseStatus(HttpStatus.OK)
   public List<CategoryDto> getAllCategoriesByMomentsCount(){
-    return momentService.getAllCategoriesByMomentsCount();
+
+    logger.info("Fetching all categories by moments count");
+    List<CategoryDto> allCategoriesByMomentsCount = momentService.getAllCategoriesByMomentsCount();
+    logger.info("Successfully fetched all categories by moments count: {}", allCategoriesByMomentsCount.size());
+
+    return allCategoriesByMomentsCount;
   }
 
   @GetMapping("/cities")
   @ResponseStatus(HttpStatus.OK)
   public List<CityDto> getAllCitiesByMomentsCount(){
-    return momentService.getAllCitiesByMomentsCount();
+
+    logger.info("Fetching all cities by moments count");
+    List<CityDto> allCitiesByMomentsCount = momentService.getAllCitiesByMomentsCount();
+    logger.info("Successfully fetched all cities by moments count: {}", allCitiesByMomentsCount.size());
+
+    return allCitiesByMomentsCount;
+  }
+
+  @PostMapping("/cart-items")
+  @ResponseStatus(HttpStatus.OK)
+  public List<CartItemDto> getCartItems(@RequestBody List<Long> momentIds){
+
+    logger.info("Fetching all cart items by moment ids");
+    List<CartItemDto> cartItems = momentService.getCartItems(momentIds);
+    logger.info("Successfully fetched all cart items by moment ids: {}", cartItems.size());
+
+    return cartItems;
   }
 }

@@ -1,5 +1,6 @@
 package io.github.teamomo.moment.service;
 
+import io.github.teamomo.moment.dto.CartItemDto;
 import io.github.teamomo.moment.dto.CategoryDto;
 import io.github.teamomo.moment.dto.CityDto;
 import io.github.teamomo.moment.dto.MomentDto;
@@ -131,5 +132,13 @@ public class MomentService {
 
   public List<CityDto> getAllCitiesByMomentsCount(){
     return locationRepository.findAllByMomentsCount();
+  }
+
+  public List<CartItemDto> getCartItems(List<Long> momentIds) {
+    List<CartItemDto> cartItemDtos = momentRepository.findAllById(momentIds)
+        .stream()
+        .map(momentMapper::toCartItemDto)
+        .toList();
+    return cartItemDtos;
   }
 }
