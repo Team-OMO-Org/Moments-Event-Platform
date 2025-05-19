@@ -1,4 +1,4 @@
-package io.michaeljgkopp.github.microservices.gateway.routes;
+package io.github.teamomo.gateway.routes;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.gateway.server.mvc.filter.CircuitBreakerFilterFunctions;

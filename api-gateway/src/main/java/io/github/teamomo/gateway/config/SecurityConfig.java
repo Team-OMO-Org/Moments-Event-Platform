@@ -1,5 +1,5 @@
 /*
-package io.michaeljgkopp.github.microservices.gateway.config;
+package io.github.teamomo.gateway;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

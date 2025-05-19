@@ -8,7 +8,7 @@
 		<version>3.3.10</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>io.michaeljgkopp.github.microservices</groupId>
+	<groupId>io.github.teamomo</groupId>
 	<artifactId>api-gateway</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>api-gateway</name>

@@ -1,4 +1,4 @@
-package io.michaeljgkopp.github.microservices.gateway;
+package io.github.teamomo.gateway;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

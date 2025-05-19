@@ -1,4 +1,4 @@
-package io.michaeljgkopp.github.microservices.gateway;
+package io.github.teamomo.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
