@@ -332,4 +332,61 @@ public class MomentController {
     momentService.bookTickets(id, requiredTickets);
     logger.info("Successfully booked {} tickets for moment ID: {}", requiredTickets, id);
   }
+
+  @Operation(
+      summary = "Cancel ticket booking if Payment fails for a specific moment",
+      description = "This endpoint allows canceling a specified number of tickets if Payment fails for a moment by its ID.",
+      tags = {"Moments"},
+      parameters = {
+          @Parameter(
+              name = "id",
+              description = "The ID of the moment to cancel tickets for",
+              required = true,
+              example = "1"
+          ),
+          @Parameter(
+              name = "ticketsToCancel",
+              description = "The number of tickets to cancel",
+              required = true,
+              example = "2"
+          )
+      },
+      responses = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "HTTP Status OK - Tickets canceled successfully"
+          ),
+          @ApiResponse(
+              responseCode = "400",
+              description = "HTTP Status Bad Request - Invalid ticket count",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          ),
+          @ApiResponse(
+              responseCode = "404",
+              description = "HTTP Status Not Found - Moment not found for the given ID",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          ),
+          @ApiResponse(
+              responseCode = "500",
+              description = "HTTP Status Internal Server Error",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          )
+      }
+  )
+  @PostMapping("/{id}/cancel-tickets")
+  @ResponseStatus(HttpStatus.OK)
+  public void cancelTicketBooking(
+      @PathVariable Long id,
+      @RequestParam int ticketsToCancel) {
+
+    logger.info("Cancelling {} tickets for moment ID: {}", ticketsToCancel, id);
+    momentService.cancelTicketBooking(id, ticketsToCancel);
+    logger.info("Successfully cancelled {} tickets for moment ID: {}", ticketsToCancel, id);
+  }
 }

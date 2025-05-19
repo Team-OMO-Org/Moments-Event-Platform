@@ -107,5 +107,33 @@ public class OrderController {
     momentClient.bookTickets(id, requiredTickets);
     log.info("Booked {} tickets for moment with id {}", requiredTickets, id);
   }
+
+  //todo: added for testing purposes, remove it later, call from OrderService
+  @Operation(
+      summary = "Cancel ticket booking if Payment fails for a specific moment via Order Service",
+      description = "This endpoint cancels the booking of tickets for a specific moment by its ID using the Moment Service.",
+      tags = {"Orders"},
+      parameters = {
+          @Parameter(
+              name = "id",
+              description = "The ID of the moment to cancel ticket booking for",
+              required = true,
+              example = "1"
+          ),
+          @Parameter(
+              name = "ticketsToCancel",
+              description = "The number of tickets to cancel",
+              required = true,
+              example = "2"
+          )
+      }
+  )
+  @GetMapping("/moments/{id}/cancel-tickets")
+  public void cancelTicketBooking(@PathVariable Long id, @RequestParam int ticketsToCancel) {
+    log.info("Cancelling ticket booking for moment with id: {} and tickets to cancel: {}", id,
+        ticketsToCancel);
+    momentClient.cancelTicketBooking(id, ticketsToCancel);
+    log.info("Cancelled {} tickets for moment with id {}", ticketsToCancel, id);
+  }
 }
 
