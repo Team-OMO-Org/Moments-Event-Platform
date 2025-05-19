@@ -45,6 +45,19 @@
   </dependencyManagement>
 
   <dependencies>
+
+<!--    &lt;!&ndash;	SECURITY	&ndash;&gt;-->
+<!--    <dependency>-->
+<!--      <groupId>org.springframework.boot</groupId>-->
+<!--      <artifactId>spring-boot-starter-security</artifactId>-->
+<!--    </dependency>-->
+
+    <!--  OAUTH2 Client for Keycloak/Security  -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-oauth2-client</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>

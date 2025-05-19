@@ -1,4 +1,4 @@
-package io.michaeljgkopp.github.microservices.namingserver;
+package io.github.teamomo.namingserver;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,13 +1,18 @@
 package io.github.teamomo.momentswebapp.config;
 
+import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
+
 import io.github.teamomo.momentswebapp.client.BackendClient;
 import java.time.Duration;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.ClientHttpRequestFactories;
 import org.springframework.boot.web.client.ClientHttpRequestFactorySettings;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.web.client.OAuth2ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.support.RestClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
@@ -16,6 +21,8 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 public class RestClientConfig {
     @Value("${backend-service.url}")
     private String backendUrl;
+    @Value("${spring.security.oauth2.client.registration.moments-web-app.client-id}")
+    private String clientId;
 
     /**
      * Creates a RestClient bean for the Inventory service.
@@ -24,11 +31,20 @@ public class RestClientConfig {
      * @return a RestClient instance configured with the inventory service URL.
      */
     @Bean
-    public BackendClient backendClient() {
+    public BackendClient backendClient(OAuth2AuthorizedClientManager manager) {
+        OAuth2ClientHttpRequestInterceptor oauth2Interceptor =
+            new OAuth2ClientHttpRequestInterceptor(manager);
+
         RestClient restClient = RestClient.builder()
                 .baseUrl(backendUrl)
                 .requestFactory(getClientRequestFactory())  // to define timeouts
+                .requestInterceptor(oauth2Interceptor)
+                .requestInterceptor(new LoggingInterceptor()) // Add the logging interceptor
+                .defaultRequest(r ->
+                    r.attributes(clientRegistrationId(clientId))
+                )
                 .build();
+
         RestClientAdapter adapter = RestClientAdapter.create(restClient);
         HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
 

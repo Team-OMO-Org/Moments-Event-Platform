@@ -1,10 +1,11 @@
-/*
-package io.github.teamomo.gateway;
+package io.github.teamomo.gateway.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -33,23 +34,29 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(
+//                    Customizer.withDefaults()
+//                    cors -> cors.configurationSource(corsConfigurationSource())
+                ).disable()
+                .csrf(CsrfConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(freeResourceUrls).permitAll()
                         .anyRequest().authenticated())
+                .sessionManagement(session ->
+                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .build();
     }
 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.applyPermitDefaultValues();
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+//    @Bean
+//    CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.applyPermitDefaultValues();
+//        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration);
+//        return source;
+//    }
 
 //    @Bean
 //    public CorsConfigurationSource corsConfigurationSource() {
@@ -65,4 +72,3 @@ public class SecurityConfig {
 //        return source;
 //    }
 }
-*/
