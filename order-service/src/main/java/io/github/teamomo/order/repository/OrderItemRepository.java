@@ -1,2 +1,2 @@
-package io.github.teamomo.order.repository;public class OrderItemRepository {
+package io.github.teamomo.order.repository;public interface OrderItemRepository {
 }
