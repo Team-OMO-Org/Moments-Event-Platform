@@ -2,3 +2,4 @@ moments-web-app	localhost:8090
 api-gateway 	localhost:9000
 moment-service	localhost:8081
 order-service	localhost:8082
+keycloak        localhost:8181
