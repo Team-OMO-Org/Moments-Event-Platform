@@ -19,7 +19,13 @@ public interface MomentClient {
   @PostExchange("/api/v1/moments/{id}/book-tickets")
   @CircuitBreaker(name = "moment")
   @Retry(name = "moment")
-  List<CartItemDto> getCartItems(@RequestBody List<Long> momentIds);
+  public void bookTickets(@PathVariable Long id, @RequestParam int requiredTickets);
+
+
+  @PostExchange("/api/v1/moments/{id}/cancel-tickets")
+  @CircuitBreaker(name = "moment")
+  @Retry(name = "moment")
+  public void cancelTicketBooking(@PathVariable Long id, @RequestParam int ticketsToCancel);
 
   @GetExchange("/api/v1/moments/{id}/check-availability")
   @CircuitBreaker(name = "moment")
@@ -30,7 +36,8 @@ public interface MomentClient {
   @PostExchange("/api/v1/moments/cart-items")
   @CircuitBreaker(name = "moment")
   @Retry(name = "moment")
-  public void bookTickets(@PathVariable Long id, @RequestParam int requiredTickets);
+  List<CartItemDto> getCartItems(@RequestBody List<Long> momentIds);
+
 
 //    default boolean fallbackMethod(String skuCode, Integer quantity, Throwable t) {
 //        logger.error("Can not get inventory for skuCode {}, failure reason: {}", skuCode, t

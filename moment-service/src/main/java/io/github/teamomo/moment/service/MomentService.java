@@ -159,6 +159,12 @@ public class MomentService {
     momentRepository.save(moment);
   }
 
+  public void cancelTicketBooking(Long momentId, int ticketsToCancel) {
+    Moment moment = getMoment(momentId);
+    moment.setTicketCount(moment.getTicketCount() + ticketsToCancel);
+    momentRepository.save(moment);
+  }
+
   private Moment getMoment(Long momentId) {
     return momentRepository.findById(momentId)
         .orElseThrow(() -> new ResourceNotFoundException("Moment", "Id", momentId.toString()));
