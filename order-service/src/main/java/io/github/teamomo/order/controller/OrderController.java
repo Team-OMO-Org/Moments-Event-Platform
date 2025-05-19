@@ -100,6 +100,17 @@ public class OrderController {
     return cartDto;
   }
 
+  @PostMapping("/carts/{customerId}")
+  @ResponseStatus(HttpStatus.CREATED)
+  public CartDto createCart(@PathVariable Long customerId, @Valid @RequestBody CartDto cartDto) {
+
+    logger.info("Creating new cart with details: {}", cartDto);
+    CartDto createdCartDto = orderService.createCart(cartDto);
+    logger.info("Successfully created cart with ID: {}", createdCartDto.id());
+
+    return createdCartDto;
+  }
+
   @PutMapping("/carts/{customerId}")
   @ResponseStatus(HttpStatus.OK)
   public CartDto updateCart(@PathVariable Long customerId, @Valid @RequestBody CartDto cartDto) {
