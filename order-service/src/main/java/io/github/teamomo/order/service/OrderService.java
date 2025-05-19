@@ -1,2 +1,10 @@
-package io.github.teamomo.order.service;public class OrderService {
+package io.github.teamomo.order.service;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class OrderService {
+
 }
