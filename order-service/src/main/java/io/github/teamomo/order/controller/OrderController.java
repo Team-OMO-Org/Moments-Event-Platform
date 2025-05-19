@@ -29,7 +29,7 @@ public class OrderController {
 
   @GetMapping("/call")
   public void renderIndex() {
-    List<Long> momentIds = List.of(1L,2L,3L);
+    List<Long> momentIds = List.of(1L, 2L, 3L);
     log.debug("Retrieving ...");
 
 /*
@@ -73,10 +73,39 @@ public class OrderController {
   )
   @GetMapping("/moments/{id}/check-availability")
   public boolean checkTicketAvailability(@PathVariable Long id, @RequestParam int requiredTickets) {
-    log.info("Checking ticket availability for moment with id: {} and required tickets: {}", id, requiredTickets);
+    log.info("Checking ticket availability for moment with id: {} and required tickets: {}", id,
+        requiredTickets);
     boolean availability = momentClient.checkTicketAvailability(id, requiredTickets);
     log.info("Ticket availability for moment with id {}: {}", id, availability);
     return availability;
+  }
 
+  //todo: added for testing purposes, remove it later, call from OrderService
+  @Operation(
+      summary = "Book tickets for a specific moment via Order Service",
+      description = "This endpoint books the required number of tickets for a specific moment by its ID using the Moment Service.",
+      tags = {"Orders"},
+      parameters = {
+          @Parameter(
+              name = "id",
+              description = "The ID of the moment to book tickets for",
+              required = true,
+              example = "1"
+          ),
+          @Parameter(
+              name = "requiredTickets",
+              description = "The number of tickets to book",
+              required = true,
+              example = "5"
+          )
+      }
+  )
+  @GetMapping("/moments/{id}/book-tickets")
+  public void bookTickets(@PathVariable Long id, @RequestParam int requiredTickets) {
+    log.info("Booking tickets for moment with id: {} and required tickets: {}", id,
+        requiredTickets);
+    momentClient.bookTickets(id, requiredTickets);
+    log.info("Booked {} tickets for moment with id {}", requiredTickets, id);
   }
 }
+

@@ -66,6 +66,22 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
   }
 
+  @ExceptionHandler(InsufficientTicketsException.class)
+  public ResponseEntity<ErrorResponseDto> handleInsufficientTicketsException(
+      InsufficientTicketsException exception,
+      WebRequest webRequest) {
+    ErrorResponseDto errorResponseDTO = new ErrorResponseDto(
+        webRequest.getDescription(false),
+        HttpStatus.BAD_REQUEST,
+        exception.getMessage(),
+        LocalDateTime.now()
+    );
+
+    logger.error("Insufficient tickets: {}. Request details: {}", exception.getMessage(), webRequest.getDescription(false), exception);
+
+    return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
+  }
+
   @ExceptionHandler(ResourceNotFoundException.class)
   public ResponseEntity<ErrorResponseDto> handleResourceNotFoundException(
       ResourceNotFoundException exception,
