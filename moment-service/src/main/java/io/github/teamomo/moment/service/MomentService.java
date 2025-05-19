@@ -16,6 +16,7 @@ import io.github.teamomo.moment.repository.CategoryRepository;
 import io.github.teamomo.moment.repository.LocationRepository;
 import io.github.teamomo.moment.repository.MomentDetailRepository;
 import io.github.teamomo.moment.repository.MomentRepository;
+import jakarta.persistence.EntityNotFoundException;
 import java.time.Instant;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -140,5 +141,12 @@ public class MomentService {
         .map(momentMapper::toCartItemDto)
         .toList();
     return cartItemDtos;
+  }
+
+  public boolean checkTicketAvailability(Long momentId, int requiredTickets) {
+    Moment moment = momentRepository.findById(momentId)
+        .orElseThrow(() -> new ResourceNotFoundException("Moment", "Id", momentId.toString()));
+
+    return moment.getTicketCount() >= requiredTickets;
   }
 }

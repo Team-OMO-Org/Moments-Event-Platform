@@ -1,7 +1,8 @@
-package io.github.teamomo.moment.exception;
+package io.github.teamomo.order.exception;
 
 
 import io.github.teamomo.moment.dto.ErrorResponseDto;
+import io.github.teamomo.order.exception.ResourceAlreadyExistsException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -50,9 +51,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
   }
 
-  @ExceptionHandler(MomentAlreadyExistsException.class)
+  @ExceptionHandler(ResourceAlreadyExistsException.class)
   public ResponseEntity<ErrorResponseDto> handleCustomerAlreadyExistsException(
-      MomentAlreadyExistsException exception,
+      ResourceAlreadyExistsException exception,
       WebRequest webRequest) {
     ErrorResponseDto errorResponseDTO = new ErrorResponseDto(
         webRequest.getDescription(false),
@@ -66,9 +67,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
   }
 
-  @ExceptionHandler(ResourceNotFoundException.class)
+  @ExceptionHandler(io.github.teamomo.moment.exception.ResourceNotFoundException.class)
   public ResponseEntity<ErrorResponseDto> handleResourceNotFoundException(
-      ResourceNotFoundException exception,
+      io.github.teamomo.moment.exception.ResourceNotFoundException exception,
       WebRequest webRequest) {
     ErrorResponseDto errorResponseDTO = new ErrorResponseDto(
         webRequest.getDescription(false),
