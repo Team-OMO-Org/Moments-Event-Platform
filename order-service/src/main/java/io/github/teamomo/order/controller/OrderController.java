@@ -1,13 +1,21 @@
 package io.github.teamomo.order.controller;
 
+import io.github.teamomo.moment.dto.ErrorResponseDto;
 import io.github.teamomo.order.client.MomentClient;
 import io.github.teamomo.order.dto.CartItemDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.Parameter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
 
@@ -41,5 +49,34 @@ public class OrderController {
     List<CartItemDto> response = momentClient.getCartItems(momentIds);
     log.info("Retrieved ... : {}",
         response);
+  }
+
+  //todo: added for testing purposes, remove it later, call from OrderService
+  @Operation(
+      summary = "Check ticket availability for a specific moment via Order Service",
+      description = "This endpoint checks if the required number of tickets are available for a specific moment by its ID using the Moment Service.",
+      tags = {"Orders"},
+      parameters = {
+          @Parameter(
+              name = "id",
+              description = "The ID of the moment to check ticket availability for",
+              required = true,
+              example = "1"
+          ),
+          @Parameter(
+              name = "requiredTickets",
+              description = "The number of tickets required",
+              required = true,
+              example = "5"
+          )
+      }
+  )
+  @GetMapping("/moments/{id}/check-availability")
+  public boolean checkTicketAvailability(@PathVariable Long id, @RequestParam int requiredTickets) {
+    log.info("Checking ticket availability for moment with id: {} and required tickets: {}", id, requiredTickets);
+    boolean availability = momentClient.checkTicketAvailability(id, requiredTickets);
+    log.info("Ticket availability for moment with id {}: {}", id, availability);
+    return availability;
+
   }
 }
