@@ -1,12 +1,12 @@
-package io.github.teamomo.moment.exception;
+package io.github.teamomo.order.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-public class MomentAlreadyExistsException extends RuntimeException {
+public class ResourceAlreadyExistsException extends RuntimeException {
 
-    public MomentAlreadyExistsException(String message) {
+    public ResourceAlreadyExistsException(String message) {
         super(message);
     }
 
