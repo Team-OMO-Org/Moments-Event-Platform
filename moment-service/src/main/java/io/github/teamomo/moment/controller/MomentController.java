@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -224,5 +225,57 @@ public class MomentController {
     logger.info("Successfully fetched all cart items by moment ids: {}", cartItems.size());
 
     return cartItems;
+  }
+
+  @Operation(
+      summary = "Check ticket availability for a specific moment",
+      description = "This endpoint checks if the required number of tickets are available for a specific moment by its ID.",
+      tags = {"Moments"},
+      parameters = {
+          @Parameter(
+              name = "id",
+              description = "The ID of the moment to check ticket availability for",
+              required = true,
+              example = "1"
+          ),
+          @Parameter(
+              name = "requiredTickets",
+              description = "The number of tickets required",
+              required = true,
+              example = "5"
+          )
+      },
+      responses = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "HTTP Status OK - Returns true if tickets are available, false otherwise"
+          ),
+          @ApiResponse(
+              responseCode = "404",
+              description = "HTTP Status Not Found - Moment not found for the given ID",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          ),
+          @ApiResponse(
+              responseCode = "500",
+              description = "HTTP Status Internal Server Error",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          )
+      }
+  )
+  @GetMapping("/{id}/check-availability")
+  @ResponseStatus(HttpStatus.OK)
+  public boolean checkTicketAvailability(
+      @PathVariable Long id,
+      @RequestParam int requiredTickets) {
+
+    logger.info("Checking ticket availability for moment ID: {} with required tickets: {}", id, requiredTickets);
+    boolean isAvailable = momentService.checkTicketAvailability(id, requiredTickets);
+    logger.info("Ticket availability for moment ID {}: {}", id, isAvailable);
+
+    return isAvailable;
   }
 }
