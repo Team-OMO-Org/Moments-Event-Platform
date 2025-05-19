@@ -278,4 +278,58 @@ public class MomentController {
 
     return isAvailable;
   }
+
+  @Operation(
+      summary = "Book tickets for a specific moment",
+      description = "This endpoint allows booking a specified number of tickets for a moment by its ID.",
+      tags = {"Moments"},
+      parameters = {
+          @Parameter(
+              name = "id",
+              description = "The ID of the moment to book tickets for",
+              required = true,
+              example = "1"
+          ),
+          @Parameter(
+              name = "requiredTickets",
+              description = "The number of tickets to book",
+              required = true,
+              example = "5"
+          )
+      },
+      responses = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "HTTP Status OK - Tickets booked successfully"
+          ),
+          @ApiResponse(
+              responseCode = "400",
+              description = "HTTP Status Bad Request - Invalid ticket count or insufficient tickets",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          ),
+          @ApiResponse(
+              responseCode = "404",
+              description = "HTTP Status Not Found - Moment not found for the given ID",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          ),
+          @ApiResponse(
+              responseCode = "500",
+              description = "HTTP Status Internal Server Error",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          )
+      }
+  )
+  @PostMapping("/{id}/book-tickets")
+  @ResponseStatus(HttpStatus.OK)
+  public void bookTickets(@PathVariable Long id, @RequestParam int requiredTickets) {
+    logger.info("Booking {} tickets for moment ID: {}", requiredTickets, id);
+    momentService.bookTickets(id, requiredTickets);
+    logger.info("Successfully booked {} tickets for moment ID: {}", requiredTickets, id);
+  }
 }
