@@ -22,7 +22,9 @@ public class Routes {
     @Bean
     public RouterFunction<ServerResponse> momentServiceRoute() {
         return GatewayRouterFunctions.route("moment_service")
-                .route(RequestPredicates.path("/api/v1/moments"), HandlerFunctions.http())
+                .route(RequestPredicates.path("/api/v1/moments")
+                        .or(RequestPredicates.path("/api/v1/moments/**")),
+                    HandlerFunctions.http())
                 .filter(lb("moment-service"))
                 // use the circuit breaker to handle failures, forward to fallbackRoute
                 .filter(CircuitBreakerFilterFunctions.circuitBreaker("productServiceCircuitBreaker",
@@ -45,7 +47,9 @@ public class Routes {
     @Bean
     public RouterFunction<ServerResponse> orderServiceRoute() {
         return GatewayRouterFunctions.route("order_service")
-                .route(RequestPredicates.path("/api/v1/orders"), HandlerFunctions.http())
+                .route(RequestPredicates.path("/api/v1/orders")
+                        .or(RequestPredicates.path("/api/v1/orders/**")),
+                    HandlerFunctions.http())
                 .filter(lb("order-service"))
                 .filter(CircuitBreakerFilterFunctions.circuitBreaker("orderServiceCircuitBreaker",
                         URI.create("forward:/fallbackRoute")))
