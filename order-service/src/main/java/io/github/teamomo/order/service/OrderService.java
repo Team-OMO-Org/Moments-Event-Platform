@@ -1,6 +1,7 @@
 package io.github.teamomo.order.service;
 
 import io.github.teamomo.moment.exception.ResourceNotFoundException;
+import io.github.teamomo.order.client.MomentClient;
 import io.github.teamomo.order.dto.CartDto;
 import io.github.teamomo.order.dto.CartItemDto;
 import io.github.teamomo.order.dto.CartItemInfoDto;
@@ -13,7 +14,9 @@ import io.github.teamomo.order.repository.CartRepository;
 import io.github.teamomo.order.repository.OrderItemRepository;
 import io.github.teamomo.order.repository.OrderRepository;
 import io.github.teamomo.order.repository.PaymentRepository;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +30,7 @@ public class OrderService {
   private final OrderItemRepository orderItemRepository;
   private final PaymentRepository paymentRepository;
   private final OrderMapper orderMapper;
+  private final MomentClient momentClient;
 
 
   public CartDto findCartByCustomerId(Long customerId) {
@@ -35,21 +39,24 @@ public class OrderService {
         .orElseGet(() -> {
           Cart newCart = new Cart();
           newCart.setCustomerId(customerId);
-          return newCart;
+          return cartRepository.save(newCart);
         });
-    return orderMapper.toCartDto(cart);
+
+    return mapToCartDtoWithUpdatedAvailability(cart);
   }
 
 
-  public CartDto createCart(CartDto cartDto) {
-    if(cartRepository.findByCustomerId(cartDto.customerId()).isPresent()){
-      throw new ResourceAlreadyExistsException("Cart already exist with given customer ID " + cartDto.customerId());
+  public CartDto createCart(Long customerId) {
+    if(cartRepository.findByCustomerId(customerId).isPresent()){
+      throw new ResourceAlreadyExistsException("Cart already exist with given customer ID " + customerId);
     }
-    Cart cart = orderMapper.toCartEntity(cartDto);
+    Cart cart = new Cart();
+    cart.setCustomerId(customerId);
     Cart savedCart = cartRepository.save(cart);
 
     return orderMapper.toCartDto(savedCart);
   }
+
 
   public CartDto updateCart(Long customerId, CartDto cartDto) {
 
@@ -61,7 +68,8 @@ public class OrderService {
     updatedCart.setId(cart.getId());
 
     Cart savedCart = cartRepository.save(updatedCart);
-    return orderMapper.toCartDto(savedCart);
+
+    return mapToCartDtoWithUpdatedAvailability(savedCart);
   }
 
   public void deleteCart(Long customerId) {
@@ -97,7 +105,7 @@ public class OrderService {
     item.setCart(cart);
 
     CartItem savedItem = cartItemRepository.save(item);
-    //todo: do we need to check if there is an item for the same event and sum amount of tickets?
+
     cart.getCartItems().add(savedItem);
     cartRepository.save(cart);
 
@@ -138,4 +146,32 @@ public class OrderService {
 
     cartRepository.save(cart);
   }
+
+  private List<CartItemInfoDto> updateItemsAvailability(List<CartItemInfoDto> cartItemDtos){
+
+    List<CartItemInfoDto> updatedItemDtos = cartItemDtos.stream()
+        .map(item -> new CartItemInfoDto(
+            item.id(),
+            item.cartId(),
+            item.momentId(),
+            item.quantity(),
+            momentClient.checkTicketAvailability(item.momentId(), item.quantity())
+        )).toList();
+
+    return updatedItemDtos;
+  }
+
+  private CartDto mapToCartDtoWithUpdatedAvailability(Cart cart){
+
+    List<CartItemInfoDto> updatedItemDtos = updateItemsAvailability(
+        cart.getCartItems()
+            .stream()
+            .map(orderMapper::toCartItemInfoDto)
+            .toList());
+
+    CartDto cartDto = orderMapper.toCartDto(cart);
+
+    return new CartDto(cartDto.id(), cartDto.customerId(), updatedItemDtos);
+  }
+
 }

@@ -13,4 +13,6 @@ public record CartItemInfoDto(
 
     @NotNull(message = "Quantity cannot be null")
     @Positive(message = "Quantity must be positive")
-    Integer quantity) {}
+    Integer quantity,
+
+    Boolean isAvailable) {}
