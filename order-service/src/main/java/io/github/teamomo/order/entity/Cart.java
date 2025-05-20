@@ -1,5 +1,6 @@
 package io.github.teamomo.order.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,6 +35,6 @@ public class Cart {
   @Column(name = "customer_id", nullable = false)
   private Long customerId;
 
-  @OneToMany(mappedBy = "cart")
+  @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<CartItem> cartItems = new ArrayList<>();
 }
