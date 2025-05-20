@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -277,5 +278,117 @@ public class MomentController {
     logger.info("Ticket availability for moment ID {}: {}", id, isAvailable);
 
     return isAvailable;
+  }
+
+  @Operation(
+      summary = "Book tickets for a specific moment",
+      description = "This endpoint allows booking a specified number of tickets for a moment by its ID.",
+      tags = {"Moments"},
+      parameters = {
+          @Parameter(
+              name = "id",
+              description = "The ID of the moment to book tickets for",
+              required = true,
+              example = "1"
+          ),
+          @Parameter(
+              name = "requiredTickets",
+              description = "The number of tickets to book",
+              required = true,
+              example = "5"
+          )
+      },
+      responses = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "HTTP Status OK - Tickets booked successfully"
+          ),
+          @ApiResponse(
+              responseCode = "400",
+              description = "HTTP Status Bad Request - Invalid ticket count or insufficient tickets",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          ),
+          @ApiResponse(
+              responseCode = "404",
+              description = "HTTP Status Not Found - Moment not found for the given ID",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          ),
+          @ApiResponse(
+              responseCode = "500",
+              description = "HTTP Status Internal Server Error",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          )
+      }
+  )
+  @PostMapping("/{id}/book-tickets")
+  @ResponseStatus(HttpStatus.OK)
+  public BigDecimal bookTickets(@PathVariable Long id, @RequestParam int requiredTickets) {
+    logger.info("Booking {} tickets for moment ID: {}", requiredTickets, id);
+    BigDecimal totalSum =  momentService.bookTickets(id, requiredTickets);
+    logger.info("Successfully booked {} tickets for moment ID: {}", requiredTickets, id);
+    return totalSum;
+  }
+
+  @Operation(
+      summary = "Cancel ticket booking if Payment fails for a specific moment",
+      description = "This endpoint allows canceling a specified number of tickets if Payment fails for a moment by its ID.",
+      tags = {"Moments"},
+      parameters = {
+          @Parameter(
+              name = "id",
+              description = "The ID of the moment to cancel tickets for",
+              required = true,
+              example = "1"
+          ),
+          @Parameter(
+              name = "ticketsToCancel",
+              description = "The number of tickets to cancel",
+              required = true,
+              example = "2"
+          )
+      },
+      responses = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "HTTP Status OK - Tickets canceled successfully"
+          ),
+          @ApiResponse(
+              responseCode = "400",
+              description = "HTTP Status Bad Request - Invalid ticket count",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          ),
+          @ApiResponse(
+              responseCode = "404",
+              description = "HTTP Status Not Found - Moment not found for the given ID",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          ),
+          @ApiResponse(
+              responseCode = "500",
+              description = "HTTP Status Internal Server Error",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          )
+      }
+  )
+  @PostMapping("/{id}/cancel-tickets")
+  @ResponseStatus(HttpStatus.OK)
+  public void cancelTicketBooking(
+      @PathVariable Long id,
+      @RequestParam int ticketsToCancel) {
+
+    logger.info("Cancelling {} tickets for moment ID: {}", ticketsToCancel, id);
+    momentService.cancelTicketBooking(id, ticketsToCancel);
+    logger.info("Successfully cancelled {} tickets for moment ID: {}", ticketsToCancel, id);
   }
 }
