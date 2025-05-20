@@ -1,6 +1,6 @@
 package io.github.teamomo.order.service;
 
-import io.github.teamomo.moment.exception.ResourceNotFoundException;
+import io.github.teamomo.order.exception.ResourceNotFoundException;
 import io.github.teamomo.order.client.MomentClient;
 import io.github.teamomo.order.dto.CartDto;
 import io.github.teamomo.order.dto.CartItemInfoDto;
