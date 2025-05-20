@@ -46,11 +46,11 @@
 
   <dependencies>
 
-<!--    &lt;!&ndash;	SECURITY	&ndash;&gt;-->
-<!--    <dependency>-->
-<!--      <groupId>org.springframework.boot</groupId>-->
-<!--      <artifactId>spring-boot-starter-security</artifactId>-->
-<!--    </dependency>-->
+    <!--	SECURITY	-->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
 
     <!--  OAUTH2 Client for Keycloak/Security  -->
     <dependency>

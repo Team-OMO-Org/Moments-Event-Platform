@@ -38,7 +38,7 @@ public class RestClientConfig {
         RestClient restClient = RestClient.builder()
                 .baseUrl(backendUrl)
                 .requestFactory(getClientRequestFactory())  // to define timeouts
-                .requestInterceptor(oauth2Interceptor)
+                .requestInterceptor(oauth2Interceptor)  // adds JWT token to the request
                 .requestInterceptor(new LoggingInterceptor()) // Add the logging interceptor
                 .defaultRequest(r ->
                     r.attributes(clientRegistrationId(clientId))
