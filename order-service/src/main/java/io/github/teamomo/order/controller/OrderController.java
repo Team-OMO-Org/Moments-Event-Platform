@@ -3,19 +3,27 @@ package io.github.teamomo.order.controller;
 import io.github.teamomo.moment.dto.ErrorResponseDto;
 import io.github.teamomo.order.client.MomentClient;
 import io.github.teamomo.order.dto.CartItemDto;
+import io.github.teamomo.order.dto.OrderDto;
+import io.github.teamomo.order.dto.OrderItemDto;
+import io.github.teamomo.order.entity.Order;
+import io.github.teamomo.order.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.Parameter;
+import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
 
@@ -26,6 +34,40 @@ import org.springframework.web.client.RestClient;
 public class OrderController {
 
   private final MomentClient momentClient;
+  private final OrderService orderService;
+
+  @Operation(
+      summary = "Create an order for a specific customer",
+      description = "This endpoint creates an order for a specific customer by their ID.",
+      tags = {"Orders"},
+      responses = {
+          @ApiResponse(
+              responseCode = "201",
+              description = "Order created successfully",
+              content = @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = Order.class)
+              )
+          ),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Customer not found",
+              content = @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          )
+      }
+  )
+  @PostMapping("/orders/{customerId}")
+  @ResponseStatus(HttpStatus.CREATED)
+  public OrderDto createOrderByCustomerId(@PathVariable Long customerId) {
+    log.info("Creating order for customer ID: {}", customerId);
+    OrderDto orderDto = orderService.createOrderByCustomerId(customerId);
+    log.info("Order created for customer ID: {} with order ID: {}", customerId, orderDto.id());
+    return orderDto;
+  }
+
 
   @GetMapping("/call")
   public void renderIndex() {
@@ -101,11 +143,12 @@ public class OrderController {
       }
   )
   @GetMapping("/moments/{id}/book-tickets")
-  public void bookTickets(@PathVariable Long id, @RequestParam int requiredTickets) {
+  public BigDecimal bookTickets(@PathVariable Long id, @RequestParam int requiredTickets) {
     log.info("Booking tickets for moment with id: {} and required tickets: {}", id,
         requiredTickets);
-    momentClient.bookTickets(id, requiredTickets);
-    log.info("Booked {} tickets for moment with id {}", requiredTickets, id);
+    BigDecimal totalSum = momentClient.bookTickets(id, requiredTickets);
+    log.info("Booked {} tickets for moment with id {} with total sum: {}", requiredTickets, id, totalSum);
+    return totalSum;
   }
 
   //todo: added for testing purposes, remove it later, call from OrderService

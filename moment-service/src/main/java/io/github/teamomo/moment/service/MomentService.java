@@ -18,6 +18,7 @@ import io.github.teamomo.moment.repository.LocationRepository;
 import io.github.teamomo.moment.repository.MomentDetailRepository;
 import io.github.teamomo.moment.repository.MomentRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -148,8 +149,9 @@ public class MomentService {
     return moment.getTicketCount() >= requiredTickets;
   }
 
-  public void bookTickets(Long momentId, int requiredTickets) {
+  public BigDecimal bookTickets(Long momentId, int requiredTickets) {
     Moment moment = getMoment(momentId);
+    BigDecimal ticketPrice = moment.getPrice();
     if (moment.getTicketCount() < requiredTickets) {
       throw new InsufficientTicketsException("Not enough tickets available for moment ID: " + momentId);
     }
@@ -157,6 +159,7 @@ public class MomentService {
     // Proceed with booking logic
     moment.setTicketCount(moment.getTicketCount() - requiredTickets);
     momentRepository.save(moment);
+    return ticketPrice.multiply(BigDecimal.valueOf(requiredTickets));
   }
 
   public void cancelTicketBooking(Long momentId, int ticketsToCancel) {

@@ -51,7 +51,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   }
 
   @ExceptionHandler(MomentAlreadyExistsException.class)
-  public ResponseEntity<ErrorResponseDto> handleCustomerAlreadyExistsException(
+  public ResponseEntity<ErrorResponseDto> handleMomentAlreadyExistsException(
       MomentAlreadyExistsException exception,
       WebRequest webRequest) {
     ErrorResponseDto errorResponseDTO = new ErrorResponseDto(

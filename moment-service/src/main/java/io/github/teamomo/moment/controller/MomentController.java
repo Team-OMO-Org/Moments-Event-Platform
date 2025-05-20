@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -327,10 +328,11 @@ public class MomentController {
   )
   @PostMapping("/{id}/book-tickets")
   @ResponseStatus(HttpStatus.OK)
-  public void bookTickets(@PathVariable Long id, @RequestParam int requiredTickets) {
+  public BigDecimal bookTickets(@PathVariable Long id, @RequestParam int requiredTickets) {
     logger.info("Booking {} tickets for moment ID: {}", requiredTickets, id);
-    momentService.bookTickets(id, requiredTickets);
+    BigDecimal totalSum =  momentService.bookTickets(id, requiredTickets);
     logger.info("Successfully booked {} tickets for moment ID: {}", requiredTickets, id);
+    return totalSum;
   }
 
   @Operation(
