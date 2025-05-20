@@ -14,4 +14,4 @@ public record CartDto(
 
     @NotNull(message = "Cart items cannot be null")
     @Valid
-    List<CartItemDto> cartItems) {}
+    List<CartItemInfoDto> cartItems) {}

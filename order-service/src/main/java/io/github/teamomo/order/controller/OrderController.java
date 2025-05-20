@@ -4,6 +4,7 @@ package io.github.teamomo.order.controller;
 import io.github.teamomo.order.client.MomentClient;
 import io.github.teamomo.order.dto.CartDto;
 import io.github.teamomo.order.dto.CartItemDto;
+import io.github.teamomo.order.dto.CartItemInfoDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.github.teamomo.order.service.OrderService;
@@ -134,11 +135,11 @@ public class OrderController {
 
   @GetMapping("/carts/{customerId}/items")
   @ResponseStatus(HttpStatus.OK)
-  public List<CartItemDto> getAllCartItems(@PathVariable Long customerId
+  public List<CartItemInfoDto> getAllCartItems(@PathVariable Long customerId
   ) {
 
     logger.info("Fetching all items with customerID: {}", customerId);
-    List<CartItemDto> cartItemDtos= orderService.getAllCartItems(customerId);
+    List<CartItemInfoDto> cartItemDtos= orderService.getAllCartItems(customerId);
     logger.info("Successfully fetched {} items", cartItemDtos.size());
 
     return cartItemDtos;
@@ -147,22 +148,22 @@ public class OrderController {
 
   @PostMapping("/carts/{customerId}/items")
   @ResponseStatus(HttpStatus.CREATED)
-  public CartItemDto createCartItem(@PathVariable Long customerId, @Valid @RequestBody CartItemDto cartItemDto) {
+  public CartItemInfoDto createCartItem(@PathVariable Long customerId, @Valid @RequestBody CartItemInfoDto cartItemDto) {
 
     logger.info("Creating new cart item with details: {}", cartItemDto);
-    CartItemDto createdcartItemDto = orderService.createCartItem(cartItemDto);
-    logger.info("Successfully created cart item with ID: {}", createdcartItemDto.id());
+    CartItemInfoDto createdCartItemDto = orderService.createCartItem(customerId, cartItemDto);
+    logger.info("Successfully created cart item with ID: {}", createdCartItemDto.id());
 
-    return createdcartItemDto;
+    return createdCartItemDto;
   }
 
   @PutMapping("/carts/{customerId}/items/{itemId}")
   @ResponseStatus(HttpStatus.OK)
-  public CartItemDto updateCartItem(@PathVariable Long customerId, @PathVariable Long itemId, @Valid @RequestBody CartItemDto cartItemDto) {
+  public CartItemInfoDto updateCartItem(@PathVariable Long customerId, @PathVariable Long itemId, @Valid @RequestBody CartItemInfoDto cartItemDto) {
 
 
     logger.info("Updating cart item with ID: {}", itemId);
-    CartItemDto updatedCartItemDto = orderService.updateCartItem(itemId, cartItemDto);
+    CartItemInfoDto updatedCartItemDto = orderService.updateCartItem(itemId, cartItemDto);
     logger.info("Successfully updated cart item with ID: {}", itemId);
 
     return updatedCartItemDto;
