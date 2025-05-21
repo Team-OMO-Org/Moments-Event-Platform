@@ -1,15 +1,10 @@
 package io.github.teamomo.order.service;
 
-import io.github.teamomo.order.exception.ResourceNotFoundException;
 import io.github.teamomo.order.client.MomentClient;
-import io.github.teamomo.order.dto.CartDto;
-import io.github.teamomo.order.dto.CartItemInfoDto;
 import io.github.teamomo.order.dto.OrderDto;
 import io.github.teamomo.order.entity.*;
 import io.github.teamomo.order.exception.CartIsEmptyException;
 import io.github.teamomo.order.exception.PaymentProcessingException;
-import io.github.teamomo.order.exception.ResourceAlreadyExistsException;
-import io.github.teamomo.order.exception.TicketsBookingFailedException;
 import io.github.teamomo.order.mapper.OrderMapper;
 import io.github.teamomo.order.repository.*;
 import jakarta.transaction.Transactional;
@@ -27,24 +22,18 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class OrderService {
 
-  private final CartRepository cartRepository;
-  private final OrderRepository orderRepository;
-  private final OrderItemRepository orderItemRepository;
-  private final PaymentRepository paymentRepository;
-  private final OrderMapper orderMapper;
   private final MomentClient momentClient;
   private final CartService cartService;
 
+  private final OrderRepository orderRepository;
+  private final OrderMapper orderMapper;
+
+  private final PaymentRepository paymentRepository;
 
   @Transactional
   public OrderDto createOrderByCustomerId(Long customerId) {
-    /*
-    CartDto cartDto = cartService.findCartByCustomerId(customerId);
-    Cart cart = orderMapper.toCartEntity(cartDto);
 
-     */
-    Cart cart = cartRepository.findByCustomerId(customerId)
-        .orElseThrow(() -> new ResourceNotFoundException("Cart", "ID", customerId.toString()));
+     Cart cart = orderMapper.toCartEntity(cartService.findCartByCustomerId(customerId));
 
     if (cart.getCartItems().isEmpty()) {
       log.error("Cart is empty for customer ID: {}", customerId);
@@ -118,8 +107,7 @@ public class OrderService {
       return orderMapper.toDto(orderRepository.save(order));
     }
 
-    //cartService.deleteCart(customerId);
-    cartRepository.delete(cart);
+    cartService.deleteCart(customerId);
     order.setOrderStatus(OrderStatus.COMPLETED);
 
     // TODO: Add notification logic here
