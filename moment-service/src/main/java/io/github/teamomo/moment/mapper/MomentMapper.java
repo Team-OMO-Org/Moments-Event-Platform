@@ -1,11 +1,10 @@
 package io.github.teamomo.moment.mapper;
 
+import io.github.teamomo.moment.dto.CartItemDto;
 import io.github.teamomo.moment.dto.MomentDto;
 import io.github.teamomo.moment.dto.MomentResponseDto;
 import io.github.teamomo.moment.entity.Category;
-import io.github.teamomo.moment.entity.Location;
 import io.github.teamomo.moment.entity.Moment;
-import io.github.teamomo.moment.entity.Recurrence;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -33,16 +32,6 @@ public interface MomentMapper {
         return category;
     }
 
-
-
-
-//    @Named("mapLocation")
-//    default Location mapLocation(Long locationId) {
-//        if (locationId == null) {
-//            return null;
-//        }
-//        Location location = new Location();
-//        location.setId(locationId);
-//        return location;
-//    }
+    @Mapping(target = "momentId", source = "id")
+    CartItemDto toCartItemDto(Moment moment);
 }
