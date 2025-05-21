@@ -1,4 +1,4 @@
-package io.github.teamomo.moment.exception;
+package io.github.teamomo.order.exception;
 
 
 import io.github.teamomo.moment.dto.ErrorResponseDto;
@@ -50,9 +50,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
   }
 
-  @ExceptionHandler(MomentAlreadyExistsException.class)
-  public ResponseEntity<ErrorResponseDto> handleMomentAlreadyExistsException(
-      MomentAlreadyExistsException exception,
+  @ExceptionHandler(ResourceAlreadyExistsException.class)
+  public ResponseEntity<ErrorResponseDto> handleResourceAlreadyExistsException(
+      ResourceAlreadyExistsException exception,
       WebRequest webRequest) {
     ErrorResponseDto errorResponseDTO = new ErrorResponseDto(
         webRequest.getDescription(false),
@@ -61,23 +61,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         LocalDateTime.now()
     );
 
-    logger.error("Moment already exists: {}. Request details: {}", exception.getMessage(), webRequest.getDescription(false), exception);
-
-    return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
-  }
-
-  @ExceptionHandler(InsufficientTicketsException.class)
-  public ResponseEntity<ErrorResponseDto> handleInsufficientTicketsException(
-      InsufficientTicketsException exception,
-      WebRequest webRequest) {
-    ErrorResponseDto errorResponseDTO = new ErrorResponseDto(
-        webRequest.getDescription(false),
-        HttpStatus.BAD_REQUEST,
-        exception.getMessage(),
-        LocalDateTime.now()
-    );
-
-    logger.error("Insufficient tickets: {}. Request details: {}", exception.getMessage(), webRequest.getDescription(false), exception);
+    logger.error("Resource already exists: {}. Request details: {}", exception.getMessage(), webRequest.getDescription(false), exception);
 
     return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
   }
@@ -96,6 +80,36 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     logger.error("Resource not found: {}. Request details: {}", exception.getMessage(), webRequest.getDescription(false), exception);
 
     return new ResponseEntity<>(errorResponseDTO, HttpStatus.NOT_FOUND);
+  }
+
+  @ExceptionHandler(CartIsEmptyException.class)
+  public ResponseEntity<ErrorResponseDto> handleCartIsEmptyException(
+      CartIsEmptyException exception, WebRequest webRequest) {
+    ErrorResponseDto errorResponseDTO = new ErrorResponseDto(
+        webRequest.getDescription(false),
+        HttpStatus.BAD_REQUEST,
+        exception.getMessage(),
+        LocalDateTime.now()
+    );
+
+    logger.error("Cart is empty: {}. Request details: {}", exception.getMessage(), webRequest.getDescription(false), exception);
+
+    return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(PaymentProcessingException.class)
+  public ResponseEntity<ErrorResponseDto> handlePaymentProcessingException(
+      PaymentProcessingException exception, WebRequest webRequest) {
+    ErrorResponseDto errorResponseDTO = new ErrorResponseDto(
+        webRequest.getDescription(false),
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        exception.getMessage(),
+        LocalDateTime.now()
+    );
+
+    logger.error("Payment processing error: {}. Request details: {}", exception.getMessage(), webRequest.getDescription(false), exception);
+
+    return new ResponseEntity<>(errorResponseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   @ExceptionHandler(Exception.class)
