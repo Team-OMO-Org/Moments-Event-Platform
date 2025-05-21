@@ -43,11 +43,13 @@
         <div class="head">Browse Categories</div>
         <ul class="main-categories">
 
-          <!-- SINGLE CATEGORY ITEM-->
-          <div th:replace="~{fragments/index/category-item :: categoryItem(
-              href='#fruitsVegetable',
-              title='Fruits and Vegetables',
-              count=53)}">
+          <div th:each="category : ${categories}">
+            <!-- SINGLE CATEGORY ITEM-->
+            <div th:replace="~{fragments/index/category-item :: categoryItem(
+              href=${'?category=' + category.categoryName()},
+              title=${category.categoryName()},
+              count=${category.momentCount()})}">
+            </div>
           </div>
 
         </ul>
@@ -60,15 +62,17 @@
         <!--   CITIES FILTER    -->
         <div class="common-filter">
           <div class="head">Cities</div>
-            <ul>
+          <ul>
 
+            <div th:each="city : ${cities}">
               <div th:replace="~{fragments/index/category-item :: categoryItem(
-              href='#city',
-              title='Berlin',
-              count=60)}">
+              href=${'?location=' + city.cityName()},
+              title=${city.cityName()},
+              count=${city.momentCount()})}">
               </div>
+            </div>
 
-            </ul>
+          </ul>
         </div>
 
         <!--   PRICE FILTER    -->
@@ -126,12 +130,12 @@
 
           <!-- single product -->
           <div th:each="moment : ${moments}" class="col-lg-4 col-md-6">
-          <div th:insert="~{fragments/product :: product(
+            <div th:insert="~{fragments/product :: product(
               ${moment.thumbnail},
               ${moment.title},
               ${#numbers.formatCurrency(moment.price)},
               '/add-to-bag', '/wishlist', '/compare', '/view-more')}">
-          </div>
+            </div>
           </div>
           <!--          <div th:each="moment : ${moments}" th:include="~{fragments/product :: product(-->
           <!--              'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',-->

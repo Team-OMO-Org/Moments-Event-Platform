@@ -1,5 +1,6 @@
 package io.github.teamomo.moment.service;
 
+import io.github.teamomo.moment.dto.CartItemDto;
 import io.github.teamomo.moment.dto.CategoryDto;
 import io.github.teamomo.moment.dto.CityDto;
 import io.github.teamomo.moment.dto.MomentDto;
@@ -8,6 +9,7 @@ import io.github.teamomo.moment.dto.MomentResponseDto;
 import io.github.teamomo.moment.entity.Category;
 import io.github.teamomo.moment.entity.Moment;
 import io.github.teamomo.moment.entity.MomentDetail;
+import io.github.teamomo.moment.exception.InsufficientTicketsException;
 import io.github.teamomo.moment.exception.MomentAlreadyExistsException;
 import io.github.teamomo.moment.exception.ResourceNotFoundException;
 import io.github.teamomo.moment.mapper.MomentMapper;
@@ -15,6 +17,8 @@ import io.github.teamomo.moment.repository.CategoryRepository;
 import io.github.teamomo.moment.repository.LocationRepository;
 import io.github.teamomo.moment.repository.MomentDetailRepository;
 import io.github.teamomo.moment.repository.MomentRepository;
+import jakarta.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -66,8 +70,7 @@ public class MomentService {
   }
 
   public MomentDto updateMoment(Long id, MomentDto momentDto) {
-    Moment moment = momentRepository.findById(id)
-        .orElseThrow(() -> new ResourceNotFoundException("Moment", "Id", id.toString()));
+    Moment moment = getMoment(id);
 
     Moment updatedMoment = momentMapper.toEntity(momentDto);
     updatedMoment.setId(moment.getId());
@@ -93,8 +96,7 @@ public class MomentService {
 
   //should add here DeleteMomentDto(message, id) as a return?
   public void deleteMoment(Long id) {
-    Moment moment = momentRepository.findById(id)
-        .orElseThrow(() -> new ResourceNotFoundException("Moment", "Id", id.toString()));
+    Moment moment = getMoment(id);
 
     momentRepository.delete(moment);
     //todo: add logging with message
@@ -131,5 +133,43 @@ public class MomentService {
 
   public List<CityDto> getAllCitiesByMomentsCount(){
     return locationRepository.findAllByMomentsCount();
+  }
+
+  public List<CartItemDto> getCartItems(List<Long> momentIds) {
+    List<CartItemDto> cartItemDtos = momentRepository.findAllById(momentIds)
+        .stream()
+        .map(momentMapper::toCartItemDto)
+        .toList();
+    return cartItemDtos;
+  }
+
+  public boolean checkTicketAvailability(Long momentId, int requiredTickets) {
+    Moment moment = getMoment(momentId);
+
+    return moment.getTicketCount() >= requiredTickets;
+  }
+
+  public BigDecimal bookTickets(Long momentId, int requiredTickets) {
+    Moment moment = getMoment(momentId);
+    BigDecimal ticketPrice = moment.getPrice();
+    if (moment.getTicketCount() < requiredTickets) {
+      throw new InsufficientTicketsException("Not enough tickets available for moment ID: " + momentId);
+    }
+
+    // Proceed with booking logic
+    moment.setTicketCount(moment.getTicketCount() - requiredTickets);
+    momentRepository.save(moment);
+    return ticketPrice.multiply(BigDecimal.valueOf(requiredTickets));
+  }
+
+  public void cancelTicketBooking(Long momentId, int ticketsToCancel) {
+    Moment moment = getMoment(momentId);
+    moment.setTicketCount(moment.getTicketCount() + ticketsToCancel);
+    momentRepository.save(moment);
+  }
+
+  private Moment getMoment(Long momentId) {
+    return momentRepository.findById(momentId)
+        .orElseThrow(() -> new ResourceNotFoundException("Moment", "Id", momentId.toString()));
   }
 }

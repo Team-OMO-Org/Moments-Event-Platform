@@ -1,5 +1,6 @@
 package io.github.teamomo.moment.controller;
 
+import io.github.teamomo.moment.dto.CartItemDto;
 import io.github.teamomo.moment.dto.CategoryDto;
 import io.github.teamomo.moment.dto.CityDto;
 import io.github.teamomo.moment.dto.ErrorResponseDto;
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -195,12 +198,197 @@ public class MomentController {
   @GetMapping("/categories")
   @ResponseStatus(HttpStatus.OK)
   public List<CategoryDto> getAllCategoriesByMomentsCount(){
-    return momentService.getAllCategoriesByMomentsCount();
+
+    logger.info("Fetching all categories by moments count");
+    List<CategoryDto> allCategoriesByMomentsCount = momentService.getAllCategoriesByMomentsCount();
+    logger.info("Successfully fetched all categories by moments count: {}", allCategoriesByMomentsCount.size());
+
+    return allCategoriesByMomentsCount;
   }
 
   @GetMapping("/cities")
   @ResponseStatus(HttpStatus.OK)
   public List<CityDto> getAllCitiesByMomentsCount(){
-    return momentService.getAllCitiesByMomentsCount();
+
+    logger.info("Fetching all cities by moments count");
+    List<CityDto> allCitiesByMomentsCount = momentService.getAllCitiesByMomentsCount();
+    logger.info("Successfully fetched all cities by moments count: {}", allCitiesByMomentsCount.size());
+
+    return allCitiesByMomentsCount;
+  }
+
+  @PostMapping("/cart-items")
+  @ResponseStatus(HttpStatus.OK)
+  public List<CartItemDto> getCartItems(@RequestBody List<Long> momentIds){
+
+    logger.info("Fetching all cart items by moment ids");
+    List<CartItemDto> cartItems = momentService.getCartItems(momentIds);
+    logger.info("Successfully fetched all cart items by moment ids: {}", cartItems.size());
+
+    return cartItems;
+  }
+
+  @Operation(
+      summary = "Check ticket availability for a specific moment",
+      description = "This endpoint checks if the required number of tickets are available for a specific moment by its ID.",
+      tags = {"Moments"},
+      parameters = {
+          @Parameter(
+              name = "id",
+              description = "The ID of the moment to check ticket availability for",
+              required = true,
+              example = "1"
+          ),
+          @Parameter(
+              name = "requiredTickets",
+              description = "The number of tickets required",
+              required = true,
+              example = "5"
+          )
+      },
+      responses = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "HTTP Status OK - Returns true if tickets are available, false otherwise"
+          ),
+          @ApiResponse(
+              responseCode = "404",
+              description = "HTTP Status Not Found - Moment not found for the given ID",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          ),
+          @ApiResponse(
+              responseCode = "500",
+              description = "HTTP Status Internal Server Error",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          )
+      }
+  )
+  @GetMapping("/{id}/check-availability")
+  @ResponseStatus(HttpStatus.OK)
+  public boolean checkTicketAvailability(
+      @PathVariable Long id,
+      @RequestParam int requiredTickets) {
+
+    logger.info("Checking ticket availability for moment ID: {} with required tickets: {}", id, requiredTickets);
+    boolean isAvailable = momentService.checkTicketAvailability(id, requiredTickets);
+    logger.info("Ticket availability for moment ID {}: {}", id, isAvailable);
+
+    return isAvailable;
+  }
+
+  @Operation(
+      summary = "Book tickets for a specific moment",
+      description = "This endpoint allows booking a specified number of tickets for a moment by its ID.",
+      tags = {"Moments"},
+      parameters = {
+          @Parameter(
+              name = "id",
+              description = "The ID of the moment to book tickets for",
+              required = true,
+              example = "1"
+          ),
+          @Parameter(
+              name = "requiredTickets",
+              description = "The number of tickets to book",
+              required = true,
+              example = "5"
+          )
+      },
+      responses = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "HTTP Status OK - Tickets booked successfully"
+          ),
+          @ApiResponse(
+              responseCode = "400",
+              description = "HTTP Status Bad Request - Invalid ticket count or insufficient tickets",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          ),
+          @ApiResponse(
+              responseCode = "404",
+              description = "HTTP Status Not Found - Moment not found for the given ID",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          ),
+          @ApiResponse(
+              responseCode = "500",
+              description = "HTTP Status Internal Server Error",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          )
+      }
+  )
+  @PostMapping("/{id}/book-tickets")
+  @ResponseStatus(HttpStatus.OK)
+  public BigDecimal bookTickets(@PathVariable Long id, @RequestParam int requiredTickets) {
+    logger.info("Booking {} tickets for moment ID: {}", requiredTickets, id);
+    BigDecimal totalSum =  momentService.bookTickets(id, requiredTickets);
+    logger.info("Successfully booked {} tickets for moment ID: {}", requiredTickets, id);
+    return totalSum;
+  }
+
+  @Operation(
+      summary = "Cancel ticket booking if Payment fails for a specific moment",
+      description = "This endpoint allows canceling a specified number of tickets if Payment fails for a moment by its ID.",
+      tags = {"Moments"},
+      parameters = {
+          @Parameter(
+              name = "id",
+              description = "The ID of the moment to cancel tickets for",
+              required = true,
+              example = "1"
+          ),
+          @Parameter(
+              name = "ticketsToCancel",
+              description = "The number of tickets to cancel",
+              required = true,
+              example = "2"
+          )
+      },
+      responses = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "HTTP Status OK - Tickets canceled successfully"
+          ),
+          @ApiResponse(
+              responseCode = "400",
+              description = "HTTP Status Bad Request - Invalid ticket count",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          ),
+          @ApiResponse(
+              responseCode = "404",
+              description = "HTTP Status Not Found - Moment not found for the given ID",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          ),
+          @ApiResponse(
+              responseCode = "500",
+              description = "HTTP Status Internal Server Error",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          )
+      }
+  )
+  @PostMapping("/{id}/cancel-tickets")
+  @ResponseStatus(HttpStatus.OK)
+  public void cancelTicketBooking(
+      @PathVariable Long id,
+      @RequestParam int ticketsToCancel) {
+
+    logger.info("Cancelling {} tickets for moment ID: {}", ticketsToCancel, id);
+    momentService.cancelTicketBooking(id, ticketsToCancel);
+    logger.info("Successfully cancelled {} tickets for moment ID: {}", ticketsToCancel, id);
   }
 }
