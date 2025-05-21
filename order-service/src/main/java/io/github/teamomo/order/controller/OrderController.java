@@ -8,6 +8,7 @@ import io.github.teamomo.order.dto.CartItemInfoDto;
 import io.github.teamomo.order.dto.OrderDto;
 import io.github.teamomo.order.dto.OrderItemDto;
 import io.github.teamomo.order.entity.Order;
+import io.github.teamomo.order.service.CartService;
 import io.github.teamomo.order.service.OrderService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -50,6 +51,7 @@ public class OrderController {
 
   private final MomentClient momentClient;
   private final OrderService orderService;
+  private final CartService cartService;
 
   @Operation(
       summary = "Create an order for a specific customer",
@@ -176,7 +178,7 @@ public class OrderController {
   @ResponseStatus(HttpStatus.OK)
   public CartDto getCartByCustomerId(@PathVariable Long customerId) {
     log.info("Fetching cart with customerID: {}", customerId);
-    CartDto cartDto = orderService.findCartByCustomerId(customerId);
+    CartDto cartDto = cartService.findCartByCustomerId(customerId);
     log.info("Successfully fetched cart: {}", cartDto);
     return cartDto;
   }
@@ -185,7 +187,7 @@ public class OrderController {
   @ResponseStatus(HttpStatus.CREATED)
   public CartDto createCart(@PathVariable Long customerId) {
     log.info("Creating new cart with details for customerID: {}", customerId);
-    CartDto createdCartDto = orderService.createCart(customerId);
+    CartDto createdCartDto = cartService.createCart(customerId);
     log.info("Successfully created cart with ID: {}", createdCartDto.id());
     return createdCartDto;
   }
@@ -194,7 +196,7 @@ public class OrderController {
   @ResponseStatus(HttpStatus.OK)
   public CartDto updateCart(@PathVariable Long customerId, @Valid @RequestBody CartDto cartDto) {
     log.info("Updating cart with customerID: {}", customerId);
-    CartDto updatedCartDto = orderService.updateCart(customerId, cartDto);
+    CartDto updatedCartDto = cartService.updateCart(customerId, cartDto);
     log.info("Successfully updated cart with customerID: {}", customerId);
     return updatedCartDto;
   }
@@ -203,7 +205,7 @@ public class OrderController {
   @ResponseStatus(HttpStatus.OK)
   public void deleteCart(@PathVariable Long customerId) {
     log.info("Deleting cart with customerID: {}", customerId);
-    orderService.deleteCart(customerId);
+    cartService.deleteCart(customerId);
     log.info("Successfully deleted cart with customerID: {}", customerId);
   }
 
@@ -211,7 +213,7 @@ public class OrderController {
   @ResponseStatus(HttpStatus.OK)
   public List<CartItemInfoDto> getAllCartItems(@PathVariable Long customerId) {
     log.info("Fetching all items with customerID: {}", customerId);
-    List<CartItemInfoDto> cartItemDtos= orderService.getAllCartItems(customerId);
+    List<CartItemInfoDto> cartItemDtos= cartService.getAllCartItems(customerId);
     log.info("Successfully fetched {} items", cartItemDtos.size());
     return cartItemDtos;
   }
@@ -220,7 +222,7 @@ public class OrderController {
   @ResponseStatus(HttpStatus.CREATED)
   public CartItemInfoDto createCartItem(@PathVariable Long customerId, @Valid @RequestBody CartItemInfoDto cartItemDto) {
     log.info("Creating new cart item with details: {}", cartItemDto);
-    CartItemInfoDto createdCartItemDto = orderService.createCartItem(customerId, cartItemDto);
+    CartItemInfoDto createdCartItemDto = cartService.createCartItem(customerId, cartItemDto);
     log.info("Successfully created cart item with ID: {}", createdCartItemDto.id());
     return createdCartItemDto;
   }
@@ -229,7 +231,7 @@ public class OrderController {
   @ResponseStatus(HttpStatus.OK)
   public CartItemInfoDto updateCartItem(@PathVariable Long customerId, @PathVariable Long itemId, @Valid @RequestBody CartItemInfoDto cartItemDto) {
     log.info("Updating cart item with ID: {}", itemId);
-    CartItemInfoDto updatedCartItemDto = orderService.updateCartItem(itemId, cartItemDto);
+    CartItemInfoDto updatedCartItemDto = cartService.updateCartItem(itemId, cartItemDto);
     log.info("Successfully updated cart item with ID: {}", itemId);
     return updatedCartItemDto;
   }
@@ -238,7 +240,7 @@ public class OrderController {
   @ResponseStatus(HttpStatus.OK)
   public void deleteCartItem(@PathVariable Long customerId, @PathVariable Long itemId) {
     log.info("Deleting cart item with ID: {}", itemId);
-    orderService.deleteCartItem(itemId);
+    cartService.deleteCartItem(itemId);
     log.info("Successfully deleted cart item with ID: {}", itemId);
   }
 }
