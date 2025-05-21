@@ -28,127 +28,21 @@ import org.springframework.stereotype.Service;
 public class OrderService {
 
   private final CartRepository cartRepository;
-  private final CartItemRepository cartItemRepository;
   private final OrderRepository orderRepository;
   private final OrderItemRepository orderItemRepository;
   private final PaymentRepository paymentRepository;
   private final OrderMapper orderMapper;
   private final MomentClient momentClient;
+  private final CartService cartService;
 
-  // --- Cart Management ---
-
-  public CartDto findCartByCustomerId(Long customerId) {
-    Cart cart = cartRepository
-        .findByCustomerId(customerId)
-        .orElseGet(() -> {
-          Cart newCart = new Cart();
-          newCart.setCustomerId(customerId);
-          return cartRepository.save(newCart);
-        });
-    return mapToCartDtoWithUpdatedAvailability(cart);
-  }
-
-  public CartDto createCart(Long customerId) {
-    if (cartRepository.findByCustomerId(customerId).isPresent()) {
-      throw new ResourceAlreadyExistsException("Cart already exists for customer ID " + customerId);
-    }
-    Cart cart = new Cart();
-    cart.setCustomerId(customerId);
-    Cart savedCart = cartRepository.save(cart);
-    return orderMapper.toCartDto(savedCart);
-  }
-
-  public CartDto updateCart(Long customerId, CartDto cartDto) {
-    Cart cart = cartRepository.findByCustomerId(customerId)
-        .orElseThrow(() -> new ResourceNotFoundException("Cart", "customerId", customerId.toString()));
-    Cart updatedCart = orderMapper.toCartEntity(cartDto);
-    updatedCart.setId(cart.getId());
-    Cart savedCart = cartRepository.save(updatedCart);
-    return mapToCartDtoWithUpdatedAvailability(savedCart);
-  }
-
-  public void deleteCart(Long customerId) {
-    Cart cart = cartRepository.findByCustomerId(customerId)
-        .orElseThrow(() -> new ResourceNotFoundException("Cart", "customerId", customerId.toString()));
-    cartRepository.delete(cart);
-  }
-
-  public List<CartItemInfoDto> getAllCartItems(Long customerId) {
-    Cart cart = cartRepository.findByCustomerId(customerId)
-        .orElseThrow(() -> new ResourceNotFoundException("Cart", "customerId", customerId.toString()));
-    return cart.getCartItems()
-        .stream()
-        .map(orderMapper::toCartItemInfoDto)
-        .toList();
-  }
-
-  public CartItemInfoDto createCartItem(Long customerId, CartItemInfoDto cartItemDto) {
-    Cart cart = cartRepository.findByCustomerId(customerId)
-        .orElseGet(() -> {
-          Cart newCart = new Cart();
-          newCart.setCustomerId(customerId);
-          return cartRepository.save(newCart);
-        });
-    CartItem item = orderMapper.toCartItemEntity(cartItemDto);
-    item.setCart(cart);
-    CartItem savedItem = cartItemRepository.save(item);
-    cart.getCartItems().add(savedItem);
-    cartRepository.save(cart);
-    return orderMapper.toCartItemInfoDto(savedItem);
-  }
-
-  public CartItemInfoDto updateCartItem(Long itemId, CartItemInfoDto cartItemDto) {
-    CartItem item = cartItemRepository.findById(itemId)
-        .orElseThrow(() -> new ResourceNotFoundException("CartItem", "id", itemId.toString()));
-    Cart cart = cartRepository.findById(item.getCart().getId())
-        .orElseThrow(() -> new ResourceNotFoundException("Cart", "id", item.getCart().getId().toString()));
-    CartItem updatedItem = orderMapper.toCartItemEntity(cartItemDto);
-    updatedItem.setId(item.getId());
-    updatedItem.setCart(cart);
-    cart.getCartItems().removeIf(cartItem -> cartItem.getId().equals(itemId));
-    cart.getCartItems().add(updatedItem);
-    cartRepository.save(cart);
-    CartItem savedItem = cartItemRepository.findById(itemId)
-        .orElseThrow(() -> new ResourceNotFoundException("CartItem", "id", itemId.toString()));
-    return orderMapper.toCartItemInfoDto(savedItem);
-  }
-
-  public void deleteCartItem(Long itemId) {
-    CartItem item = cartItemRepository.findById(itemId)
-        .orElseThrow(() -> new ResourceNotFoundException("CartItem", "id", itemId.toString()));
-    Cart cart = cartRepository.findById(item.getCart().getId())
-        .orElseThrow(() -> new ResourceNotFoundException("Cart", "id", item.getCart().getId().toString()));
-    cart.getCartItems().removeIf(cartItem -> cartItem.getId().equals(itemId));
-    cartRepository.save(cart);
-  }
-
-  private List<CartItemInfoDto> updateItemsAvailability(List<CartItemInfoDto> cartItemDtos) {
-    return cartItemDtos.stream()
-        .map(item -> new CartItemInfoDto(
-            item.id(),
-            item.cartId(),
-            item.momentId(),
-            item.quantity(),
-            momentClient.checkTicketAvailability(item.momentId(), item.quantity())
-        ))
-        .toList();
-  }
-
-  private CartDto mapToCartDtoWithUpdatedAvailability(Cart cart) {
-    List<CartItemInfoDto> updatedItems = updateItemsAvailability(
-        cart.getCartItems()
-            .stream()
-            .map(orderMapper::toCartItemInfoDto)
-            .toList());
-    CartDto cartDto = orderMapper.toCartDto(cart);
-    return new CartDto(cartDto.id(), cartDto.customerId(), updatedItems);
-  }
-
-
-  // --- Order creation and processing ---
 
   @Transactional
   public OrderDto createOrderByCustomerId(Long customerId) {
+    /*
+    CartDto cartDto = cartService.findCartByCustomerId(customerId);
+    Cart cart = orderMapper.toCartEntity(cartDto);
+
+     */
     Cart cart = cartRepository.findByCustomerId(customerId)
         .orElseThrow(() -> new ResourceNotFoundException("Cart", "ID", customerId.toString()));
 
@@ -224,6 +118,7 @@ public class OrderService {
       return orderMapper.toDto(orderRepository.save(order));
     }
 
+    //cartService.deleteCart(customerId);
     cartRepository.delete(cart);
     order.setOrderStatus(OrderStatus.COMPLETED);
 
