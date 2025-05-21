@@ -44,6 +44,12 @@
 	</dependencyManagement>
 
 	<dependencies>
+		<!-- EUREKA naming server -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+
 
 	<!--  resilience4j circuit-breaker to use with RestClient  -->
 	<dependency>
