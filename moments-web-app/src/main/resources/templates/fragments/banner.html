@@ -1,0 +1,14 @@
+<!-- fragments/banner.html -->
+<section th:fragment="banner(title, subtitle)" class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1 th:text="${title}">Banner Title</h1>
+                <h2 class="lead text-white" th:text="${subtitle}">Banner Subtitle</h2>
+                <nav class="d-flex align-items-center">
+                    <!-- Navigation items can be added here if needed -->
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>

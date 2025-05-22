@@ -15,25 +15,8 @@
 <!-- Include header with NAVBAR -->
 <header th:replace="~{fragments/header :: header}"></header>
 
-<!-- Start Banner Area -->
-<section class="banner-area organic-breadcrumb">
-  <div class="container">
-    <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
-      <div class="col-first">
-        <h1>Moments Event Platform</h1>
-        <h2 class="lead text-white">Feel The Moment</h2>
-        <nav class="d-flex align-items-center">
-          <!--          <a href="index.html">Home-->
-          <!--            <span class="lnr lnr-arrow-right"></span>-->
-          </a>
-          <!--          <a href="#">Shop<span class="lnr lnr-arrow-right"></span></a>-->
-          <!--          <a href="index.html">Fashon Category</a>-->
-        </nav>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- End Banner Area -->
+<!-- Banner -->
+<div th:replace="~{fragments/banner :: banner('Moments Event Platform', 'Feel The Moment')}"></div>
 
 <!-- CATEGORIES AND FILTERS, left side of page-->
 <div class="container">
@@ -43,6 +26,7 @@
         <div class="head">Browse Categories</div>
         <ul class="main-categories">
 
+<!--     ToDo: Clear filter     -->
           <div th:each="category : ${categories}">
             <!-- SINGLE CATEGORY ITEM-->
             <div th:replace="~{fragments/index/category-item :: categoryItem(
@@ -137,16 +121,6 @@
               '/add-to-bag', '/wishlist', '/compare', '/view-more')}">
             </div>
           </div>
-          <!--          <div th:each="moment : ${moments}" th:include="~{fragments/product :: product(-->
-          <!--              'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',-->
-          <!--              ${moment.title},-->
-          <!--              ${moment.price},-->
-          <!--              |/moment/${moment.id}/reserve|,-->
-          <!--              |/moment/${moment.id}/wishlist|,-->
-          <!--              |/moment/${moment.id}/compare|,-->
-          <!--              |/moment/${moment.id}/details|)}"-->
-          <!--               class="col-lg-4 col-md-6">-->
-          <!--          </div>-->
 
         </div>
       </section>
