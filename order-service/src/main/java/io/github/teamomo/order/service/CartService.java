@@ -98,6 +98,7 @@ public class CartService {
     cartRepository.save(cart);
     CartItem savedItem = cartItemRepository.findById(itemId)
         .orElseThrow(() -> new ResourceNotFoundException("CartItem", "id", itemId.toString()));
+    //todo: do I need check ticket availability here?
     return orderMapper.toCartItemInfoDto(savedItem);
   }
 

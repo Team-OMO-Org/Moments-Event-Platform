@@ -211,5 +211,6 @@ public class CartServiceTest {
 
     assertThrows(ResourceNotFoundException.class, () -> cartService.deleteCartItem(itemId));
     verify(cartItemRepository, times(1)).findById(itemId);
+    verify(cartRepository, times(0)).findById(any());
   }
 }
