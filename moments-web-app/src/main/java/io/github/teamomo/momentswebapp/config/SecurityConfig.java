@@ -17,6 +17,7 @@ public class SecurityConfig {
   private final String[] freeResourceUrls = {
       "/*",
       "/index*",
+      "/moment/*"
   };
 
   // ToDo: even if root is not secured, currently a jwt needs to be sent to the back-end
