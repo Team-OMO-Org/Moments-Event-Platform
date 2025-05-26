@@ -5504,14 +5504,14 @@ label {
 }
 
 .s_product_text .list li a {
-  font-size: 14px;
+  font-size: 15px;
   font-family: "Roboto", sans-serif;
   font-weight: normal;
   color: #555555;
 }
 
 .s_product_text .list li a span {
-  width: 90px;
+  width: 120px;
   display: inline-block;
 }
 
