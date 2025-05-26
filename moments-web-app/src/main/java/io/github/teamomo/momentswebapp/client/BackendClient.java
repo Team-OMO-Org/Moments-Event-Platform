@@ -4,6 +4,7 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import io.github.teamomo.momentswebapp.dto.CategoryDto;
 import io.github.teamomo.momentswebapp.dto.CityDto;
+import io.github.teamomo.momentswebapp.dto.MomentDto;
 import io.github.teamomo.momentswebapp.dto.MomentResponseDto;
 import io.github.teamomo.momentswebapp.dto.PageResponse;
 import io.github.teamomo.momentswebapp.entity.Recurrence;
@@ -13,7 +14,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
 
@@ -44,6 +49,9 @@ public interface BackendClient {
 
   @GetExchange("/cities")
   List<CityDto> getAllCitiesByMomentsCount();
+
+  @GetExchange("/{id}")
+  MomentDto getMomentById(@PathVariable Long id);
 
 //    default boolean fallbackMethod(String skuCode, Integer quantity, Throwable t) {
 //        logger.error("Can not get inventory for skuCode {}, failure reason: {}", skuCode, t

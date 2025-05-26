@@ -26,27 +26,30 @@
 				<div class="col-lg-6">
 					<div class="s_Product_carousel">
 						<div class="single-prd-item">
-							<img class="img-fluid" th:src="@{/img/category/s-p1.jpg}" alt="">
+							<img class="img-fluid" th:src="${momentDto.thumbnail}" alt="">
+						</div>
+<!--			ToDo: add more images or remove-->
+						<div class="single-prd-item">
+							<img class="img-fluid" th:src="${momentDto.thumbnail}" alt="">
 						</div>
 						<div class="single-prd-item">
-							<img class="img-fluid" th:src="@{/img/category/s-p1.jpg}" alt="">
-						</div>
-						<div class="single-prd-item">
-							<img class="img-fluid" th:src="@{/img/category/s-p1.jpg}" alt="">
+							<img class="img-fluid" th:src="${momentDto.thumbnail}" alt="">
 						</div>
 					</div>
 				</div>
 				<div class="col-lg-5 offset-lg-1">
 					<div class="s_product_text">
-						<h3>Faded SkyBlu Denim Jeans</h3>
-						<h2>$149.99</h2>
+						<h3 th:text="${momentDto.title}">Moment Title</h3>
+<!--						-->
+						<h2 th:text="${'€' + momentDto.price}">€0.00</h2>
 						<ul class="list">
+<!--			ToDo: make ticket count colored and disabled -> css and aria for disabled most likely				-->
 							<li><a class="active" href="#"><span>Category</span> : Household</a></li>
-							<li><a href="#"><span>Availibility</span> : In Stock</a></li>
+							<li><a class="active" href="#"><span>Available</span>
+								<p th:text="${' : ' + momentDto.ticketCount}"></p></a>
+							</li>
 						</ul>
-						<p>Mill Oil is an innovative oil filled radiator with the most modern technology. If you are looking for
-							something that can make your interior look awesome, and at the same time give you the pleasant warm feeling
-							during the winter.</p>
+						<p th:text="${momentDto.shortDescription}">Placeholder text</p>
 						<div class="product_count">
 <!--							<label for="qty">Quantity:</label>-->
 							<input type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:" class="input-text qty">

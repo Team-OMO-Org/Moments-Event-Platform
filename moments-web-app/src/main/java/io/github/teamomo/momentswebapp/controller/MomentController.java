@@ -1,7 +1,9 @@
 package io.github.teamomo.momentswebapp.controller;
 
 import io.github.teamomo.momentswebapp.client.BackendClient;
+import io.github.teamomo.momentswebapp.dto.CategoryDto;
 import io.github.teamomo.momentswebapp.dto.MomentDto;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,11 +24,17 @@ public class MomentController {
   @GetMapping("/moment/{id}")
   public String renderMoment(
       @PathVariable Long id,
-      MomentDto momentDto,
-      Model model,
-      @AuthenticationPrincipal OidcUser oidcUser
+      Model model
+//      ,@AuthenticationPrincipal OidcUser oidcUser
   ) {
-    System.out.println(oidcUser != null ? oidcUser.getSubject() : "no user");
+//    System.out.println(oidcUser != null ? oidcUser.getSubject() : "no user");
+
+    log.debug("Retrieving moment for moment-details page from backend");
+    MomentDto momentDto = backendClient.getMomentById(id);
+    log.info("Retrieved moment for moment-details page from backend: {}",
+        momentDto);
+    model.addAttribute("momentDto", momentDto);
+
 
     return "moment-details";
   }

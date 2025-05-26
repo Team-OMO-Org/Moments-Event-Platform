@@ -117,7 +117,7 @@
             <div th:insert="~{fragments/product :: product(
               ${moment.thumbnail},
               ${moment.title},
-              ${#numbers.formatCurrency(moment.price)},
+              ${'€' + moment.price},
               '/add-to-bag', '/wishlist', '/compare', '/view-more')}">
             </div>
           </div>
