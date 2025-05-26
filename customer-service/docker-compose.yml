@@ -1,0 +1,15 @@
+# Container for mysql
+# cmd: docker compose up -d
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_moments
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+    ports:
+      - "3307:3306"
+    # 3306 occupied already
+    volumes:
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./docker/mysql/data:/var/lib/mysql
