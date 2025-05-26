@@ -4,11 +4,11 @@
 services:
   mysql:
     image: mysql:8.0
-    container_name: mysql_moments
+    container_name: mysql_customers
     environment:
       MYSQL_ROOT_PASSWORD: mysql
     ports:
-      - "3307:3306"
+      - "3309:3306"
     # 3306 occupied already
     volumes:
       - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql

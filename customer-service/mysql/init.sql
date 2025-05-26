@@ -1,1 +1,1 @@
-CREATE DATABASE IF NOT EXISTS moment_service_db;
+CREATE DATABASE IF NOT EXISTS customer_service_db;
