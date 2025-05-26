@@ -1,8 +1,10 @@
 <!-- File: fragments/product.html -->
-<div th:fragment="product(imagePath, shortDescription, price, href1, href2, href3, href4)">
+<div th:fragment="product(id, imagePath, shortDescription, price, href1, href2, href3, href4)">
     <div class="single-product">
 
-      <img class="img-fluid" th:src="${imagePath}" alt="product image"/>
+      <a th:href="@{'/moment/' + ${moment.id}}">
+        <img class="img-fluid" th:src="${imagePath}" alt="product image"/>
+      </a>
       <div class="product-details">
         <h6 th:text="${shortDescription}">Product Description</h6>
         <div class="price">
