@@ -54,7 +54,10 @@ public record MomentDto(
 
     @NotNull(message = "Ticket count cannot be null")
     @PositiveOrZero(message = "Ticket count must be positive or zero")
-    Integer ticketCount
+    Integer ticketCount,
+
+    @NotNull(message = "Location cannot be null")
+    MomentDetail momentDetails
 ) {
 
 }

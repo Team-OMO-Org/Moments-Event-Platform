@@ -3,6 +3,7 @@ package io.github.teamomo.momentswebapp.controller;
 import io.github.teamomo.momentswebapp.client.BackendClient;
 import io.github.teamomo.momentswebapp.dto.CategoryDto;
 import io.github.teamomo.momentswebapp.dto.MomentDto;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,11 +36,16 @@ public class MomentController {
         momentDto);
     model.addAttribute("momentDto", momentDto);
 
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    String formattedDate = momentDto.startDate().format(formatter);
+    model.addAttribute("startDate", formattedDate);
+
     log.debug("Retrieving category for moment-details page from backend for categoryId: {}",
         momentDto.categoryId());
     CategoryDto category = backendClient.getCategoryById(momentDto.categoryId());
     log.info("Retrieved category for moment-details page from backend for categoryId: {}",
         momentDto.categoryId());
+
     model.addAttribute("category", category);
 
     return "moment-details";
