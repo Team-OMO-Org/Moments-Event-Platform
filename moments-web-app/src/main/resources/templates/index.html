@@ -22,11 +22,15 @@
 <div class="container">
   <div class="row">
     <div class="col-xl-3 col-lg-4 col-md-5">
+
+
       <div class="sidebar-categories">
-        <div class="head">Browse Categories</div>
+        <a th:href="@{/}">
+          <div class="head">Categories</div>
+        </a>
         <ul class="main-categories">
 
-<!--     ToDo: Clear filter     -->
+          <!--     ToDo: Clear filter     -->
           <div th:each="category : ${categories}">
             <!-- SINGLE CATEGORY ITEM-->
             <div th:replace="~{fragments/index/category-item :: categoryItem(
@@ -39,25 +43,43 @@
         </ul>
       </div>
 
+      <div class="sidebar-categories">
+        <a th:href="@{/}">
+          <div class="head">Cities</div>
+        </a>
+        <ul class="main-categories">
+
+          <!--     ToDo: Clear filter     -->
+          <div th:each="city : ${cities}">
+            <div th:replace="~{fragments/index/category-item :: categoryItem(
+              href=${'?location=' + city.cityName()},
+              title=${city.cityName()},
+              count=${city.momentCount()})}">
+            </div>
+          </div>
+
+        </ul>
+      </div>
+
       <!--   PRODUCT FILTER SECTION    -->
       <div class="sidebar-filter mt-50">
         <div class="top-filter-head">Filters</div>
 
         <!--   CITIES FILTER    -->
-        <div class="common-filter">
-          <div class="head">Cities</div>
-          <ul>
+<!--        <div class="common-filter">-->
+<!--          <div class="head">Cities</div>-->
+<!--          <ul class="main-categories">-->
 
-            <div th:each="city : ${cities}">
-              <div th:replace="~{fragments/index/category-item :: categoryItem(
-              href=${'?location=' + city.cityName()},
-              title=${city.cityName()},
-              count=${city.momentCount()})}">
-              </div>
-            </div>
+<!--            <div th:each="city : ${cities}">-->
+<!--              <div th:replace="~{fragments/index/category-item :: categoryItem(-->
+<!--              href=${'?location=' + city.cityName()},-->
+<!--              title=${city.cityName()},-->
+<!--              count=${city.momentCount()})}">-->
+<!--              </div>-->
+<!--            </div>-->
 
-          </ul>
-        </div>
+<!--          </ul>-->
+<!--        </div>-->
 
         <!--   PRICE FILTER    -->
         <div class="common-filter">
