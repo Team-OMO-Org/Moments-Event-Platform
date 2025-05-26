@@ -7,6 +7,7 @@ import io.github.teamomo.moment.dto.ErrorResponseDto;
 import io.github.teamomo.moment.dto.MomentDto;
 import io.github.teamomo.moment.dto.MomentRequestDto;
 import io.github.teamomo.moment.dto.MomentResponseDto;
+import io.github.teamomo.moment.entity.Category;
 import io.github.teamomo.moment.service.MomentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -204,6 +205,17 @@ public class MomentController {
     logger.info("Successfully fetched all categories by moments count: {}", allCategoriesByMomentsCount.size());
 
     return allCategoriesByMomentsCount;
+  }
+
+  @GetMapping("/categories/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  public CategoryDto getCategoryById(@PathVariable Long id){
+
+    logger.info("Fetching category by id: {}", id);
+    CategoryDto categoryDto = momentService.getCategoryById(id);
+    logger.info("Successfully fetched category by id: {}", id);
+
+    return categoryDto;
   }
 
   @GetMapping("/cities")

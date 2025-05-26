@@ -44,9 +44,10 @@
 						<h2 th:text="${'€' + momentDto.price}">€0.00</h2>
 						<ul class="list">
 <!--			ToDo: make ticket count colored and disabled -> css and aria for disabled most likely				-->
-							<li><a class="active" href="#"><span>Category</span> : Household</a></li>
-							<li><a class="active" href="#"><span>Available</span>
-								<p th:text="${' : ' + momentDto.ticketCount}"></p></a>
+							<li><a class="active" href="#"><span>Category</span>
+								<th:block th:text="${' : ' + category.categoryName}"></th:block></a></li>
+							<li><a class="active" href="#"><span>Available tickets</span>
+								<th:block th:text="${' : ' + momentDto.ticketCount}"></th:block></a>
 							</li>
 						</ul>
 						<p th:text="${momentDto.shortDescription}">Placeholder text</p>

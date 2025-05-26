@@ -35,6 +35,12 @@ public class MomentController {
         momentDto);
     model.addAttribute("momentDto", momentDto);
 
+    log.debug("Retrieving category for moment-details page from backend for categoryId: {}",
+        momentDto.categoryId());
+    CategoryDto category = backendClient.getCategoryById(momentDto.categoryId());
+    log.info("Retrieved category for moment-details page from backend for categoryId: {}",
+        momentDto.categoryId());
+    model.addAttribute("category", category);
 
     return "moment-details";
   }

@@ -131,6 +131,12 @@ public class MomentService {
     return categoryRepository.findAllByMomentsCount();
   }
 
+  public CategoryDto getCategoryById(Long id){
+    Category category = categoryRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("Category", "Id", id.toString()));
+    return momentMapper.toCategoryDto(category);
+  }
+
   public List<CityDto> getAllCitiesByMomentsCount(){
     return locationRepository.findAllByMomentsCount();
   }

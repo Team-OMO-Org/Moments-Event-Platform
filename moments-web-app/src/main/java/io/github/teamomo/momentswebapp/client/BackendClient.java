@@ -53,6 +53,9 @@ public interface BackendClient {
   @GetExchange("/{id}")
   MomentDto getMomentById(@PathVariable Long id);
 
+  @GetExchange("/categories/{id}")
+  CategoryDto getCategoryById(@PathVariable Long id);
+
 //    default boolean fallbackMethod(String skuCode, Integer quantity, Throwable t) {
 //        logger.error("Can not get inventory for skuCode {}, failure reason: {}", skuCode, t
 //        .getMessage());
