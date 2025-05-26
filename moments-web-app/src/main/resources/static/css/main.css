@@ -224,11 +224,11 @@ b, sup, sub, u, del {
 }
 
 h1 {
-  font-size: 36px;
+  font-size: 30px;
 }
 
 h2 {
-  font-size: 30px;
+  font-size: 28px;
 }
 
 h3 {
@@ -1748,7 +1748,6 @@ h1, h2, h3, h4, h5, h6 {
 .organic-breadcrumb {
   background: url(../img/banner/common-banner.jpg) center no-repeat;
   background-size: cover;
-  padding-top: 130px;
 }
 
 @media (max-width: 991px) {
@@ -1768,11 +1767,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #category .organic-breadcrumb {
-  margin-bottom: 100px;
+  margin-bottom: 30px;
 }
 
 .breadcrumb-banner {
-  padding: 90px 0 100px 0;
+  padding: 150px 0 30px 0;
 }
 
 .breadcrumb-banner h1 {
@@ -1803,18 +1802,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .breadcrumb-banner .col-first {
-  padding-right: 15px;
+  padding-right: 30px;
 }
 
 @media (max-width: 1680px) {
   .breadcrumb-banner .col-first {
-    padding-right: 40px;
+    padding-right: 130px;
   }
 }
 
 @media (max-width: 991px) {
   .breadcrumb-banner .col-first {
-    width: 48%;
+    width: 30%;
   }
 }
 
@@ -2084,7 +2083,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .single-product {
-  margin-bottom: 50px;
+  margin-bottom: 10px;
 }
 
 .single-product img {
@@ -2112,7 +2111,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .single-product .product-details .prd-bottom {
   position: relative;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .single-product .product-details .prd-bottom .social-info {
@@ -5453,7 +5452,7 @@ label {
 /* Single Product Area css
 ============================================================================================ */
 .product_image_area {
-  padding-top: 120px;
+  padding-top: 50px;
 }
 
 .s_Product_carousel .owl-dots {
@@ -5479,7 +5478,6 @@ label {
 
 .s_product_text {
   margin-left: -15px;
-  margin-top: 65px;
 }
 
 @media (max-width: 575px) {
@@ -5534,7 +5532,6 @@ label {
   padding-top: 20px;
   border-top: 1px dotted #d5d5d5;
   margin-top: 20px;
-  margin-bottom: 70px;
 }
 
 .s_product_text .card_area .primary-btn {
@@ -5632,7 +5629,7 @@ label {
 
 .product_description_area {
   padding-bottom: 120px;
-  margin-top: 60px;
+  margin-top: 30px;
 }
 
 .product_description_area .nav.nav-tabs {
