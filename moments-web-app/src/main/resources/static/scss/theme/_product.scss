@@ -904,6 +904,10 @@
 							img{
 								border: 1px solid #eeeeee;
 								border-radius: 3px;
+								max-width: 100px; /* Set a maximum width */
+								height: auto; /* Maintain aspect ratio */
+								object-fit: cover; /* Ensures the image fits nicely */
+								overflow: hidden;
 							}
 						}
 						.media-body{
