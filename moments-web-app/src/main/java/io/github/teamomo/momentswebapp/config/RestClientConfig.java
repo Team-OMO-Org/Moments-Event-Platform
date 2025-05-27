@@ -3,6 +3,7 @@ package io.github.teamomo.momentswebapp.config;
 import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
 
 import io.github.teamomo.momentswebapp.client.BackendClient;
+import io.github.teamomo.momentswebapp.client.OrderClient;
 import java.time.Duration;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,8 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 public class RestClientConfig {
     @Value("${backend-service.url}")
     private String backendUrl;
+    @Value("${backend-service.url}")
+    private String orderUrl;
     @Value("${spring.security.oauth2.client.registration.moments-web-app.client-id}")
     private String clientId;
 
@@ -49,6 +52,27 @@ public class RestClientConfig {
         HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
 
         return factory.createClient(BackendClient.class);
+    }
+
+    @Bean
+    public OrderClient orderClient(OAuth2AuthorizedClientManager manager) {
+        OAuth2ClientHttpRequestInterceptor oauth2Interceptor =
+            new OAuth2ClientHttpRequestInterceptor(manager);
+
+        RestClient restClient = RestClient.builder()
+            .baseUrl(orderUrl)
+            .requestFactory(getClientRequestFactory())  // to define timeouts
+            .requestInterceptor(oauth2Interceptor)  // adds JWT token to the request
+            .requestInterceptor(new LoggingInterceptor()) // Add the logging interceptor
+            .defaultRequest(r ->
+                r.attributes(clientRegistrationId(clientId))
+            )
+            .build();
+
+        RestClientAdapter adapter = RestClientAdapter.create(restClient);
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
+
+        return factory.createClient(OrderClient.class);
     }
 
     // define timeouts for RestClient connection

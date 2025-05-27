@@ -10,6 +10,7 @@ import io.github.teamomo.order.exception.ResourceNotFoundException;
 import io.github.teamomo.order.mapper.OrderMapper;
 import io.github.teamomo.order.repository.CartItemRepository;
 import io.github.teamomo.order.repository.CartRepository;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +47,7 @@ public class CartService {
     return orderMapper.toCartDto(savedCart);
   }
 
+  @Transactional
   public CartDto updateCart(Long customerId, CartDto cartDto) {
     Cart cart = cartRepository.findByCustomerId(customerId)
         .orElseThrow(() -> new ResourceNotFoundException("Cart", "customerId", customerId.toString()));
@@ -55,6 +57,7 @@ public class CartService {
     return mapToCartDtoWithUpdatedAvailability(savedCart);
   }
 
+  @Transactional
   public void deleteCart(Long customerId) {
     Cart cart = cartRepository.findByCustomerId(customerId)
         .orElseThrow(() -> new ResourceNotFoundException("Cart", "customerId", customerId.toString()));
@@ -70,6 +73,7 @@ public class CartService {
         .toList();
   }
 
+  @Transactional
   public CartItemInfoDto createCartItem(Long customerId, CartItemInfoDto cartItemDto) {
     Cart cart = cartRepository.findByCustomerId(customerId)
         .orElseGet(() -> {
@@ -85,6 +89,7 @@ public class CartService {
     return orderMapper.toCartItemInfoDto(savedItem);
   }
 
+  @Transactional
   public CartItemInfoDto updateCartItem(Long itemId, CartItemInfoDto cartItemDto) {
     CartItem item = cartItemRepository.findById(itemId)
         .orElseThrow(() -> new ResourceNotFoundException("CartItem", "id", itemId.toString()));
@@ -102,6 +107,7 @@ public class CartService {
     return orderMapper.toCartItemInfoDto(savedItem);
   }
 
+  @Transactional
   public void deleteCartItem(Long itemId) {
     CartItem item = cartItemRepository.findById(itemId)
         .orElseThrow(() -> new ResourceNotFoundException("CartItem", "id", itemId.toString()));
