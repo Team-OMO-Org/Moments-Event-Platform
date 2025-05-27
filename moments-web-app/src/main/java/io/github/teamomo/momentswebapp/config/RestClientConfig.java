@@ -80,4 +80,5 @@ public class RestClientConfig {
                 .withReadTimeout(Duration.ofSeconds(3));
         return ClientHttpRequestFactories.get(settings);
     }
+
 }

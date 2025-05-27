@@ -79,7 +79,11 @@
                     <tr class="bottom_button">
                         <td colspan="4">
                             <div style="display: flex; justify-content: space-between;">
-                                <a class="gray_btn" href="#">Clear Cart</a>
+<!--                                <a class="gray_btn" href="#">Clear Cart</a>-->
+                                <form th:action="@{/carts/{customerId}(customerId=${cartView.customerId})}" method="post">
+                                    <input type="hidden" name="_method" value="delete" />
+                                    <button type="submit" class="gray_btn">Clear Cart</button>
+                                </form>
                                 <a class="gray_btn" href="#">Update Cart</a>
                             </div>
                         </td>
