@@ -22,8 +22,6 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 public class RestClientConfig {
     @Value("${backend-service.url}")
     private String backendUrl;
-    @Value("${backend-service.url}")
-    private String orderUrl;
     @Value("${spring.security.oauth2.client.registration.moments-web-app.client-id}")
     private String clientId;
 
@@ -60,7 +58,7 @@ public class RestClientConfig {
             new OAuth2ClientHttpRequestInterceptor(manager);
 
         RestClient restClient = RestClient.builder()
-            .baseUrl(orderUrl)
+            .baseUrl(backendUrl)
             .requestFactory(getClientRequestFactory())  // to define timeouts
             .requestInterceptor(oauth2Interceptor)  // adds JWT token to the request
             .requestInterceptor(new LoggingInterceptor()) // Add the logging interceptor
