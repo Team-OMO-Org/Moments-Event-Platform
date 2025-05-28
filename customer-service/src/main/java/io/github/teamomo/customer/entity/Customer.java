@@ -45,13 +45,13 @@ public class Customer {
   @Column(name = "profile_site_url")
   private String profileSiteUrl;
 
-  @Lob
+  @Size(max = 255)
   @Column(name = "profile_description")
   private String profileDescription;
 
   @NotNull
   @ColumnDefault("1")
   @Column(name = "active", nullable = false)
-  private Boolean active = false;
+  private Boolean active = true;
 
 }
