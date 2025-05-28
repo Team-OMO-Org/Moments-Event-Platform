@@ -12,8 +12,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 @RequiredArgsConstructor
@@ -59,5 +61,23 @@ public class CartController {
     model.addAttribute("cartView", cartViewDto);
 
     return "cart";
+  }
+  @GetMapping("/clear-cart")
+  public String renderClearCartPage() {
+    return "clear-cart";
+  }
+
+  /*@PostMapping("/carts/{customerId}/clear")
+  public String clearCart(@PathVariable Long customerId) {
+    //delete cart from db in backend
+    return "redirect:/clear-cart";
+  }*/
+
+  @DeleteMapping("/carts/{customerId}")
+  public String clearCart(@PathVariable Long customerId) {
+    log.debug("Deleting cart for customerId from backend");
+    orderClient.deleteCart(customerId);
+    log.info("Deleted cart for customer ID: {}", customerId);
+    return "redirect:/clear-cart";
   }
 }
