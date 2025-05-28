@@ -1,4 +1,4 @@
-package io.github.teamomo.moment.validation;
+package io.github.teamomo.momentswebapp.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

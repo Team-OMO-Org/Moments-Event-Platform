@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zxx" class="no-js">
+<head>
+	<!-- Include meta tags -->
+	<th:block th:replace="~{fragments/head :: meta}" />
+
+	<!-- Page title -->
+	<title>Moment Details</title>
+
+	<!-- Include common CSS -->
+	<th:block th:replace="~{fragments/head :: common-css}" />
+</head>
+
+<body>
+
+<!-- Include header -->
+<header th:replace="~{fragments/header :: header}"></header>
+
+<!-- Banner -->
+<div th:replace="~{fragments/banner :: banner('Moments Event Platform', 'Feel The Moment')}"></div>
+
+<form th:action="@{/moment}" method="POST" class="d-none">
+
+	<!--================Single Product Area =================-->
+	<div class="product_image_area">
+		<div class="container">
+			<div class="row s_product_inner">
+				<div class="col-lg-6">
+					<div class="s_Product_carousel">
+						<div class="single-prd-item">
+							<img class="img-fluid" th:src="${momentDto.thumbnail}" alt="">
+						</div>
+<!--			ToDo: add more images or remove-->
+						<div class="single-prd-item">
+							<img class="img-fluid" th:src="${momentDto.thumbnail}" alt="">
+						</div>
+						<div class="single-prd-item">
+							<img class="img-fluid" th:src="${momentDto.thumbnail}" alt="">
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-5 offset-lg-1">
+					<div class="s_product_text">
+						<h3 th:text="${momentDto.title}">Moment Title</h3>
+<!--						-->
+						<h4 th:text="${startDate}">Start Date</h4>
+
+						<ul class="list">
+<!--			ToDo: make ticket count colored and disabled -> css and aria for disabled most likely				-->
+							<li><a class="active" href="#"><span>Category</span>
+								<th:block th:text="${' : ' + category.categoryName}"></th:block></a></li>
+							<li><a class="active" href="#"><span>Available tickets</span>
+								<th:block th:text="${' : ' + momentDto.ticketCount}"></th:block></a>
+							</li>
+							<li><a class="active" href="#"><span>Recurrence</span>
+								<th:block th:text="${' : ' + momentDto.recurrence}"></th:block></a></li>
+							<li><a class="active" href="#"><span>City</span>
+								<th:block th:text="${' : ' + momentDto.location.city}"></th:block></a>
+							</li>
+						</ul>
+						<p th:text="${momentDto.shortDescription}">Placeholder text</p>
+
+
+						<h2 th:text="${'€' + momentDto.price}">€0.00</h2>
+
+						<div class="product_count">
+<!--							<label for="qty">Quantity:</label>-->
+							<input type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:" class="input-text qty">
+							<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+							 class="increase items-count" type="button"><i class="lnr lnr-chevron-up"></i></button>
+							<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
+							 class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button>
+						</div>
+						<div class="card_area d-flex align-items-center">
+							<a class="primary-btn" href="#">Add to Cart</a>
+							<a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a>
+							<a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--================End Single Product Area =================-->
+
+	<!--================Product Description Area =================-->
+	<section class="product_description_area">
+		<div class="container">
+			<ul class="nav nav-tabs" id="myTab" role="tablist">
+				<li class="nav-item">
+					<a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Description</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" id="location-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
+             aria-selected="false">Location</a>
+				</li>
+<!--				<li class="nav-item">-->
+<!--					<a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"-->
+<!--					 aria-selected="false">Comments</a>-->
+<!--				</li>-->
+<!--				<li class="nav-item">-->
+<!--					<a class="nav-link" id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review"-->
+<!--					 aria-selected="false">Reviews</a>-->
+<!--				</li>-->
+			</ul>
+			<div class="tab-content" id="myTabContent">
+				<div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+					<p th:text="${momentDto.momentDetails.description}">Placeholder for long description</p>
+				</div>
+				<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="location-tab">
+					<div class="table-responsive">
+						<table class="table">
+							<tbody>
+<!--                <tr style="display: none;">-->
+<!--                  <td>-->
+<!--                    <h5>Location ID</h5>-->
+<!--                  </td>-->
+<!--                  <td>-->
+<!--                    <h5 th:text="${momentDto.location.id}"></h5>-->
+<!--                  </td>-->
+<!--                </tr>-->
+								<tr>
+									<td></td>
+									<td>
+										<h5>City</h5>
+									</td>
+									<td>
+										<h5 th:text="${momentDto.location.city}"></h5>
+									</td>
+									<td></td>
+								</tr>
+								<tr>
+									<td></td>
+									<td>
+										<h5>Address</h5>
+									</td>
+									<td>
+										<h5 th:text="${momentDto.location.address}"></h5>
+									</td>
+									<td></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+						<div class="col-lg-6">
+							<div class="review_box">
+								<p>Outstanding</p>
+								<form class="row contact_form" action="contact_process.php" method="post" id="contactForm" novalidate="novalidate">
+									<div class="col-md-12">
+										<div class="form-group">
+											<input type="text" class="form-control" id="name" name="name" placeholder="Your Full name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Your Full name'">
+										</div>
+									</div>
+									<div class="col-md-12">
+										<div class="form-group">
+											<input type="email" class="form-control" id="email" name="email" placeholder="Email Address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email Address'">
+										</div>
+									</div>
+									<div class="col-md-12">
+										<div class="form-group">
+											<input type="text" class="form-control" id="number" name="number" placeholder="Phone Number" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Phone Number'">
+										</div>
+									</div>
+									<div class="col-md-12">
+										<div class="form-group">
+											<textarea class="form-control" name="message" id="message" rows="1" placeholder="Review" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Review'"></textarea></textarea>
+										</div>
+									</div>
+									<div class="col-md-12 text-right">
+										<button type="submit" value="submit" class="primary-btn">Submit Now</button>
+									</div>
+								</form>
+							</div>
+						</div>
+			</div>
+		</div>
+	</section>
+	<!--================End Product Description Area =================-->
+</form>
+
+<!-- Include footer fragment -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<!-- JS Scripts -->
+<div th:replace="~{fragments/common-scripts}"></div>
+
+</body>
+
+</html>
