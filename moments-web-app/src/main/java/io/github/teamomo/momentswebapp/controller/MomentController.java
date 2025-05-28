@@ -72,7 +72,7 @@ public class MomentController {
     // CATEGORIES retrieval from backend
     backendClient.getCategories(model, request.getRequestURI());
 
-    return "moment-details-form2";
+    return "moment-details-form";
   }
 
   @GetMapping("/moment/update/{id}")
@@ -89,7 +89,7 @@ public class MomentController {
     // CATEGORIES retrieval from backend
     backendClient.getCategories(model, request.getRequestURI());
 
-    return "moment-details-form2";
+    return "moment-details-form";
   }
 
   @PostMapping("/moment")
