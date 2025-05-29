@@ -55,6 +55,7 @@
                         </td>
                         <td>
                             <!-- Todo: change total? -->
+                            <!-- Todo: add REMOVE ITEM -->
                             <div class="product_count" th:if="${cartItem.isAvailable}">
                                 <input type="text" name="qty" th:id="${cartItem.momentId}" maxlength="12"
                                        th:value="${cartItem.quantity}" title="Quantity:"
@@ -84,8 +85,7 @@
                             <div style="display: flex; justify-content: space-between;">
 <!--                                <a class="gray_btn" href="#">Clear Cart</a>-->
                                 <!-- TODO: change the confirmation window -->
-                                <form th:action="@{/carts/{customerId}(customerId=${cartView.customerId})}" method="post" onsubmit="return confirm('Are you sure you want to clear the cart?');">
-                                    <input type="hidden" name="_method" value="delete" />
+                                <form th:action="@{/carts/{customerId}(customerId=${cartView.customerId})}" th:method="delete" onsubmit="return confirm('Are you sure you want to clear the cart?');">
                                     <button type="submit" class="gray_btn">Clear Cart</button>
                                 </form>
                                 <a class="gray_btn" href="#">Update Cart</a>
