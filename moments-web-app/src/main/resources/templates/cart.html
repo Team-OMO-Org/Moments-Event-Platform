@@ -80,7 +80,7 @@
                     </tr>
                     <!-- Buttons Area -->
 
-                    <tr class="bottom_button">
+                    <tr class="out_button_area">
                         <td colspan="4">
                             <div style="display: flex; justify-content: space-between;">
 <!--                                <a class="gray_btn" href="#">Clear Cart</a>-->
@@ -88,7 +88,9 @@
                                 <form th:action="@{/carts/{customerId}(customerId=${cartView.customerId})}" th:method="delete" onsubmit="return confirm('Are you sure you want to clear the cart?');">
                                     <button type="submit" class="gray_btn">Clear Cart</button>
                                 </form>
-                                <a class="gray_btn" href="#">Update Cart</a>
+                                <div class="checkout_btn_inner d-flex align-items-center">
+                                    <a class="primary-btn" href="#" th:href="@{/index}">Update Cart</a>
+                                </div>
                             </div>
                         </td>
                         <!-- Todo: coupon part for later -->
