@@ -59,12 +59,17 @@
 						<p th:text="${momentDto.shortDescription}">Placeholder text</p>
 
 
-						<h2 th:text="${'€' + momentDto.price}">€0.00</h2>
+						<div class="row">
+							<span class="col-4 moment_label">Ticket Price:</span>
+							<h2 class="col-6" th:text="${'€' + momentDto.price}">€0.00</h2>
+						</div>
 
 						<div class="product_count">
-<!--							<label for="qty">Quantity:</label>-->
-							<input type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:" class="input-text qty">
-							<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+              <div class="row">
+								<span class="col-6 moment_label">Quantity:</span>
+								<input class="col-6 w-100 input-text qty border text-center" type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:">
+              </div>
+                <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
 							 class="increase items-count" type="button"><i class="lnr lnr-chevron-up"></i></button>
 							<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
 							 class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button>
