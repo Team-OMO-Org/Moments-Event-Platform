@@ -1,7 +1,9 @@
 package io.github.teamomo.momentswebapp.controller;
 
+import io.github.teamomo.momentswebapp.client.BackendClient;
 import io.github.teamomo.momentswebapp.client.CustomerClient;
 import io.github.teamomo.momentswebapp.dto.CategoryDto;
+import io.github.teamomo.momentswebapp.dto.CustomerDto;
 import io.github.teamomo.momentswebapp.dto.MomentDto;
 import io.github.teamomo.momentswebapp.util.CustomerManager;
 import java.time.format.DateTimeFormatter;
@@ -20,15 +22,35 @@ public class CustomerController {
 
   private final CustomerManager customerManager;
   private final CustomerClient customerClient;
+  private final BackendClient backendClient;
 
   @GetMapping("/customerId")
   @ResponseBody
   public String getCustomerId() {
 
-    log.debug("Checking customerId for moment-details page from backend");
+    log.debug("Checking customerId for current Keycloak user from backend or cookie");
     Long customerId = customerManager.getCustomerId();
-    log.info("Checked customerId for moment-details page from backend: {}",
+    log.info("Checked customerId for current Keycloak user from backend or cookie: {}",
         customerId);
     return String.format("CustomerId for current Keycloak user is %d", customerId);
+  }
+
+
+  @GetMapping("/profile")
+  public String showProfile(
+      Model model
+//      ,@AuthenticationPrincipal OidcUser oidcUser  // ToDo: if you need user info/keycloak user id
+  ) {
+//    System.out.println(oidcUser != null ? oidcUser.getSubject() : "no user");
+
+    Long customerId = customerManager.getCustomerId();
+
+    log.debug("Retrieving customer info for customer profile page from backend");
+    CustomerDto customerDto = customerClient.getCustomerById(customerId);
+    log.info("Customer info for customer profile page from backend: {}",
+        customerDto);
+    model.addAttribute("customerDto", customerDto);
+
+  return "profile";
   }
 }
