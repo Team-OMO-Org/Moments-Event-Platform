@@ -35,10 +35,23 @@
     <div class="container">
         <div class="cart_inner">
             <div class="table-responsive">
-                <form th:object="${cartView}" th:action="@{/carts/{customerId}(customerId=${cartView.customerId})}" th:method="post">
-
                 <table class="table">
                     <thead>
+                    <!-- Clear Cart Area -->
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th class="text-end">
+                            <form th:action="@{/carts/{customerId}(customerId=${cartView.customerId})}"
+                                  th:method="delete"
+                                  onsubmit="return confirm('Are you sure you want to clear the cart?');"
+                                  style="display:inline;">
+                                <button type="submit" class="gray_btn">Clear Cart</button>
+                            </form>
+                        </th>
+                    </tr>
+                    <!-- Update Cart Form Area -->
                     <tr>
                         <th scope="col">Moment</th>
                         <th scope="col">Price</th>
@@ -46,6 +59,8 @@
                         <th scope="col">Total</th>
                     </tr>
                     </thead>
+
+                    <form th:action="@{/carts/{customerId}(customerId=${cartView.customerId})}" th:object="${cartView}" th:method="put">
 
                     <tbody>
                     <tr th:if="${cartView.items != null}" th:each="cartItem, stat : ${cartView.items}" th:class="${!cartItem.isAvailable} ? 'not-available' : ''">
@@ -70,100 +85,22 @@
                             <!-- Todo: change total? -->
                             <!-- Todo: add REMOVE ITEM -->
                             <div class="product_count" th:if="${cartItem.isAvailable}">
-                                <input type="hidden" name="items[${cartItem.id}].momentId" th:value="${cartItem.momentId}">
-                                <input type="hidden" name="items[${cartItem.id}].title" th:value="${cartItem.title}">
-                                <input type="hidden" name="items[${cartItem.id}].thumbnail" th:value="${cartItem.thumbnail}">
-                                <input type="hidden" name="items[${cartItem.id}].price" th:value="${cartItem.price}">
-                                <input type="hidden" name="items[${cartItem.id}].isAvailable" th:value="${cartItem.isAvailable}">
-                                <input type="hidden" name="items[${cartItem.id}].totalPrice" th:value="${cartItem.totalPrice}">
-                                <input type="text"
-                                       th:field="*{items[__${cartItem.id}__].quantity}"
-                                       class="input-text qty" data-price="${cartItem.price}"
-                                       oninput="updateItemTotal(this)"/>
-
-                               <!-- TODO: check errors for Thymeleaf-->
-                                <p  th:if="${#fields.hasErrors('items[__${cartItem.id}__].quantity')}"
-                                    th:errors="*{items[__${cartItem.id}__].quantity}"
-                                    class="error-message"></p>
-                                <!--<button
-                                    onclick="var container = event.target.closest('.product_count'); var result = container.querySelector('.input-text.qty'); var sst = result.value; if( !isNaN( sst )){result.value++;} return false;"
-                                    class="increase items-count" type="button">
-                                    <i class="lnr lnr-chevron-up"></i>
-                                </button>
-                                <button
-                                    onclick="var container = event.target.closest('.product_count'); var result = container.querySelector('.input-text.qty'); var sst = result.value; if( !isNaN( sst ) && sst > 0 ){result.value&#45;&#45;;} return false;"
-                                    class="reduced items-count" type="button">
-                                    <i class="lnr lnr-chevron-down"></i>
-                                </button>-->
-                                <button type="button" class="increase items-count"
-                                        onclick="changeQty(this, 1)">
-                                    <i class="lnr lnr-chevron-up"></i>
-                                </button>
-                                <button type="button" class="reduced items-count"
-                                        onclick="changeQty(this, -1)">
-                                    <i class="lnr lnr-chevron-down"></i>
-                                </button>
+                                <input type="hidden" th:field="*{items[__${stat.index}__].id}" />
+                                <input type="hidden" th:field="*{items[__${stat.index}__].cartId}" />
+                                <input type="hidden" th:field="*{items[__${stat.index}__].momentId}" />
+                                <input type="hidden" th:field="*{items[__${stat.index}__].price}" />
+                                <input type="hidden" th:field="*{items[__${stat.index}__].isAvailable}" />
+                                <input type="number" min="1" th:field="*{items[__${stat.index}__].quantity}" />
+                                <div th:if="${#fields.hasErrors('items[' + stat.index + '].quantity')}"
+                                     th:errors="*{items[__${stat.index}__].quantity}"  class="error-message">
+                                </div>
                             </div>
-                           <!-- <div class="product_count" th:if="${cartItem.isAvailable}">
-                                <input type="text" name="qty" th:id="${cartItem.momentId}" maxlength="12"
-                                       th:value="${cartItem.quantity}" title="Quantity:"
-                                       class="input-text qty" th:disabled="${!cartItem.isAvailable}">
-                                <button
-                                    onclick="var container = event.target.closest('.product_count'); var result = container.querySelector('.input-text.qty'); var sst = result.value; if( !isNaN( sst )){result.value++;} return false;"
-                                    class="increase items-count" type="button" th:disabled="${!cartItem.isAvailable}">
-                                    <i class="lnr lnr-chevron-up"></i>
-                                </button>
-                                <button
-                                    onclick="var container = event.target.closest('.product_count'); var result = container.querySelector('.input-text.qty'); var sst = result.value; if( !isNaN( sst ) && sst > 0 ){result.value&#45;&#45;;} return false;"
-                                    class="reduced items-count" type="button" th:disabled="${!cartItem.isAvailable}">
-                                    <i class="lnr lnr-chevron-down"></i>
-                                </button>
-                            </div>-->
-<!--                            <p th:if="${!cartItem.isAvailable}" style="color: red;">Quantity adjustment unavailable.</p>-->
+
                             <h5 th:if="${!cartItem.isAvailable}" th:text="${cartItem.quantity}"  th:class="${!cartItem.isAvailable} ? 'text-muted' : ''"></h5>
                         </td>
                         <td>
                             <h5 th:text="${'€' + cartItem.totalPrice}"  th:class="${!cartItem.isAvailable} ? 'text-muted' : ''"></h5>
                         </td>
-                    </tr>
-                    <!-- Buttons Area -->
-
-                    <tr class="out_button_area">
-                        <td colspan="4">
-                            <div style="display: flex; justify-content: space-between;">
-                                <!-- TODO: change the confirmation window -->
-                               <!-- <form th:action="@{/carts/{customerId}(customerId=${cartView.customerId})}" th:method="delete" onsubmit="return confirm('Are you sure you want to clear the cart?');">
-                                    <button type="submit" class="gray_btn">Clear Cart</button>
-                                </form>-->
-
-                                <div class="checkout_btn_inner d-flex align-items-center">
-                                    <button type="submit" class="primary-btn">Update Cart</button>
-                                </div>
-                            </div>
-                        </td>
-                        <!-- Todo: coupon part for later -->
-
-                        <!--<td>
-                            <a class="gray_btn" href="#">Update Cart</a>
-
-                            <a class="gray_btn" href="#">Clear Cart</a>
-                        </td>
-                        <td>
-
-                        </td>
-                        <td>
-
-                        </td>
-                        <td>
-
-                        </td>
-                       <td>
-                           <div class="cupon_text d-flex align-items-center">
-&lt;!&ndash;                                <input type="text" placeholder="Coupon Code">&ndash;&gt;
-                                <a class="primary-btn" href="#">Apply</a>
-&lt;!&ndash;                                <a class="gray_btn" href="#">Close Coupon</a>&ndash;&gt;
-                            </div>
-                        </td>-->
                     </tr>
                     <tr>
                         <td>
@@ -179,12 +116,24 @@
                             <h5 th:text="${'€' + cartView.subtotal}"></h5>
                         </td>
                     </tr>
+                    <!-- Buttons Area -->
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-end" style="text-align: right;">
+                            <div class="checkout_btn_inner d-flex align-items-center">
+                                <button type="submit" class="primary-btn">Update Cart</button>
+                            </div>
+                        </td>
+                    </tr>
 
                     </tbody>
-
+                    </form>
 
                 </table>
-                </form>
+
+
                 <table class="table">
                     <tbody>
                     <tr class="out_button_area">

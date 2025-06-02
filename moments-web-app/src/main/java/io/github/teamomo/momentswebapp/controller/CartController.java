@@ -173,7 +173,7 @@ public class CartController {
 
     CartViewDto cartViewDto = new CartViewDto(cartDto.id(), customerId, new ArrayList<>(items), subtotal);
     model.addAttribute("cartView", cartViewDto);
-    return "cart_update_form";
+    return "cart_test_updateform";
   }
 
   @PutMapping("/carts/{customerId}")
@@ -186,7 +186,7 @@ public class CartController {
     log.info("cartView items START:");
     if (bindingResult.hasErrors()) {
       //TODO: add title and total price to attribute
-      return "cart_update_form";
+      return "cart_test_updateform";
     }
 
     log.info("cartView items BEFORE mapping:");
