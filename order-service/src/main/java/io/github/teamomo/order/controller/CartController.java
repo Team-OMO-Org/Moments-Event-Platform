@@ -36,7 +36,8 @@ public class CartController {
 
   @PutMapping("/{customerId}")
   public CartDto updateCart(@PathVariable Long customerId, @Valid @RequestBody CartDto cartDto) {
-    log.info("Updating cart for customer ID: {}", customerId);
+    //log.info("Updating cart for customer ID: {}", customerId);
+    log.info("Updating cart for customer ID: {}", cartDto.cartItems().toString());
     return cartService.updateCart(customerId, cartDto);
   }
 

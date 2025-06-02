@@ -53,6 +53,9 @@ public class CartService {
         .orElseThrow(() -> new ResourceNotFoundException("Cart", "customerId", customerId.toString()));
     Cart updatedCart = orderMapper.toCartEntity(cartDto);
     updatedCart.setId(cart.getId());
+   /* if (updatedCart.getCartItems() != null) {
+      updatedCart.getCartItems().forEach(item -> item.setCart(updatedCart));
+    }*/
     Cart savedCart = cartRepository.save(updatedCart);
     return mapToCartDtoWithUpdatedAvailability(savedCart);
   }

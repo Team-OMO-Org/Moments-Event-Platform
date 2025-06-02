@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zxx" class="no-js">
+<head>
+    <!-- Include meta tags -->
+    <th:block th:replace="~{fragments/head :: meta}"/>
+
+    <!-- Page title -->
+    <title>Cart</title>
+
+    <!-- Include common CSS -->
+    <th:block th:replace="~{fragments/head :: common-css}"/>
+
+    <style>
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- Include header -->
+<header th:replace="~{fragments/header :: header}"></header>
+
+<!-- Banner -->
+<div th:replace="~{fragments/banner :: banner('Moments Event Platform', 'Feel The Moment')}"></div>
+
+
+<!--================Cart Area =================-->
+<section class="cart_area">
+    <div class="container">
+        <div class="cart_inner">
+            <div class="table-responsive">
+                <form th:object="${cartView}" th:action="@{/carts/{customerId}(customerId=${cartView.customerId})}" th:method="post">
+
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Moment</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:if="${cartView.items != null}" th:each="cartItem, stat : ${cartView.items}" th:class="${!cartItem.isAvailable} ? 'not-available' : ''">
+                        <td>
+                            <div class="media">
+                                <div class="d-flex">
+                                    <a th:href="@{'/moment/' + ${cartItem.momentId}}" th:if="${cartItem.isAvailable}">
+                                    <img th:src="${cartItem.thumbnail}" alt="" style="max-width: 150px;">
+                                    </a>
+                                    <img th:src="${cartItem.thumbnail}" alt="" style="max-width: 150px; opacity: 0.5;" th:if="${!cartItem.isAvailable}">
+                                </div>
+                                <div class="media-body">
+                                    <p th:text="${cartItem.title}" th:class="${!cartItem.isAvailable} ? 'text-muted' : ''"></p>
+                                    <p th:if="${!cartItem.isAvailable}" style="color: red;">This item is currently unavailable.</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <h5 th:text="${'€' + cartItem.price}" th:class="${!cartItem.isAvailable} ? 'text-muted' : ''"></h5>
+                        </td>
+                        <td>
+                            <!-- Todo: change total? -->
+                            <!-- Todo: add REMOVE ITEM -->
+                            <div class="product_count" th:if="${cartItem.isAvailable}">
+                                <input type="hidden" name="items[${cartItem.id}].momentId" th:value="${cartItem.momentId}">
+                                <input type="hidden" name="items[${cartItem.id}].title" th:value="${cartItem.title}">
+                                <input type="hidden" name="items[${cartItem.id}].thumbnail" th:value="${cartItem.thumbnail}">
+                                <input type="hidden" name="items[${cartItem.id}].price" th:value="${cartItem.price}">
+                                <input type="hidden" name="items[${cartItem.id}].isAvailable" th:value="${cartItem.isAvailable}">
+                                <input type="hidden" name="items[${cartItem.id}].totalPrice" th:value="${cartItem.totalPrice}">
+                                <input type="text"
+                                       th:field="*{items[__${cartItem.id}__].quantity}"
+                                       class="input-text qty" data-price="${cartItem.price}"
+                                       oninput="updateItemTotal(this)"/>
+
+                               <!-- TODO: check errors for Thymeleaf-->
+                                <p  th:if="${#fields.hasErrors('items[__${cartItem.id}__].quantity')}"
+                                    th:errors="*{items[__${cartItem.id}__].quantity}"
+                                    class="error-message"></p>
+                                <!--<button
+                                    onclick="var container = event.target.closest('.product_count'); var result = container.querySelector('.input-text.qty'); var sst = result.value; if( !isNaN( sst )){result.value++;} return false;"
+                                    class="increase items-count" type="button">
+                                    <i class="lnr lnr-chevron-up"></i>
+                                </button>
+                                <button
+                                    onclick="var container = event.target.closest('.product_count'); var result = container.querySelector('.input-text.qty'); var sst = result.value; if( !isNaN( sst ) && sst > 0 ){result.value&#45;&#45;;} return false;"
+                                    class="reduced items-count" type="button">
+                                    <i class="lnr lnr-chevron-down"></i>
+                                </button>-->
+                                <button type="button" class="increase items-count"
+                                        onclick="changeQty(this, 1)">
+                                    <i class="lnr lnr-chevron-up"></i>
+                                </button>
+                                <button type="button" class="reduced items-count"
+                                        onclick="changeQty(this, -1)">
+                                    <i class="lnr lnr-chevron-down"></i>
+                                </button>
+                            </div>
+                           <!-- <div class="product_count" th:if="${cartItem.isAvailable}">
+                                <input type="text" name="qty" th:id="${cartItem.momentId}" maxlength="12"
+                                       th:value="${cartItem.quantity}" title="Quantity:"
+                                       class="input-text qty" th:disabled="${!cartItem.isAvailable}">
+                                <button
+                                    onclick="var container = event.target.closest('.product_count'); var result = container.querySelector('.input-text.qty'); var sst = result.value; if( !isNaN( sst )){result.value++;} return false;"
+                                    class="increase items-count" type="button" th:disabled="${!cartItem.isAvailable}">
+                                    <i class="lnr lnr-chevron-up"></i>
+                                </button>
+                                <button
+                                    onclick="var container = event.target.closest('.product_count'); var result = container.querySelector('.input-text.qty'); var sst = result.value; if( !isNaN( sst ) && sst > 0 ){result.value&#45;&#45;;} return false;"
+                                    class="reduced items-count" type="button" th:disabled="${!cartItem.isAvailable}">
+                                    <i class="lnr lnr-chevron-down"></i>
+                                </button>
+                            </div>-->
+<!--                            <p th:if="${!cartItem.isAvailable}" style="color: red;">Quantity adjustment unavailable.</p>-->
+                            <h5 th:if="${!cartItem.isAvailable}" th:text="${cartItem.quantity}"  th:class="${!cartItem.isAvailable} ? 'text-muted' : ''"></h5>
+                        </td>
+                        <td>
+                            <h5 th:text="${'€' + cartItem.totalPrice}"  th:class="${!cartItem.isAvailable} ? 'text-muted' : ''"></h5>
+                        </td>
+                    </tr>
+                    <!-- Buttons Area -->
+
+                    <tr class="out_button_area">
+                        <td colspan="4">
+                            <div style="display: flex; justify-content: space-between;">
+                                <!-- TODO: change the confirmation window -->
+                               <!-- <form th:action="@{/carts/{customerId}(customerId=${cartView.customerId})}" th:method="delete" onsubmit="return confirm('Are you sure you want to clear the cart?');">
+                                    <button type="submit" class="gray_btn">Clear Cart</button>
+                                </form>-->
+
+                                <div class="checkout_btn_inner d-flex align-items-center">
+                                    <button type="submit" class="primary-btn">Update Cart</button>
+                                </div>
+                            </div>
+                        </td>
+                        <!-- Todo: coupon part for later -->
+
+                        <!--<td>
+                            <a class="gray_btn" href="#">Update Cart</a>
+
+                            <a class="gray_btn" href="#">Clear Cart</a>
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+
+                        </td>
+                       <td>
+                           <div class="cupon_text d-flex align-items-center">
+&lt;!&ndash;                                <input type="text" placeholder="Coupon Code">&ndash;&gt;
+                                <a class="primary-btn" href="#">Apply</a>
+&lt;!&ndash;                                <a class="gray_btn" href="#">Close Coupon</a>&ndash;&gt;
+                            </div>
+                        </td>-->
+                    </tr>
+                    <tr>
+                        <td>
+
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+                            <h5>Subtotal</h5>
+                        </td>
+                        <td>
+                            <h5 th:text="${'€' + cartView.subtotal}"></h5>
+                        </td>
+                    </tr>
+
+                    </tbody>
+
+
+                </table>
+                </form>
+                <table class="table">
+                    <tbody>
+                    <tr class="out_button_area">
+                        <td>
+
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+
+                              <div class="checkout_btn_inner d-flex align-items-center" style="display: flex; justify-content: flex-end; ">
+                                  <a class="gray_btn" href="#" th:href="@{/index}">Continue Shopping</a>
+                                  <a class="primary-btn" href="#">Proceed to checkout</a>
+                              </div>
+
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</section>
+<!--================End Cart Area =================-->
+
+<!-- Include footer fragment -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<!-- JS Scripts -->
+<div th:replace="~{fragments/common-scripts}"></div>
+
+</body>
+
+</html>
