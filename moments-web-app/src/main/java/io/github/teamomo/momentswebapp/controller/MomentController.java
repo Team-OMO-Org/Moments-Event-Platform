@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -102,7 +101,7 @@ public class MomentController {
     if (bindingResult.hasErrors()) {
       log.warn("Validation errors occurred: {}", bindingResult.getAllErrors());
       model.addAttribute("momentDto", momentDto);
-      return "moment-details-form2"; // Return the form view with errors
+      return "moment-details-form-raw"; // Return the form view with errors
     }
 
     momentDto = momentDto.withStartDate(dateTimeDto.toLocalDateTime());
@@ -114,7 +113,7 @@ public class MomentController {
       } catch (Exception e) {
         log.error("Failed to add moment: {}", momentDto, e);
         model.addAttribute("message", e.getMessage());
-        return "moment-details-form2";
+        return "moment-details-form-raw";
       }
       log.info("Complete post moment to backend: {}", momentDtoResponse);
     } else {
@@ -124,7 +123,7 @@ public class MomentController {
       } catch (Exception e) {
         log.error("Failed to update moment: {}", e.getMessage(), e);
         model.addAttribute("message", e.getMessage());
-        return "moment-details-form2";
+        return "moment-details-form-raw";
       }
       log.info("Complete update moment in backend: {}", momentDtoResponse);
     }
