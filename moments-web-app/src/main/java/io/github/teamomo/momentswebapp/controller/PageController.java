@@ -65,8 +65,10 @@ public class PageController {
         pageResponse.getContent().size());
 
     model.addAttribute("moments", pageResponse.getContent());
+    model.addAttribute("pageSize", pageResponse.getSize());
     model.addAttribute("totalPages", pageResponse.getTotalPages());
-    model.addAttribute("pageNumber", pageResponse.getNumber());
+    model.addAttribute("totalElements", pageResponse.getTotalElements());
+    model.addAttribute("currentPage", pageResponse.getNumber() + 1);
 //    model.addAttribute("sort", pageResponse.getSort()); // ToDo sort button
 
     // CATEGORIES retrieval from backend
