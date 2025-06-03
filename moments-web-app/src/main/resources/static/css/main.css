@@ -5476,6 +5476,14 @@ label {
   width: 30px;
 }
 
+.moment_label {
+  font-size: 15px;
+  font-family: "Roboto", sans-serif;
+  font-weight: normal;
+  color: #5C3F1A;
+  -webkit-text-fill-color: #5C3F1A;
+}
+
 .s_product_text {
   margin-left: -15px;
 }
