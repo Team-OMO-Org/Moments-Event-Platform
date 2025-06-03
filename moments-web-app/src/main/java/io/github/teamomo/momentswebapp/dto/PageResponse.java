@@ -3,7 +3,6 @@ package io.github.teamomo.momentswebapp.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
@@ -12,16 +11,48 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PageResponse<T> extends PageImpl<T> {
 
-  @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-  public PageResponse(@JsonProperty("content") List<T> content,
-      @JsonProperty("number") int number,
-      @JsonProperty("size") int size,
-      @JsonProperty("totalElements") Long totalElements,
-      @JsonProperty("pageable") JsonNode pageable,
-      @JsonProperty("last") boolean last,
-      @JsonProperty("totalPages") int totalPages,
-      @JsonProperty("sort") JsonNode sort,
-      @JsonProperty("numberOfElements") int numberOfElements) {
-    super(content, PageRequest.of(number, numberOfElements), totalElements);
+  @JsonCreator
+  public PageResponse(
+      @JsonProperty("content") List<T> content,
+      @JsonProperty("page") PageInfo pageInfo
+  ) {
+    super(content, PageRequest.of(pageInfo.getNumber(), pageInfo.getSize()), pageInfo.getTotalElements());
+  }
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  public static class PageInfo {
+    private int size;
+    private int number;
+    private long totalElements;
+    private int totalPages;
+
+    @JsonCreator
+    public PageInfo(
+        @JsonProperty("size") int size,
+        @JsonProperty("number") int number,
+        @JsonProperty("totalElements") long totalElements,
+        @JsonProperty("totalPages") int totalPages
+    ) {
+      this.size = size;
+      this.number = number;
+      this.totalElements = totalElements;
+      this.totalPages = totalPages;
+    }
+
+    public int getSize() {
+      return size;
+    }
+
+    public int getNumber() {
+      return number;
+    }
+
+    public long getTotalElements() {
+      return totalElements;
+    }
+
+    public int getTotalPages() {
+      return totalPages;
+    }
   }
 }

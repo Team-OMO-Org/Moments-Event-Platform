@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Moment Form</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5 col-md-3">
+  <h1 class="text-center mb-4">Moment Form</h1>
+
+  <!-- Warning message -->
+  <div th:if="${message}" class="alert alert-warning text-center" role="alert">
+    <span th:text="${message}"></span>
+  </div>
+
+  <form th:action="@{/moment}" th:object="${momentDto}" method="post" class="needs-validation">
+
+    <div class="mb-3">
+      <label for="momentId" class="form-label">Moment ID:</label>
+      <input type="number" id="momentId" name="id" th:field="*{id}" class="form-control" readonly>
+      <div class="text-danger" th:if="${#fields.hasErrors('id')}" th:errors="*{id}"></div>
+    </div>
+
+    <div class="mb-3">
+      <label for="hostId" class="form-label">Host ID:</label>
+      <input type="number" id="hostId" name="hostId" th:field="*{hostId}" class="form-control" required>
+      <div class="text-danger" th:if="${#fields.hasErrors('hostId')}" th:errors="*{hostId}"></div>
+    </div>
+
+<div class="mb-3">
+  <label for="categoryId" class="form-label">Category:</label>
+  <select id="categoryId" name="categoryId" th:field="*{categoryId}" class="form-select" required>
+    <option value="" disabled selected>Select a category</option>
+    <option th:each="category : ${categories}" th:value="${category.categoryId}" th:text="${category.categoryName}"></option>
+  </select>
+  <div class="text-danger" th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}"></div>
+</div>
+
+    <div class="mb-3">
+      <label for="locationId" class="form-label">Location ID:</label>
+      <input type="number" id="locationId" name="location.id" th:field="*{location.id}" class="form-control">
+      <div class="text-danger" th:if="${#fields.hasErrors('location.id')}" th:errors="*{location.id}"></div>
+    </div>
+
+    <div class="mb-3">
+      <label for="locationCity" class="form-label">City:</label>
+      <input type="text" id="locationCity" name="location.city" th:field="*{location.city}" class="form-control" required>
+      <div class="text-danger" th:if="${#fields.hasErrors('location.city')}" th:errors="*{location.city}"></div>
+    </div>
+
+    <div class="mb-3">
+      <label for="locationAddress" class="form-label">Address:</label>
+      <input type="text" id="locationAddress" name="location.address" th:field="*{location.address}" class="form-control" required>
+      <div class="text-danger" th:if="${#fields.hasErrors('location.address')}" th:errors="*{location.address}"></div>
+    </div>
+
+    <div class="mb-3">
+      <label for="title" class="form-label">Title:</label>
+      <input type="text" id="title" name="title" th:field="*{title}" class="form-control" required>
+      <div class="text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+    </div>
+
+    <div class="mb-3">
+      <label for="shortDescription" class="form-label">Short Description:</label>
+      <textarea id="shortDescription" name="shortDescription" th:field="*{shortDescription}" class="form-control" maxlength="255"></textarea>
+      <div class="text-danger" th:if="${#fields.hasErrors('shortDescription')}" th:errors="*{shortDescription}"></div>
+    </div>
+
+    <div class="mb-3">
+      <label for="thumbnail" class="form-label">Thumbnail URL:</label>
+      <input type="url" id="thumbnail" name="thumbnail" th:field="*{thumbnail}" class="form-control">
+      <div class="text-danger" th:if="${#fields.hasErrors('thumbnail')}" th:errors="*{thumbnail}"></div>
+    </div>
+
+    <div class="mb-3">
+      <label for="startDate" class="form-label">Start Date:</label>
+      <input type="date" id="startDate" name="startDate" th:field="${dateTimeDto.date}" class="form-control" required>
+<!--      <div class="text-danger" th:if="${#fields.hasErrors('dateTimeDto.date')}" th:errors="${dateTimeDto.date}"></div>-->
+    </div>
+
+    <div class="mb-3">
+      <label for="startTime" class="form-label">Start Time:</label>
+      <input type="time" id="startTime" name="startTime" th:field="${dateTimeDto.time}" class="form-control" required>
+<!--      <div class="text-danger" th:if="${#fields.hasErrors('dateTimeDto.time')}" th:errors="${dateTimeDto.time}"></div>-->
+    </div>
+
+    <div class="mb-3">
+      <label for="recurrence" class="form-label">Recurrence:</label>
+      <select id="recurrence" name="recurrence" th:field="*{recurrence}" class="form-select" required>
+        <option value="" disabled selected>Select Recurrence</option>
+        <option th:each="recurrence : ${T(io.github.teamomo.momentswebapp.entity.Recurrence).values()}"
+                th:value="${recurrence}" th:text="${recurrence}"></option>
+      </select>
+      <div class="text-danger" th:if="${#fields.hasErrors('recurrence')}" th:errors="*{recurrence}"></div>
+    </div>
+
+    <div class="mb-3">
+      <label for="price" class="form-label">Price (€):</label>
+      <input type="number" id="price" name="price" th:field="*{price}" class="form-control" step="0.01" required>
+      <div class="text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+    </div>
+
+    <div class="mb-3">
+      <label for="status" class="form-label">Status:</label>
+      <select id="status" name="status" th:field="*{status}" class="form-select" required>
+        <option value="" disabled selected>Select Status</option>
+        <option th:each="status : ${T(io.github.teamomo.momentswebapp.entity.Status).values()}"
+                th:value="${status}" th:text="${status}"></option>
+      </select>
+      <div class="text-danger" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></div>
+    </div>
+
+    <div class="mb-3">
+      <label for="ticketCount" class="form-label">Ticket Count:</label>
+      <input type="number" id="ticketCount" name="ticketCount" th:field="*{ticketCount}" class="form-control" required>
+      <div class="text-danger" th:if="${#fields.hasErrors('ticketCount')}" th:errors="*{ticketCount}"></div>
+    </div>
+
+    <div class="mb-3">
+      <label for="momentDetailsId" class="form-label">Moment Details ID:</label>
+      <input type="number" id="momentDetailsId" name="momentDetails.id" th:field="*{momentDetails.id}" class="form-control">
+      <div class="text-danger" th:if="${#fields.hasErrors('momentDetails.id')}" th:errors="*{momentDetails.id}"></div>
+    </div>
+
+    <div class="mb-3">
+      <label for="momentDetailsDescription" class="form-label">Description:</label>
+      <textarea id="momentDetailsDescription" name="momentDetails.description" th:field="*{momentDetails.description}" class="form-control" maxlength="1000" required></textarea>
+      <div class="text-danger" th:if="${#fields.hasErrors('momentDetails.description')}" th:errors="*{momentDetails.description}"></div>
+    </div>
+
+    <div class="text-center">
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

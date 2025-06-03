@@ -6,6 +6,7 @@ import io.github.teamomo.momentswebapp.dto.CityDto;
 import io.github.teamomo.momentswebapp.dto.MomentRequestDto;
 import io.github.teamomo.momentswebapp.dto.MomentResponseDto;
 import io.github.teamomo.momentswebapp.dto.PageResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,8 @@ public class PageController {
   public String renderIndex(
       MomentRequestDto momentRequestDto,
       @PageableDefault(size = 12, sort = "startDate") Pageable pageable,
-      Model model
+      Model model,
+      HttpServletRequest request
 //      ,@AuthenticationPrincipal OidcUser oidcUser  // ToDo: if you need user info/keycloak user id
   ) {
 //    System.out.println(oidcUser != null ? oidcUser.getSubject() : "no user");
@@ -63,16 +65,14 @@ public class PageController {
         pageResponse.getContent().size());
 
     model.addAttribute("moments", pageResponse.getContent());
+    model.addAttribute("pageSize", pageResponse.getSize());
     model.addAttribute("totalPages", pageResponse.getTotalPages());
-    model.addAttribute("pageNumber", pageResponse.getNumber());
+    model.addAttribute("totalElements", pageResponse.getTotalElements());
+    model.addAttribute("currentPage", pageResponse.getNumber() + 1);
 //    model.addAttribute("sort", pageResponse.getSort()); // ToDo sort button
 
-    // CATEGORIES retrieval
-    log.debug("Retrieving categories for index page from backend");
-    List<CategoryDto> categories = backendClient.getAllCategoriesByMomentsCount();
-    log.info("Retrieved categories for index page from backend: {}",
-        categories.size());
-    model.addAttribute("categories", categories);
+    // CATEGORIES retrieval from backend
+    backendClient.getCategories(model, request.getRequestURI());
 
     // CITIES retrieval
     log.debug("Retrieving cities for index page from backend");
