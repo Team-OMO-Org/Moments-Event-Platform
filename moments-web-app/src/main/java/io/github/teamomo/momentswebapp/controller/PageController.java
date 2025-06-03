@@ -53,7 +53,7 @@ public class PageController {
         momentRequestDto.getStatus(),
         pageable.getPageNumber(),
         pageable.getPageSize(),
-        pageable.getSort().toString()
+        pageable.getSort().toString().replace(": ", ",")
     );
     log.info("getTotalElements {} getTotalPages {} getNumber {} getSize {} getSort {}",
         pageResponse.getTotalElements(),
