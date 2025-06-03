@@ -90,7 +90,11 @@
                                 <input type="hidden" th:field="*{items[__${stat.index}__].momentId}" />
                                 <input type="hidden" th:field="*{items[__${stat.index}__].price}" />
                                 <input type="hidden" th:field="*{items[__${stat.index}__].isAvailable}" />
-                                <input type="number" min="1" th:field="*{items[__${stat.index}__].quantity}" />
+                                <input type="number" th:field="*{items[__${stat.index}__].quantity}" min="1"
+                                       step="1"
+                                       inputmode="numeric"
+                                       pattern="[0-9]+"
+                                       required  />
                                 <div th:if="${#fields.hasErrors('items[' + stat.index + '].quantity')}"
                                      th:errors="*{items[__${stat.index}__].quantity}"  class="error-message">
                                 </div>
