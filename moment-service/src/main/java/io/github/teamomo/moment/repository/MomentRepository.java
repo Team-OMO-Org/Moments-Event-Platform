@@ -3,6 +3,7 @@ package io.github.teamomo.moment.repository;
 import io.github.teamomo.moment.entity.Moment;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,4 +26,6 @@ public interface MomentRepository extends JpaRepository<Moment, Long>
   Page<Moment> findByLocationIdAndStartDateAfter(Long locationId, Instant start, Pageable pageable);
 
   Optional<Moment> findByTitleAndStartDate(String title, LocalDateTime startDate);
+
+  List<Moment> findByHostId(Long id);
 }

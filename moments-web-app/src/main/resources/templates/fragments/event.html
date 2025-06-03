@@ -1,0 +1,59 @@
+<!-- File: fragments/product.html -->
+<div th:fragment="event(id, imagePath, title, shortDescription, price, recurrence, city, tickets_count, category, date)">
+  <article class="row blog_item">
+    <div class="col-md-2">
+      <div class="blog_info text-right">
+        <ul class="blog_meta list">
+          <li><a class="active" href="#" >
+            <span th:text="${category}">Music</span>
+            <span class="lnr lnr-tag"></span>
+          </a></li>
+          <li><a href="#">
+            <span  th:text="${recurrence}">Onetime</span>
+            <span class="lnr lnr-sync"></span>
+          </a></li>
+          <li><a href="#">
+            <span  th:text="${date}">12 Dec, 2018</span>
+            <span class="lnr lnr-calendar-full"></span>
+          </a></li>
+          <li><a href="#">
+            <span  th:text="${city}">San Francisco</span>
+            <span class="lnr lnr-map-marker"></span>
+          </a></li>
+          <li><a href="#" >
+            <span th:text="${tickets_count + ' Tickets'}">50 Tickets</span>
+            <span class="lnr lnr-bookmark"></span>
+          </a></li>
+          <li><a href="#" >
+            <span th:text="${price}">100</span>
+            <span class="fa fa-euro"></span>
+          </a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-10">
+      <div class="blog_post d-flex">
+        <div class="col-lg-5">
+          <div class="blog_image">
+            <a href="single-blog.html">
+              <img th:src="${imagePath}" alt="product image" class="img-fluid">
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-7">
+          <div class="blog_details">
+            <a href="single-blog.html">
+              <h2 th:text="${title}">Astronomy Binoculars A Great Alternative</h2>
+            </a>
+            <br/>
+            <p th:text="${shortDescription}">MCSE boot camps have its supporters and its detractors. Some people do not
+              understand why you should have to spend money on boot camp when you can get
+              the MCSE study materials yourself at a fraction.</p>
+            <br/>
+            <a href="single-blog.html" class="orange_bg_btn">Edit Event</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+</div>>

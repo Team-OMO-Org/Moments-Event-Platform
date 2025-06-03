@@ -17,7 +17,7 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
           <ul class="nav navbar-nav menu_nav ml-auto">
-            <li class="nav-item"><a class="nav-link" th:href="@{/index}">Home</a></li>
+            <li class="nav-item active"><a class="nav-link" th:href="@{/index}">Home</a></li>
             <li class="nav-item"><a class="nav-link" th:href="@{/index}">Events</a></li>
             <!--li class="nav-item submenu dropdown">
               <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
@@ -30,15 +30,15 @@
                 <li class="nav-item"><a class="nav-link" href="confirmation.html">Confirmation</a></li>
               </ul>
             </li-->
-            <li class="nav-item"><a class="nav-link" th:href="@{/profile}">Account</a></li>
-            <!--li class="nav-item submenu dropdown active">
+            <li class="nav-item submenu dropdown">
               <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                  aria-expanded="false">Account</a>
               <ul class="dropdown-menu">
-                <li class="nav-item"><a class="nav-link" th:href="@{/profile}">Profile</a></li>
-                <li class="nav-item active"><a class="nav-link" href="single-blog.html">Sign out</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/profile}">My Profile</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/events}">My Events</a></li>
+                <li class="nav-item"><a class="nav-link"  th:href="@{/logout}">Sign out</a></li>
               </ul>
-            </li-->
+            </li>
             <!--li class="nav-item submenu dropdown">
               <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                  aria-expanded="false">Pages</a>
