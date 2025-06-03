@@ -36,9 +36,9 @@ public class PageController {
       @PageableDefault(size = 12, sort = "startDate") Pageable pageable,
       Model model,
       HttpServletRequest request
-//      ,@AuthenticationPrincipal OidcUser oidcUser  // ToDo: if you need user info/keycloak user id
   ) {
-//    System.out.println(oidcUser != null ? oidcUser.getSubject() : "no user");
+    // Get the current request URL including query parameters, remove parameter for functionality
+    addRequestUrlsToModel(model, request);
 
     // MOMENTS retrieval
     log.debug("Retrieving moments for index page from backend");
@@ -82,5 +82,21 @@ public class PageController {
     model.addAttribute("cities", cities);
 
     return "index";
+  }
+
+  private static void addRequestUrlsToModel(Model model, HttpServletRequest request) {
+    // Add the full URL to the model
+    String currentUrl = request.getRequestURL().toString();
+    String queryString = request.getQueryString();
+    String fullUrl = queryString != null ? currentUrl + "?" + queryString : currentUrl + "?";
+    model.addAttribute("currentUrl", fullUrl);
+    log.debug("currentUrl: {}", fullUrl);
+    // Add url without corresponding query parameter for functionality
+    String currentUrlWithoutPage = fullUrl.replaceAll("(&)?page=\\d+", "");
+    model.addAttribute("currentUrlWithoutPage", currentUrlWithoutPage);
+    String currentUrlWithoutSize = fullUrl.replaceAll("(&)?size=\\d+", "");
+    model.addAttribute("currentUrlWithoutSize",currentUrlWithoutSize);
+    String currentUrlWithoutSort = fullUrl.replaceAll("(&)?sort=[a-zA-Z0-9]+(,)+(asc)?(ASC)?(desc)?(DESC)?", "");
+    model.addAttribute("currentUrlWithoutSort",currentUrlWithoutSort);
   }
 }

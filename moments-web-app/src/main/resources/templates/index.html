@@ -86,13 +86,14 @@
     <div class="col-xl-9 col-lg-8 col-md-7">
       <!-- Start Filter Bar -->
       <div class="filter-bar d-flex flex-wrap align-items-center">
-<!--         ToDo: wasd-->
-        <div class="sorting">
-          <select th:field="*{sort}" onchange="location.href='@{/index(page=${currentPage}, sort=' + this.value + ')}'">
-            <option value="asc" th:selected="${sort == 'asc'}">Ascending</option>
-            <option value="desc" th:selected="${sort == 'desc'}">Descending</option>
-          </select>
-        </div>
+<div class="sorting">
+  <span th:field="*{sort}" th:text="*{sort}"></span>
+<!--  <select th:field="*{sort}" th:onChange="${'location.href=' + currentUrlWithoutSort + '&sort=' + 1}'">-->
+<!--    <option  value="UNSORTED" th:selected="${sort == 'UNSORTED '}">UNSORTED</option>-->
+<!--    <option value="asc" th:selected="${sort == 'asc'}">Ascending</option>-->
+<!--    <option value="desc" th:selected="${sort == 'desc'}">Descending</option>-->
+<!--  </select>-->
+</div>
         <div class="sorting mr-auto">
           <select>
             <option value="9">Show 9</option>
@@ -101,20 +102,10 @@
           </select>
         </div>
 
-        <div class="pagination">
-          <a class="prev-arrow" th:if="${currentPage > 1}" th:href="@{'?page=' + ${currentPage - 1 - 1}}">
-            <i class="fa fa-long-arrow-left" aria-hidden="true"></i>
-          </a>
-          <a th:if="${currentPage > 1}" th:href="@{'?page=0'}">1</a>
-          <a th:if="${currentPage > 3}" class="dot-dot"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a>
-          <a th:if="${currentPage > 2}" th:text="${currentPage - 1}" th:href="@{'?page=' + ${currentPage - 1 - 1}}"/>
-          <a th:classappend="active" th:text="${currentPage}" />
-          <a th:if="${currentPage + 1 < totalPages}" th:text="${currentPage} + 1" th:href="@{'?page=' + ${currentPage + 1 - 1}}" />
-          <a th:if="${currentPage + 2 < totalPages}" class="dot-dot"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a>
-          <a th:if="${totalPages > currentPage }" th:text="${totalPages}" th:href="@{'?page=' + ${totalPages - 1}}"/>
-          <a th:if="${currentPage < totalPages}" class="next-arrow"  th:href="@{'?page=' + ${currentPage + 1 - 1}}">
-            <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
-          </a>
+        <div th:replace="~{fragments/pagination :: pagination(
+          currentPage=${currentPage},
+          totalPages=${totalPages},
+          currentUrlWithoutPage=${currentUrlWithoutPage})}">
         </div>
       </div>
       <!-- End Filter Bar -->
@@ -147,20 +138,11 @@
             <option value="1">Show 12</option>
           </select>
         </div>
-        <div class="pagination">
-          <a class="prev-arrow" th:if="${currentPage > 1}" th:href="@{'?page=' + ${currentPage - 1 - 1}}">
-            <i class="fa fa-long-arrow-left" aria-hidden="true"></i>
-          </a>
-          <a th:if="${currentPage > 1}" th:href="@{'?page=0'}">1</a>
-          <a th:if="${currentPage > 3}" class="dot-dot"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a>
-          <a th:if="${currentPage > 2}" th:text="${currentPage - 1}" th:href="@{'?page=' + ${currentPage - 1 - 1}}"/>
-          <a th:classappend="active" th:text="${currentPage}" />
-          <a th:if="${currentPage + 1 < totalPages}" th:text="${currentPage} + 1" th:href="@{'?page=' + ${currentPage + 1 - 1}}" />
-          <a th:if="${currentPage + 2 < totalPages}" class="dot-dot"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a>
-          <a th:if="${totalPages > currentPage }" th:text="${totalPages}" th:href="@{'?page=' + ${totalPages - 1}}"/>
-          <a th:if="${currentPage < totalPages}" class="next-arrow"  th:href="@{'?page=' + ${currentPage + 1 - 1}}">
-            <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
-          </a>
+        <!--    PAGINATION    -->
+        <div th:replace="~{fragments/pagination :: pagination(
+          currentPage=${currentPage},
+          totalPages=${totalPages},
+          currentUrlWithoutPage=${currentUrlWithoutPage})}">
         </div>
       </div>
       <!-- End Filter Bar -->
