@@ -3,6 +3,7 @@ package io.github.teamomo.order.service;
 import io.github.teamomo.order.client.MomentClient;
 import io.github.teamomo.order.dto.OrderDto;
 import io.github.teamomo.order.entity.*;
+import io.github.teamomo.order.event.OrderPlacedEvent;
 import io.github.teamomo.order.exception.CartIsEmptyException;
 import io.github.teamomo.order.exception.PaymentProcessingException;
 import io.github.teamomo.order.mapper.OrderMapper;
@@ -16,6 +17,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.kafka.core.KafkaTemplate;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +31,7 @@ public class OrderService {
   private final OrderMapper orderMapper;
 
   private final PaymentRepository paymentRepository;
+  private final KafkaTemplate<String, OrderPlacedEvent> kafkaTemplate;    // key: Topic name, value: Event
 
   @Transactional
   public OrderDto createOrderByCustomerId(Long customerId) {
@@ -110,9 +113,34 @@ public class OrderService {
     cartService.deleteCart(customerId);
     order.setOrderStatus(OrderStatus.COMPLETED);
 
-    // TODO: Add notification logic here
+    // ToDo: set user info for email
+    // send the message to Kafka Topic -> email service, sending out email
+    // Create OrderPlacedEvent
+    OrderPlacedEvent orderPlacedEvent = new OrderPlacedEvent();
+    orderPlacedEvent.setOrderNumber(order.getId().toString());
+    orderPlacedEvent.setEmail("user@email.com"); // Replace with actual email from user details
+    orderPlacedEvent.setFirstName("John"); // Replace with actual first name from user details
+    orderPlacedEvent.setLastName("Doe"); // Replace with actual last name from user details
+
+    log.info("Start - Sending OrderPlacedEvent {} to Kafka topic order-placed", orderPlacedEvent);
+    kafkaTemplate.send("order-placed", orderPlacedEvent);
+    log.info("End - Sending OrderPlacedEvent {} to Kafka topic order-placed", orderPlacedEvent);
 
     return orderMapper.toDto(orderRepository.save(order));
   }
 
+  public void testKafka() {
+    // ToDo: remove, just for testing
+    // send the message to Kafka Topic -> email service, sending out email
+    // Create OrderPlacedEvent
+    OrderPlacedEvent orderPlacedEvent = new OrderPlacedEvent();
+    orderPlacedEvent.setOrderNumber("12345"); // Replace with actual order number
+    orderPlacedEvent.setEmail("user@email.com"); // Replace with actual email from user details
+    orderPlacedEvent.setFirstName("John"); // Replace with actual first name from user details
+    orderPlacedEvent.setLastName("Doe"); // Replace with actual last name from user details
+
+    log.info("Start - Sending OrderPlacedEvent {} to Kafka topic order-placed", orderPlacedEvent);
+    kafkaTemplate.send("order-placed", orderPlacedEvent);
+    log.info("End - Sending OrderPlacedEvent {} to Kafka topic order-placed", orderPlacedEvent);
+  }
 }
