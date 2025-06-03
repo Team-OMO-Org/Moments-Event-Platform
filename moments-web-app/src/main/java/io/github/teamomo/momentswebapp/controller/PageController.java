@@ -69,7 +69,6 @@ public class PageController {
     model.addAttribute("totalPages", pageResponse.getTotalPages());
     model.addAttribute("totalElements", pageResponse.getTotalElements());
     model.addAttribute("currentPage", pageResponse.getNumber() + 1);
-    model.addAttribute("sort", pageResponse.getSort());
 
     // CATEGORIES retrieval from backend
     backendClient.getCategories(model, request.getRequestURI());
@@ -96,7 +95,21 @@ public class PageController {
     model.addAttribute("currentUrlWithoutPage", currentUrlWithoutPage);
     String currentUrlWithoutSize = fullUrl.replaceAll("(&)?size=\\d+", "");
     model.addAttribute("currentUrlWithoutSize",currentUrlWithoutSize);
+
+    // SORTING
     String currentUrlWithoutSort = fullUrl.replaceAll("(&)?sort=[a-zA-Z0-9]+(,)+(asc)?(ASC)?(desc)?(DESC)?", "");
     model.addAttribute("currentUrlWithoutSort",currentUrlWithoutSort);
+    // capture sort parameter of the current request
+    String sort = request.getParameter("sort");
+    log.info("sort parameter: {}", sort);
+    sort = sort == null || sort.equalsIgnoreCase("UNSORTED") ? "startDate,asc" : sort;
+    String sortArray[] = sort.split(",");
+    String sortType = sortArray[0];
+    String sortDirection = sortArray[1];
+
+    // add to model
+    model.addAttribute("sortType", sortType);
+    model.addAttribute("sortDirection", sortDirection);
+    // log sort type and direction
   }
 }

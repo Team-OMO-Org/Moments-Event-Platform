@@ -84,31 +84,17 @@
     </div>
 
     <div class="col-xl-9 col-lg-8 col-md-7">
-      <!-- Start Filter Bar -->
-      <div class="filter-bar d-flex flex-wrap align-items-center">
-<div class="sorting">
-  <span th:field="*{sort}" th:text="*{sort}"></span>
-<!--  <select th:field="*{sort}" th:onChange="${'location.href=' + currentUrlWithoutSort + '&sort=' + 1}'">-->
-<!--    <option  value="UNSORTED" th:selected="${sort == 'UNSORTED '}">UNSORTED</option>-->
-<!--    <option value="asc" th:selected="${sort == 'asc'}">Ascending</option>-->
-<!--    <option value="desc" th:selected="${sort == 'desc'}">Descending</option>-->
-<!--  </select>-->
-</div>
-        <div class="sorting mr-auto">
-          <select>
-            <option value="9">Show 9</option>
-            <option value="1">Show 12</option>
-            <option value="1">Show 15</option>
-          </select>
-        </div>
-
-        <div th:replace="~{fragments/pagination :: pagination(
-          currentPage=${currentPage},
-          totalPages=${totalPages},
-          currentUrlWithoutPage=${currentUrlWithoutPage})}">
-        </div>
-      </div>
-      <!-- End Filter Bar -->
+      <!-- PAGINATION AND SORTING -->
+      <div th:replace="~{fragments/paginationAndSorting :: paginationAndSorting(
+        sortType=${sortType},
+        sortDirection=${sortDirection},
+        currentUrlWithoutSort=${currentUrlWithoutSort},
+        pageSize=${pageSize},
+        currentUrlWithoutSize=${currentUrlWithoutSize},
+        currentPage=${currentPage},
+        totalPages=${totalPages},
+        currentUrlWithoutPage=${currentUrlWithoutPage}
+      )}"></div>
 
       <!-- Start Best Seller -->
       <section class="lattest-product-area pb-40 category-list">
@@ -129,23 +115,17 @@
       </section>
       <!-- End Best Seller -->
 
-      <!-- Start Filter Bar -->
-      <div class="filter-bar d-flex flex-wrap align-items-center">
-        <div class="sorting mr-auto">
-          <select>
-            <option value="1">Show 12</option>
-            <option value="1">Show 12</option>
-            <option value="1">Show 12</option>
-          </select>
-        </div>
-        <!--    PAGINATION    -->
-        <div th:replace="~{fragments/pagination :: pagination(
-          currentPage=${currentPage},
-          totalPages=${totalPages},
-          currentUrlWithoutPage=${currentUrlWithoutPage})}">
-        </div>
-      </div>
-      <!-- End Filter Bar -->
+      <!-- PAGINATION AND SORTING -->
+      <div th:replace="~{fragments/paginationAndSorting :: paginationAndSorting(
+        sortType=${sortType},
+        sortDirection=${sortDirection},
+        currentUrlWithoutSort=${currentUrlWithoutSort},
+        pageSize=${pageSize},
+        currentUrlWithoutSize=${currentUrlWithoutSize},
+        currentPage=${currentPage},
+        totalPages=${totalPages},
+        currentUrlWithoutPage=${currentUrlWithoutPage}
+      )}"></div>
     </div>
   </div>
 </div>
