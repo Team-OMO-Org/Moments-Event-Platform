@@ -35,7 +35,6 @@
                     <br>
                     <!--						-->
                     <ul class="list">
-                        <!--			ToDo: make ticket count colored and disabled -> css and aria for disabled most likely				-->
                         <li><a class="active" th:href="${' mailto: ' + customerDto.profileEmail}"><span>E-mail</span>
                             <th:block th:text="${' : ' + customerDto.profileEmail}"></th:block></a></li>
                         <li><a class="active" th:href="${#strings.startsWith(customerDto.profileSiteUrl, 'http') ? customerDto.profileSiteUrl : 'http://' + customerDto.profileSiteUrl}">
@@ -46,7 +45,7 @@
                     <p th:text="${customerDto.profileDescription}">Placeholder text</p>
                     <br>
                     <div class="card_area d-flex align-items-center">
-                        <a class="primary-btn" href="#">Edit profile</a>
+                        <a class="primary-btn" th:href="${'/profile/update/' + customerDto.id()}">Edit profile</a>
                    </div>
                     <br>
                 </div>

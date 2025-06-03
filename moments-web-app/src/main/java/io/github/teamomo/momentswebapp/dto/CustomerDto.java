@@ -17,14 +17,14 @@ public record CustomerDto(
     @Email(message = "Profile email must be a valid email address")
     String profileEmail,
 
-    @Size(min = 1, max = 255, message = "Profile picture URL size must be between 1 and 255 characters")
+    @Size(max = 255, message = "Profile picture URL size must be between 1 and 255 characters")
     String profilePicture,
 
-    @Size(min = 1, max = 255, message = "Profile site URL size must be between 1 and 255 characters")
+    @Size(max = 255, message = "Profile site URL size must be between 1 and 255 characters")
     @Pattern(regexp = "^(https?://)?[\\w.-]+(?:\\.[\\w\\.-]+)+[/#?]?.*$", message = "Profile site URL must be a valid URL")
     String profileSiteUrl,
 
-    @Size(min = 1, max = 255, message = "Profile description must be between 1 and 255 characters")
+    @Size(max = 500, message = "Profile description must be between 1 and 500 characters")
     String profileDescription,
 
     @NotNull(message = "Customer status cannot be null")

@@ -45,7 +45,7 @@ public class Customer {
   @Column(name = "profile_site_url")
   private String profileSiteUrl;
 
-  @Size(max = 255)
+  @Size(max = 500)
   @Column(name = "profile_description")
   private String profileDescription;
 

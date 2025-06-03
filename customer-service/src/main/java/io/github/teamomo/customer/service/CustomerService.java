@@ -23,6 +23,7 @@ public class CustomerService {
   private final CustomerMapper customerMapper;
 
   // Checks if the user exists in the database by their Keycloak user ID and creates a new user if not.
+ @Transactional
   public Long checkUserByKeycloakId(String keycloakUserId) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

@@ -4,15 +4,21 @@ import io.github.teamomo.momentswebapp.client.BackendClient;
 import io.github.teamomo.momentswebapp.client.CustomerClient;
 import io.github.teamomo.momentswebapp.dto.CategoryDto;
 import io.github.teamomo.momentswebapp.dto.CustomerDto;
+import io.github.teamomo.momentswebapp.dto.DateTimeDto;
 import io.github.teamomo.momentswebapp.dto.MomentDto;
 import io.github.teamomo.momentswebapp.util.CustomerManager;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -52,5 +58,44 @@ public class CustomerController {
     model.addAttribute("customerDto", customerDto);
 
   return "profile";
+  }
+
+  @GetMapping("/profile/update/{id}")
+  public String updateProfileForm(@PathVariable Long id, Model model) {
+
+    log.debug("Retrieving customer info for customer edit profile page from backend");
+    CustomerDto customerDto = customerClient.getCustomerById(id);
+    log.info("Customer info for customer edit profile page from backend: {}",  customerDto);
+    model.addAttribute("customerDto", customerDto);
+
+    return "profile-form";
+  }
+
+  @PostMapping("/profile")
+  public String updateProfile(
+      @ModelAttribute @Valid CustomerDto customerDto,
+      BindingResult bindingResult,
+      Model model) {
+
+    if (bindingResult.hasErrors()) {
+      log.warn("Validation errors occurred: {}", bindingResult.getAllErrors());
+      model.addAttribute("customerDto", customerDto);
+      return "profile-form"; // Return the form view with errors
+    }
+
+    CustomerDto responseDto = null;
+      log.debug("Update profile in backend: {}", customerDto);
+      try {
+        responseDto = customerClient.updateCustomer(customerDto.id(), customerDto);
+      } catch (Exception e) {
+        log.error("Failed to update profile: {}", e.getMessage(), e);
+        model.addAttribute("message", e.getMessage());
+        return "profile-form";
+      }
+      log.info("Complete update moment in backend: {}", responseDto);
+
+
+    return "redirect:/profile";
+
   }
 }

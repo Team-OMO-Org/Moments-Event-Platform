@@ -35,14 +35,14 @@
       <div class="blog_post d-flex">
         <div class="col-lg-5">
           <div class="blog_image">
-            <a href="single-blog.html">
+            <a th:href="@{'/moment/update/' + ${id}}">
               <img th:src="${imagePath}" alt="product image" class="img-fluid">
             </a>
           </div>
         </div>
         <div class="col-lg-7">
           <div class="blog_details">
-            <a href="single-blog.html">
+            <a th:href="@{'/moment/update/' + ${id}}">
               <h2 th:text="${title}">Astronomy Binoculars A Great Alternative</h2>
             </a>
             <br/>
@@ -50,7 +50,7 @@
               understand why you should have to spend money on boot camp when you can get
               the MCSE study materials yourself at a fraction.</p>
             <br/>
-            <a href="single-blog.html" class="orange_bg_btn">Edit Event</a>
+            <a th:href="@{'/moment/update/' + ${id}}" class="orange_bg_btn">Edit Event</a>
           </div>
         </div>
       </div>
