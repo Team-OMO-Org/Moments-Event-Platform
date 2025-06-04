@@ -25,7 +25,7 @@
         <div class="row s_product_inner">
             <div class="col-lg-4">
                     <div class="single-prd-item ">
-                        <img class="img-fluid rounded-circle" th:src="${customerDto.profilePicture}" alt="">
+                        <img class="img-fluid rounded-circle" th:src="${customerDto.profilePicture != null && customerDto.profilePicture != '' ? customerDto.profilePicture : '/img/placeholder/profile.png'}" alt="Profile Image">
                     </div>
              </div>
             <div class="col-lg-7 offset-lg-1">
@@ -37,7 +37,7 @@
                     <ul class="list">
                         <li><a class="active" th:href="${' mailto: ' + customerDto.profileEmail}"><span>E-mail</span>
                             <th:block th:text="${' : ' + customerDto.profileEmail}"></th:block></a></li>
-                        <li><a class="active" th:href="${#strings.startsWith(customerDto.profileSiteUrl, 'http') ? customerDto.profileSiteUrl : 'http://' + customerDto.profileSiteUrl}">
+                        <li><a class="active" th:href="${customerDto.profileSiteUrl != null ? (#strings.startsWith(customerDto.profileSiteUrl, 'http') ? customerDto.profileSiteUrl : 'http://' + customerDto.profileSiteUrl) : '#'}">
                             <span>Site</span>
                             <th:block th:text="${' : ' + customerDto.profileSiteUrl}"></th:block>
                         </a></li>

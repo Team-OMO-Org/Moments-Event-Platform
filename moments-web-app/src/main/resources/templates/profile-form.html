@@ -72,7 +72,7 @@
               <li class="mb-3 d-flex ">
                 <a class="active col-4"><span>Site:</span></a>
                 <input type="url" id="profileSiteUrl" name="profileSiteUrl" th:field="*{profileSiteUrl}"
-                       class="form-control col-8" required>
+                       class="form-control col-8">
                 <div class="text-danger" th:if="${#fields.hasErrors('profileSiteUrl')}"
                      th:errors="*{profileSiteUrl}"></div>
               </li>

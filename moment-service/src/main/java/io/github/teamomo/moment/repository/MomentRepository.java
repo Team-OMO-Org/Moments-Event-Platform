@@ -28,4 +28,6 @@ public interface MomentRepository extends JpaRepository<Moment, Long>
   Optional<Moment> findByTitleAndStartDate(String title, LocalDateTime startDate);
 
   List<Moment> findByHostId(Long id);
+
+  List<Moment> findByHostIdOrderByIdDesc(Long id);
 }

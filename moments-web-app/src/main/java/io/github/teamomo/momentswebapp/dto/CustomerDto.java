@@ -21,7 +21,7 @@ public record CustomerDto(
     String profilePicture,
 
     @Size(max = 255, message = "Profile site URL size must be between 1 and 255 characters")
-    @Pattern(regexp = "^(https?://)?[\\w.-]+(?:\\.[\\w\\.-]+)+[/#?]?.*$", message = "Profile site URL must be a valid URL")
+    @Pattern(regexp = "^$|^(https?://)?[\\w.-]+(?:\\.[\\w\\.-]+)+[/#?]?.*$", message = "Profile site URL must be a valid URL or empty")
     String profileSiteUrl,
 
     @Size(max = 500, message = "Profile description must be between 1 and 500 characters")
