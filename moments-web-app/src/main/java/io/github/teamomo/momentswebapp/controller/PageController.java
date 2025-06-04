@@ -90,7 +90,9 @@ public class PageController {
     String fullUrl = queryString != null ? currentUrl + "?" + queryString : currentUrl + "?";
     model.addAttribute("currentUrl", fullUrl);
     log.debug("currentUrl: {}", fullUrl);
+
     // Add url without corresponding query parameter for functionality
+    // PAGE AND SIZE
     String currentUrlWithoutPage = fullUrl.replaceAll("(&)?page=\\d+", "");
     model.addAttribute("currentUrlWithoutPage", currentUrlWithoutPage);
     String currentUrlWithoutSize = fullUrl.replaceAll("(&)?size=\\d+", "");
