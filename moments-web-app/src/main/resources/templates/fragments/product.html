@@ -1,34 +1,59 @@
 <!-- File: fragments/product.html -->
-<div th:fragment="product(id, imagePath, shortDescription, price, href1, href2, href3, href4)">
-    <div class="single-product">
+<div th:fragment="product(
+  id, imagePath, title, startDate, category, location, price, href1, href2)">
+  <div class="single-product">
+
+    <!-- optional gray, border: 1px solid #bdb8b8  -->
+    <div class="product-details p-2"
+         style="
+         border: 1px solid #fbbf6d;
+         border-radius: 0.5rem;
+         margin: 0px;
+         "
+    >
+
+      <div class="d-flex justify-content-end align-items-center">
+        <span class="font-weight-bold" th:text="${startDate}">startDate</span>
+      </div>
+
+      <h6 th:text="${title}">title</h6>
 
       <a th:href="@{'/moment/' + ${moment.id}}">
-        <img class="img-fluid" th:src="${imagePath}" alt="product image"/>
+        <img class="img-fluid" th:src="${imagePath}" alt="product image" />
       </a>
-      <div class="product-details">
-        <h6 th:text="${shortDescription}">Product Description</h6>
+
+      <div class="d-flex justify-content-left align-items-center" style="margin: -12px 0 -3px 0">
+        <p class="btn btn-secondary small py-0 px-1"
+           style="background-color: rgb(119,142,219)" th:text="${category}">category</p>
+        <p class="ml-2 btn btn-secondary small py-0 px-1"
+           style="background-color:  rgb(119,142,219)"
+           th:text="${location}">location</p>
+      </div>
+
+      <div class="d-flex justify-content-end align-items-center mb-1">
         <div class="price">
-          <h6 th:text="${price}">$0.00</h6>
-          <!--        <h6 class="l-through">$210.00</h6>-->
+          <h6 class="font-weight-bold"
+              style="
+                color: orange;
+                font-size: 1.25rem;"
+              th:text="${price}">$0.00</h6>
         </div>
+      </div>
+
+      <div class="d-flex justify-content-start align-items-center"
+           style="margin: -10px 0 -3px 0">
         <div class="prd-bottom">
           <a th:href="${href1}" class="social-info">
             <span class="ti-bag"></span>
-            <p class="hover-text">add to bag</p>
+            <p class="hover-text">add to cart</p>
           </a>
           <a th:href="${href2}" class="social-info">
-            <span class="lnr lnr-heart"></span>
-            <p class="hover-text">Wishlist</p>
-          </a>
-          <a th:href="${href3}" class="social-info">
-            <span class="lnr lnr-sync"></span>
-            <p class="hover-text">compare</p>
-          </a>
-          <a th:href="${href4}" class="social-info">
             <span class="lnr lnr-move"></span>
             <p class="hover-text">view more</p>
           </a>
         </div>
       </div>
+
     </div>
   </div>
+</div>
