@@ -51,38 +51,8 @@ public class CartController {
 
   @GetMapping("/carts/{customerId}")
   public String showCartUpdateForm(@PathVariable Long customerId, Model model) {
-    log.debug("Retrieving cart for cart page from backend");
-    CartDto cartDto = orderClient.getCartByCustomerId(customerId);
-    log.info("Retrieved cart for cart page from backend: {}",
-        cartDto);
 
-    log.debug("Retrieving list of items for cart page from backend");
-    List<CartItemViewDto> items = cartDto.cartItems().stream()
-        .map(cartItem -> {
-          log.debug("Retrieving moment for cart page from backend");
-          MomentDto moment = backendClient.getMomentById(cartItem.momentId());
-          log.info("Retrieved moment for cart page from backend: {}",
-              moment);
-          BigDecimal totalPrice = moment.price().multiply(BigDecimal.valueOf(cartItem.quantity()));
-          return new CartItemViewDto(
-              cartItem.id(),
-              cartItem.cartId(),
-              moment.id(),
-              moment.title(),
-              moment.thumbnail(),
-              moment.price(),
-              cartItem.quantity(),
-              cartItem.isAvailable(),
-              totalPrice);
-        }).toList();
-    log.info("Retrieved list of items for cart page from backend: {}",
-        items);
-
-    BigDecimal subtotal = items.stream()
-        .map(CartItemViewDto::getTotalPrice)
-        .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-    CartViewDto cartViewDto = new CartViewDto(cartDto.id(), customerId, new ArrayList<>(items), subtotal);
+    CartViewDto cartViewDto = getCartViewDto(customerId);
     model.addAttribute("cartView", cartViewDto);
     return "cart";
   }
@@ -166,6 +136,29 @@ public class CartController {
 
   @GetMapping("/carts/{customerId}/checkout")
   public String checkout(@PathVariable Long customerId, Model model){
+
+
+    CartViewDto cartViewDto = getCartViewDto(customerId);
+    model.addAttribute("cartView", cartViewDto);
+    return "order_checkout";
+  }
+
+  @PostMapping("/{customerId}")
+  String placeOrder(@PathVariable Long customerId, Model model){
+
+   /* log.debug("Retrieving order for confirmation page from backend");
+    OrderDto orderDto = orderClient.createOrderByCustomerId(customerId);
+    model.addAttribute("orderDto", orderDto);
+    log.info("Retrieved order for confirmation page from backend: {}",
+        orderDto);*/
+    DateTimeDto dateTimeDto = DateTimeDto.from(LocalDateTime.now());
+    model.addAttribute("dateTimeDto", dateTimeDto);
+
+    return "confirmation";
+  }
+
+  private CartViewDto getCartViewDto(Long customerId) {
+
     log.debug("Retrieving cart for cart page from backend");
     CartDto cartDto = orderClient.getCartByCustomerId(customerId);
     log.info("Retrieved cart for cart page from backend: {}",
@@ -197,25 +190,7 @@ public class CartController {
         .map(CartItemViewDto::getTotalPrice)
         .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-    CartViewDto cartViewDto = new CartViewDto(cartDto.id(), customerId, new ArrayList<>(items), subtotal);
-    model.addAttribute("cartView", cartViewDto);
-    return "order_checkout";
+    return new CartViewDto(cartDto.id(), customerId, new ArrayList<>(items), subtotal);
   }
-
-  @PostMapping("/{customerId}")
-  String placeOrder(@PathVariable Long customerId, Model model){
-
-   /* log.debug("Retrieving order for confirmation page from backend");
-    OrderDto orderDto = orderClient.createOrderByCustomerId(customerId);
-    model.addAttribute("orderDto", orderDto);
-    log.info("Retrieved order for confirmation page from backend: {}",
-        orderDto);*/
-    DateTimeDto dateTimeDto = DateTimeDto.from(LocalDateTime.now());
-    model.addAttribute("dateTimeDto", dateTimeDto);
-
-    return "confirmation";
-  }
-
-
 
 }
