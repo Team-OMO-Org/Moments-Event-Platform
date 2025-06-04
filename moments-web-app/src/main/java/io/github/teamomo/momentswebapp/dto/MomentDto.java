@@ -17,8 +17,6 @@ import lombok.With;
 @Builder
 @With
 public record MomentDto(
-    // ToDo: rename to MomentDetailsResponseDto, also need request Dtp,
-    //  change fields to be able to post a moment and read all MomentDetails
     Long id,
 
     @NotNull(message = "Host ID cannot be null")
@@ -35,10 +33,11 @@ public record MomentDto(
     @Size(min = 1, max = 100, message = "Title must be between 1 and 100 characters")
     String title,
 
-    @Size(min = 1, max = 255, message = "Short description must be between 1 and 255 characters")
+    @Size(max = 255, message = "Short description must be between 1 and 255 characters")
     String shortDescription,
 
     @Size(min = 1, max = 255, message = "Thumbnail URL size must be between 1 and 255 characters")
+    @NotNull
     String thumbnail,
 
     LocalDateTime startDate,
