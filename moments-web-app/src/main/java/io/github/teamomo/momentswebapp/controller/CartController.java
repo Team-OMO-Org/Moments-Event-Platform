@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @Controller
@@ -81,7 +80,7 @@ public class CartController {
 
     CartViewDto cartViewDto = new CartViewDto(cartDto.id(), customerId, new ArrayList<>(items), subtotal);
     model.addAttribute("cartView", cartViewDto);
-    return "cart_test_updateform";
+    return "cart";
   }
 
   @PutMapping("/carts/{customerId}")
@@ -128,7 +127,7 @@ public class CartController {
         cartView.setSubtotal(subtotal);
 
         model.addAttribute("cartView", cartView);
-        return "cart_test_updateform";
+        return "cart";
       }
 
     log.info("cartView items BEFORE mapping:");
