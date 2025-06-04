@@ -101,15 +101,21 @@ public class PageController {
     model.addAttribute("currentUrlWithoutSort",currentUrlWithoutSort);
     // capture sort parameter of the current request
     String sort = request.getParameter("sort");
-    log.info("sort parameter: {}", sort);
+    log.debug("sort parameter: {}", sort);
     sort = sort == null || sort.equalsIgnoreCase("UNSORTED") ? "startDate,asc" : sort;
     String sortArray[] = sort.split(",");
     String sortType = sortArray[0];
     String sortDirection = sortArray[1];
-
     // add to model
     model.addAttribute("sortType", sortType);
     model.addAttribute("sortDirection", sortDirection);
-    // log sort type and direction
+
+    // CATEGORIES
+    String currentUrlWithoutCategory = fullUrl.replaceAll("(&)?category=[^&]*", "");
+    model.addAttribute("currentUrlWithoutCategory",currentUrlWithoutCategory);
+
+    // CITIES
+    String currentUrlWithoutLocation = fullUrl.replaceAll("(&)?location=[^&]*", "");
+    model.addAttribute("currentUrlWithoutLocation",currentUrlWithoutLocation);
   }
 }

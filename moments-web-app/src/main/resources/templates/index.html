@@ -25,16 +25,21 @@
 
 
       <div class="sidebar-categories">
-        <a th:href="@{/}">
-          <div class="head">Categories</div>
-        </a>
+        <div class="head">
+          <div class="d-flex justify-content-between align-items-center">
+            <span>Categories</span>
+            <a class="btn bg-light text-secondary small px-3 py-0"
+               th:href="${currentUrlWithoutCategory}">
+              Clear
+            </a>
+          </div>
+        </div>
         <ul class="main-categories">
 
-          <!--     ToDo: Clear filter     -->
           <div th:each="category : ${categories}">
             <!-- SINGLE CATEGORY ITEM-->
             <div th:replace="~{fragments/index/category-item :: categoryItem(
-              href=${'?category=' + category.categoryName()},
+              href=${currentUrlWithoutCategory + '&category=' + category.categoryName()},
               title=${category.categoryName()},
               count=${category.momentCount()})}">
             </div>
@@ -44,15 +49,21 @@
       </div>
 
       <div class="sidebar-categories">
-        <a th:href="@{/}">
-          <div class="head">Cities</div>
-        </a>
+          <div class="head">
+            <div class="d-flex justify-content-between align-items-center">
+              <span>Cities</span>
+              <a class="btn bg-light text-secondary small px-3 py-0"
+                 th:href="${currentUrlWithoutLocation}">
+                Clear
+              </a>
+            </div>
+          </div>
         <ul class="main-categories">
 
           <!--     ToDo: Clear filter     -->
           <div th:each="city : ${cities}">
             <div th:replace="~{fragments/index/category-item :: categoryItem(
-              href=${'?location=' + city.cityName()},
+              href=${currentUrlWithoutLocation + '&location=' + city.cityName()},
               title=${city.cityName()},
               count=${city.momentCount()})}">
             </div>
@@ -62,8 +73,15 @@
       </div>
 
       <!--   PRODUCT FILTER SECTION    -->
-      <div class="sidebar-filter mt-50">
-        <div class="top-filter-head">Filters</div>
+      <div class="sidebar-filter">
+        <div class="top-filter-head">
+          <div class="d-flex justify-content-between align-items-center">
+            <span>Filters</span>
+            <a class="btn bg-light text-secondary small px-3 py-0" th:href="@{/}">
+              Clear
+            </a>
+          </div>
+        </div>
 
         <!--   PRICE FILTER    -->
         <div class="common-filter">
