@@ -16,7 +16,7 @@
         <span class="font-weight-bold" th:text="${startDate}">startDate</span>
       </div>
 
-      <h6 th:text="${title}">title</h6>
+      <h6 style="color: darkorange; font-weight: bold" th:text="${title}">title</h6>
 
       <a th:href="@{'/moment/' + ${moment.id}}">
         <img class="img-fluid" th:src="${imagePath}" alt="product image" />
@@ -35,7 +35,7 @@
           <h6 class="font-weight-bold"
               style="
                 color: orange;
-                font-size: 1.25rem;"
+                font-size: 1.12rem;"
               th:text="${price}">$0.00</h6>
         </div>
       </div>

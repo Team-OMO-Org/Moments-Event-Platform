@@ -12,7 +12,7 @@
   <div class="filter-bar d-flex flex-wrap align-items-center">
     <!--   SORTING CONTROL     -->
     <div class="sorting">
-      <select name="sortType"
+      <select class="rounded" name="sortType"
               th:attr="onchange=|window.location.href = '${currentUrlWithoutSort}&sort=' + this.value + ',${sortDirection}'|">
         <option value="startDate" th:selected="${sortType == 'startDate'}">Date</option>
         <option value="category" th:selected="${sortType == 'category'}">Category</option>
@@ -24,7 +24,7 @@
     </div>
 
     <div class="sorting">
-      <select name="sortDirection"
+      <select class="rounded" name="sortDirection"
               th:attr="onchange=|window.location.href = '${currentUrlWithoutSort}&sort=${sortType},' + this.value|">
         <option value="asc" th:selected="${sortDirection == 'asc'}">Ascending</option>
         <option value="desc" th:selected="${sortDirection == 'desc'}">Descending</option>
@@ -32,7 +32,7 @@
     </div>
 
     <div class="sorting mr-auto">
-      <select name="pageSize"
+      <select class="rounded" name="pageSize"
               th:attr="onchange=|window.location.href = '${currentUrlWithoutSize}&size=' + this.value|">
         <option value="9" th:selected="${pageSize == 9}">Show 9</option>
         <option value="12" th:selected="${pageSize == 12}">Show 12</option>

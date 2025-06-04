@@ -115,9 +115,13 @@ public class PageController {
     // CATEGORIES
     String currentUrlWithoutCategory = fullUrl.replaceAll("(&)?category=[^&]*", "");
     model.addAttribute("currentUrlWithoutCategory",currentUrlWithoutCategory);
+    String category = request.getParameter("category");
+    model.addAttribute("categorySelected", category);
 
     // CITIES
     String currentUrlWithoutLocation = fullUrl.replaceAll("(&)?location=[^&]*", "");
     model.addAttribute("currentUrlWithoutLocation",currentUrlWithoutLocation);
+    String location = request.getParameter("location");
+    model.addAttribute("locationSelected", location);
   }
 }
