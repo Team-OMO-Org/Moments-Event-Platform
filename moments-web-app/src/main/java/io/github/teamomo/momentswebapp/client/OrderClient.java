@@ -3,10 +3,10 @@ package io.github.teamomo.momentswebapp.client;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import io.github.teamomo.momentswebapp.dto.CartDto;
+import io.github.teamomo.momentswebapp.dto.OrderDto;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.jaxb.SpringDataJaxb.OrderDto;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +32,6 @@ public interface OrderClient {
   @PutExchange("/carts/{customerId}")
   CartDto updateCart(@PathVariable Long customerId, @Valid @RequestBody CartDto cartDto);
 
-  @PostMapping("/{customerId}")
+  @PostExchange("/{customerId}")
   OrderDto createOrderByCustomerId(@PathVariable Long customerId);
 }

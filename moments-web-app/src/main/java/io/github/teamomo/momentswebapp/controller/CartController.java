@@ -6,9 +6,12 @@ import io.github.teamomo.momentswebapp.dto.CartDto;
 import io.github.teamomo.momentswebapp.dto.CartItemInfoDto;
 import io.github.teamomo.momentswebapp.dto.CartItemViewDto;
 import io.github.teamomo.momentswebapp.dto.CartViewDto;
+import io.github.teamomo.momentswebapp.dto.DateTimeDto;
 import io.github.teamomo.momentswebapp.dto.MomentDto;
+import io.github.teamomo.momentswebapp.dto.OrderDto;
 import jakarta.validation.Valid;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -200,9 +203,19 @@ public class CartController {
   }
 
   @PostMapping("/{customerId}")
-  String placeOrder(@PathVariable Long customerId){
+  String placeOrder(@PathVariable Long customerId, Model model){
+
+   /* log.debug("Retrieving order for confirmation page from backend");
+    OrderDto orderDto = orderClient.createOrderByCustomerId(customerId);
+    model.addAttribute("orderDto", orderDto);
+    log.info("Retrieved order for confirmation page from backend: {}",
+        orderDto);*/
+    DateTimeDto dateTimeDto = DateTimeDto.from(LocalDateTime.now());
+    model.addAttribute("dateTimeDto", dateTimeDto);
 
     return "confirmation";
   }
+
+
 
 }
