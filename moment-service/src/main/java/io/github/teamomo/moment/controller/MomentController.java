@@ -104,6 +104,51 @@ public class MomentController {
   }
 
   @Operation(
+      summary = "Retrieve all moments by host ID",
+      description = "This endpoint retrieves a list of moments associated with a specific host ID.",
+      tags = {"Moments"},
+      parameters = {
+          @Parameter(
+              name = "id",
+              description = "The ID of the host whose moments are to be retrieved",
+              required = true,
+              example = "1"
+          )
+      },
+      responses = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "HTTP Status OK - Moments retrieved successfully"
+          ),
+          @ApiResponse(
+              responseCode = "404",
+              description = "HTTP Status Not Found - No moments found for the given host ID",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          ),
+          @ApiResponse(
+              responseCode = "500",
+              description = "HTTP Status Internal Server Error",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          )
+      }
+  )
+  @GetMapping("/host/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  public List<MomentDto> getMomentsByHostId(@PathVariable Long id)
+  {
+    logger.info("Fetching all moments for host_id: {}", id);
+    List<MomentDto> momentsDto = momentService.getMomentsByHostId(id);
+    logger.info("Successfully fetched {} moments for host_id: {}", momentsDto.size(), id);
+
+    return momentsDto;
+
+  }
+
+  @Operation(
       summary = "Create a new moment",
       description = "This endpoint allows you to create a new moment by providing the necessary details in the request body.",
       tags = {"Moments"}

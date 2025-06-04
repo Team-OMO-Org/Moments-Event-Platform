@@ -133,6 +133,7 @@ public class MomentController {
       log.info("Complete update moment in backend: {}", momentDtoResponse);
     }
 
-    return "redirect:/moment/" + momentDtoResponse.id();
+    //return "redirect:/moment/" + momentDtoResponse.id();
+    return "redirect:/events";
   }
 }

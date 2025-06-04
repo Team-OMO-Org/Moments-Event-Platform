@@ -41,7 +41,8 @@
         <div class="col-lg-6">
           <!--          <div class="s_Product_carousel">-->
           <div class="single-prd-item">
-            <img class="img-fluid" th:src="${momentDto.thumbnail}" alt="">
+            <!--img class="img-fluid" th:src="${momentDto.thumbnail}" alt=""-->
+            <img class="img-fluid" th:src="${momentDto.thumbnail != null && momentDto.thumbnail != '' ? momentDto.thumbnail : '/img/placeholder/event.png'}" alt="Event Image">
           </div>
           <!--			ToDo: add more images or remove-->
           <!--            <div class="single-prd-item">-->
@@ -51,12 +52,14 @@
           <!--              <img class="img-fluid" th:src="${momentDto.thumbnail}" alt="">-->
           <!--            </div>-->
           <!--          </div>-->
-          <div class="my-3">
-            <label for="thumbnail" class="form-label moment_label">Image URL:</label>
-            <input type="url" id="thumbnail" name="thumbnail" th:field="*{thumbnail}"
-                   class="form-control">
-            <div class="text-danger" th:if="${#fields.hasErrors('thumbnail')}"
-                 th:errors="*{thumbnail}"></div>
+          <div class="image_url">
+            <div class="my-3">
+              <label for="thumbnail" class="form-label moment_label">Image URL:</label>
+              <input type="url" id="thumbnail" name="thumbnail" th:field="*{thumbnail}"
+                     class="form-control">
+              <div class="text-danger" th:if="${#fields.hasErrors('thumbnail')}"
+                   th:errors="*{thumbnail}"></div>
+            </div>
           </div>
         </div>
 

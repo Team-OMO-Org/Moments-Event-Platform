@@ -45,6 +45,9 @@ public interface BackendClient {
       @RequestParam(required = false, defaultValue = "startDate") String sort
   );
 
+  @GetExchange("/host/{id}")
+  List<MomentDto> getMomentsByHostId(@PathVariable Long id);
+
   @GetExchange("/categories")
   List<CategoryDto> getAllCategoriesByMomentsCount();
 

@@ -178,4 +178,14 @@ public class MomentService {
     return momentRepository.findById(momentId)
         .orElseThrow(() -> new ResourceNotFoundException("Moment", "Id", momentId.toString()));
   }
+
+  public List<MomentDto> getMomentsByHostId(Long id) {
+    List<Moment> moments = momentRepository.findByHostId(id);
+    if (moments.isEmpty()) {
+      throw new ResourceNotFoundException("Moments list", "Host_Id" , id.toString());
+    }
+    return moments.stream()
+        .map(momentMapper::toDto)
+        .toList();
+  }
 }

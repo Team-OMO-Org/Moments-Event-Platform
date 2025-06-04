@@ -95,7 +95,7 @@
   background: linear-gradient(270deg, #ffba00 0%, #ff6c00 100%);
 }
 
-.gradient-color, .s_product_text h2,  .categories_post h2, .s_product_text .list li a.active, .product_description_area .tab-content .total_rate .box_total h4, .single-footer-widget .bb-btn {
+.gradient-color, .s_product_text h2, .s_product_text .list li a.active, .product_description_area .tab-content .total_rate .box_total h4, .single-footer-widget .bb-btn {
   background: -webkit-linear-gradient(90deg, #ffba00 0%, #ff6c00 100%);
   background: -moz-linear-gradient(90deg, #ffba00 0%, #ff6c00 100%);
   background: -o-linear-gradient(90deg, #ffba00 0%, #ff6c00 100%);
@@ -110,9 +110,9 @@
   position: relative;
   overflow: hidden;
   color: #fff;
-  padding: 0 38px;
-  line-height: 38px;
-  border-radius: 5px;
+  padding: 0 30px;
+  line-height: 50px;
+  border-radius: 50px;
   display: inline-block;
   text-transform: uppercase;
   font-weight: 500;
@@ -1261,8 +1261,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .form-select .nice-select {
+  border: none;
+  border-radius: 0px;
   height: 40px;
   background: #f9f9ff;
+  padding-left: 45px;
   padding-right: 40px;
   width: 100%;
 }
@@ -5452,10 +5455,6 @@ label {
   padding-top: 50px;
 }
 
-.product_image_area  .image_url{
-  margin-top: 70px;
-}
-
 .s_Product_carousel .owl-dots {
   position: absolute;
   right: 20px;
@@ -5475,22 +5474,6 @@ label {
 
 .s_Product_carousel .owl-dots div.active {
   width: 30px;
-}
-
-.moment_label {
-  font-size: 15px;
-  font-family: "Roboto", sans-serif;
-  font-weight: normal;
-  color: #5C3F1A;
-  -webkit-text-fill-color: #5C3F1A;
-}
-
-.profile_label {
-  font-size: 15px;
-  font-family: "Roboto", sans-serif;
-  font-weight: normal;
-  color: #5C3F1A;
-  -webkit-text-fill-color: #5C3F1A;
 }
 
 .s_product_text {
@@ -5550,8 +5533,6 @@ label {
   border-top: 1px dotted #d5d5d5;
   margin-top: 20px;
 }
-
-
 
 .s_product_text .card_area .primary-btn {
   line-height: 38px;
@@ -5647,7 +5628,7 @@ label {
 }
 
 .product_description_area {
-  padding-bottom: 50px;
+  padding-bottom: 120px;
   margin-top: 30px;
 }
 
@@ -5758,10 +5739,6 @@ label {
 
 .product_description_area .tab-content .table {
   margin-bottom: 0px;
-}
-
-.product_description_area .tab-content textarea {
-  height: 120px;
 }
 
 .product_description_area .tab-content .table tbody tr td {
@@ -7123,52 +7100,17 @@ label {
 }
 
 /*========= blog_categorie_area css ===========*/
+
+
 .blog_categorie_area {
-  padding-top: 40px;
-  padding-bottom: 0;
-}
-
-.blog_categorie_area .primary-btn {
-  line-height: 38px;
-  text-transform: uppercase;
-  margin-left: 20px;
-  padding: 0px 23px;
-  border-radius: 5px;
-}
-
-.blog_post .orange_bg_btn {
-  border: 1px solid #eeeeee;
-  text-transform: uppercase;
-  font-size: 12px;
-  padding: 0 30px;
-  line-height: 34px;
-  display: inline-block;
-  background: #ffba00;
-  color: #eeeeee;
+  padding-top: 80px;
+  padding-bottom: 80px;
 }
 
 .categories_post {
   position: relative;
   text-align: center;
   cursor: pointer;
-}
-
-.categories_post h2 {
-  font-size: 30px;
-  font-weight: bold;
-  margin-bottom: 15px;
-  margin-left: 25px;
-}
-
-.categories_post .orange_bg_btn {
-  border: 1px solid #eeeeee;
-  text-transform: uppercase;
-  font-size: 12px;
-  padding: 0 30px;
-  line-height: 34px;
-  display: inline-block;
-  background: #ffba00;
-  color: #eeeeee;
 }
 
 .categories_post img {
@@ -7215,14 +7157,14 @@ label {
 .categories_post:hover .categories_details {
   background: rgba(255, 186, 0, 0.8);
 }
-
+*/
 /*============ blog_left_sidebar css ==============*/
 .blog_item {
   margin-bottom: 40px;
 }
 
 .blog_info {
-  padding-top: 20px;
+  padding-top: 30px;
 }
 
 .blog_info .post_tag {
@@ -7259,10 +7201,6 @@ label {
   vertical-align: middle;
 }
 
-.blog_info .blog_meta li a.active {
-  color: #ffba00;
-}
-
 .blog_info .blog_meta li a:hover {
   color: #ffba00;
 }
@@ -7271,22 +7209,17 @@ label {
   max-width: 100%;
 }
 
-.blog_post .orange_bg_btn {
+.blog_post .white_bg_btn {
   border: 1px solid #eeeeee;
   text-transform: uppercase;
   font-size: 12px;
   padding: 0 30px;
   line-height: 34px;
   display: inline-block;
-  background: #ffba00;
-  color: #eeeeee;
+  color: #222222;
 }
 
 .blog_details {
-  padding-top: 20px;
-}
-
-.blog_image {
   padding-top: 20px;
 }
 
@@ -8264,11 +8197,3 @@ label {
 }
 
 /*# sourceMappingURL=main.css.map */
-
-.not-available {
-  background-color: #e7e7e7; /* Light red background */
-  opacity: 0.7; /* Slightly faded */
-}
-.text-muted {
-  color: #6c757d; /* Gray text */
-}
