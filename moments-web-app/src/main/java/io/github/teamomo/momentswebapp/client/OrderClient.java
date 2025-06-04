@@ -6,7 +6,9 @@ import io.github.teamomo.momentswebapp.dto.CartDto;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.jaxb.SpringDataJaxb.OrderDto;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.DeleteExchange;
 import org.springframework.web.service.annotation.GetExchange;
@@ -28,5 +30,8 @@ public interface OrderClient {
   void deleteCart(@PathVariable Long customerId);
 
   @PutExchange("/carts/{customerId}")
-  public CartDto updateCart(@PathVariable Long customerId, @Valid @RequestBody CartDto cartDto);
+  CartDto updateCart(@PathVariable Long customerId, @Valid @RequestBody CartDto cartDto);
+
+  @PostMapping("/{customerId}")
+  OrderDto createOrderByCustomerId(@PathVariable Long customerId);
 }

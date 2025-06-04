@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @Controller
@@ -158,6 +159,50 @@ public class CartController {
     orderClient.updateCart(customerId, cartDto);
 
     return "redirect:/carts/" + customerId;
+  }
+
+  @GetMapping("/carts/{customerId}/checkout")
+  public String checkout(@PathVariable Long customerId, Model model){
+    log.debug("Retrieving cart for cart page from backend");
+    CartDto cartDto = orderClient.getCartByCustomerId(customerId);
+    log.info("Retrieved cart for cart page from backend: {}",
+        cartDto);
+
+    log.debug("Retrieving list of items for cart page from backend");
+    List<CartItemViewDto> items = cartDto.cartItems().stream()
+        .map(cartItem -> {
+          log.debug("Retrieving moment for cart page from backend");
+          MomentDto moment = backendClient.getMomentById(cartItem.momentId());
+          log.info("Retrieved moment for cart page from backend: {}",
+              moment);
+          BigDecimal totalPrice = moment.price().multiply(BigDecimal.valueOf(cartItem.quantity()));
+          return new CartItemViewDto(
+              cartItem.id(),
+              cartItem.cartId(),
+              moment.id(),
+              moment.title(),
+              moment.thumbnail(),
+              moment.price(),
+              cartItem.quantity(),
+              cartItem.isAvailable(),
+              totalPrice);
+        }).toList();
+    log.info("Retrieved list of items for cart page from backend: {}",
+        items);
+
+    BigDecimal subtotal = items.stream()
+        .map(CartItemViewDto::getTotalPrice)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    CartViewDto cartViewDto = new CartViewDto(cartDto.id(), customerId, new ArrayList<>(items), subtotal);
+    model.addAttribute("cartView", cartViewDto);
+    return "order_checkout";
+  }
+
+  @PostMapping("/{customerId}")
+  String placeOrder(@PathVariable Long customerId){
+
+    return "confirmation";
   }
 
 }
