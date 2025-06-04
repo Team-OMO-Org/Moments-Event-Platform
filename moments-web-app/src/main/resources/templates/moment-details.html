@@ -23,19 +23,19 @@
 	<div class="product_image_area">
 		<div class="container">
 			<div class="row s_product_inner">
-				<div class="col-lg-6">
-					<div class="s_Product_carousel">
+				<div class="col-lg-6 mb-3 mb-lg-0">
+<!--					<div class="s_Product_carousel">-->
 						<div class="single-prd-item">
 							<img class="img-fluid" th:src="${momentDto.thumbnail}" alt="">
 						</div>
 <!--			ToDo: add more images or remove-->
-						<div class="single-prd-item">
-							<img class="img-fluid" th:src="${momentDto.thumbnail}" alt="">
-						</div>
-						<div class="single-prd-item">
-							<img class="img-fluid" th:src="${momentDto.thumbnail}" alt="">
-						</div>
-					</div>
+<!--						<div class="single-prd-item">-->
+<!--							<img class="img-fluid" th:src="${momentDto.thumbnail}" alt="">-->
+<!--						</div>-->
+<!--						<div class="single-prd-item">-->
+<!--							<img class="img-fluid" th:src="${momentDto.thumbnail}" alt="">-->
+<!--						</div>-->
+<!--					</div>-->
 				</div>
 				<div class="col-lg-5 offset-lg-1">
 					<div class="s_product_text">
@@ -44,7 +44,6 @@
 						<h4 th:text="${startDate}">Start Date</h4>
 
 						<ul class="list">
-<!--			ToDo: make ticket count colored and disabled -> css and aria for disabled most likely				-->
 							<li><a class="active" href="#"><span>Category</span>
 								<th:block th:text="${' : ' + category.categoryName}"></th:block></a></li>
 							<li><a class="active" href="#"><span>Available tickets</span>
@@ -59,20 +58,26 @@
 						<p th:text="${momentDto.shortDescription}">Placeholder text</p>
 
 
-						<h2 th:text="${'€' + momentDto.price}">€0.00</h2>
+						<div class="row">
+							<span class="col-4 moment_label">Ticket Price:</span>
+							<h2 class="col-6" th:text="${'€' + momentDto.price}">€0.00</h2>
+						</div>
 
 						<div class="product_count">
-<!--							<label for="qty">Quantity:</label>-->
-							<input type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:" class="input-text qty">
-							<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+              <div class="row">
+								<span class="col-6 moment_label">Quantity:</span>
+								<input class="col-6 w-100 input-text qty border text-center" type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:">
+              </div>
+                <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
 							 class="increase items-count" type="button"><i class="lnr lnr-chevron-up"></i></button>
 							<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
 							 class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button>
 						</div>
 						<div class="card_area d-flex align-items-center">
 							<a class="primary-btn" href="#">Add to Cart</a>
-							<a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a>
-							<a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>
+							<a class="primary-btn" href="#">Direct buy</a>
+<!--							<a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a>-->
+<!--							<a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>-->
 						</div>
 					</div>
 				</div>
@@ -86,92 +91,56 @@
 		<div class="container">
 			<ul class="nav nav-tabs" id="myTab" role="tablist">
 				<li class="nav-item">
-					<a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Description</a>
+					<a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Description</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
-					 aria-selected="false">Specification</a>
+					<a class="nav-link" id="location-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
+             aria-selected="false">Location</a>
 				</li>
-				<li class="nav-item">
-					<a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
-					 aria-selected="false">Comments</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link active" id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review"
-					 aria-selected="false">Reviews</a>
-				</li>
+<!--				<li class="nav-item">-->
+<!--					<a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"-->
+<!--					 aria-selected="false">Comments</a>-->
+<!--				</li>-->
+<!--				<li class="nav-item">-->
+<!--					<a class="nav-link" id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review"-->
+<!--					 aria-selected="false">Reviews</a>-->
+<!--				</li>-->
 			</ul>
 			<div class="tab-content" id="myTabContent">
-				<div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
+				<div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
 					<p th:text="${momentDto.momentDetails.description}">Placeholder for long description</p>
 				</div>
-				<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+				<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="location-tab">
 					<div class="table-responsive">
 						<table class="table">
 							<tbody>
+<!--                <tr style="display: none;">-->
+<!--                  <td>-->
+<!--                    <h5>Location ID</h5>-->
+<!--                  </td>-->
+<!--                  <td>-->
+<!--                    <h5 th:text="${momentDto.location.id}"></h5>-->
+<!--                  </td>-->
+<!--                </tr>-->
 								<tr>
+									<td></td>
 									<td>
-										<h5>Width</h5>
+										<h5>City</h5>
 									</td>
 									<td>
-										<h5>128mm</h5>
+										<h5 th:text="${momentDto.location.city}"></h5>
 									</td>
+									<td></td>
 								</tr>
 								<tr>
+									<td></td>
 									<td>
-										<h5>Height</h5>
+										<h5>Address</h5>
 									</td>
 									<td>
-										<h5>508mm</h5>
+										<h5 th:text="${momentDto.location.address}"></h5>
 									</td>
-								</tr>
-								<tr>
-									<td>
-										<h5>Depth</h5>
-									</td>
-									<td>
-										<h5>85mm</h5>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<h5>Weight</h5>
-									</td>
-									<td>
-										<h5>52gm</h5>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<h5>Quality checking</h5>
-									</td>
-									<td>
-										<h5>yes</h5>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<h5>Freshness Duration</h5>
-									</td>
-									<td>
-										<h5>03days</h5>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<h5>When packeting</h5>
-									</td>
-									<td>
-										<h5>Without touch of hand</h5>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<h5>Each Box contains</h5>
-									</td>
-									<td>
-										<h5>60pcs</h5>
-									</td>
+									<td></td>
 								</tr>
 							</tbody>
 						</table>
@@ -260,7 +229,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="tab-pane fade show active" id="review" role="tabpanel" aria-labelledby="review-tab">
+				<div class="tab-pane fade" id="review" role="tabpanel" aria-labelledby="review-tab">
 					<div class="row">
 						<div class="col-lg-6">
 							<div class="row total_rate">

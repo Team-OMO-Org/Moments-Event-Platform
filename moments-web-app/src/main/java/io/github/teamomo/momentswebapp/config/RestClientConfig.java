@@ -4,6 +4,7 @@ import static org.springframework.security.oauth2.client.web.client.RequestAttri
 
 import io.github.teamomo.momentswebapp.client.BackendClient;
 import io.github.teamomo.momentswebapp.client.OrderClient;
+import io.github.teamomo.momentswebapp.client.CustomerClient;
 import java.time.Duration;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -73,6 +74,27 @@ public class RestClientConfig {
         return factory.createClient(OrderClient.class);
     }
 
+    @Bean
+    public CustomerClient customerClient(OAuth2AuthorizedClientManager manager) {
+        OAuth2ClientHttpRequestInterceptor oauth2Interceptor =
+            new OAuth2ClientHttpRequestInterceptor(manager);
+
+        RestClient restClient = RestClient.builder()
+            .baseUrl(backendUrl)
+            .requestFactory(getClientRequestFactory())  // to define timeouts
+            .requestInterceptor(oauth2Interceptor)  // adds JWT token to the request
+            .requestInterceptor(new LoggingInterceptor()) // Add the logging interceptor
+            .defaultRequest(r ->
+                r.attributes(clientRegistrationId(clientId))
+            )
+            .build();
+
+        RestClientAdapter adapter = RestClientAdapter.create(restClient);
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
+
+        return factory.createClient(CustomerClient.class);
+    }
+
     // define timeouts for RestClient connection
     private ClientHttpRequestFactory getClientRequestFactory() {
         ClientHttpRequestFactorySettings settings = ClientHttpRequestFactorySettings.DEFAULTS
@@ -80,5 +102,4 @@ public class RestClientConfig {
                 .withReadTimeout(Duration.ofSeconds(3));
         return ClientHttpRequestFactories.get(settings);
     }
-
 }

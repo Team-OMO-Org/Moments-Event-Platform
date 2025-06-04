@@ -14,20 +14,21 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
+import org.springframework.web.service.annotation.PostExchange;
+import org.springframework.web.service.annotation.PutExchange;
 
 @HttpExchange("/api/v1/moments")
 @CircuitBreaker(name = "backend")
 @Retry(name = "backend")
 public interface BackendClient {
 
-  Logger logger = LoggerFactory.getLogger(BackendClient.class);
+  Logger log = LoggerFactory.getLogger(BackendClient.class);
 
   @GetExchange
   PageResponse<MomentResponseDto> getAllMoments(
@@ -55,6 +56,24 @@ public interface BackendClient {
 
   @GetExchange("/categories/{id}")
   CategoryDto getCategoryById(@PathVariable Long id);
+
+  @PostExchange
+  MomentDto addMoment(@RequestBody MomentDto momentDto);
+
+  @PutExchange("/{id}")
+  MomentDto updateMoment(@PathVariable Long id, @RequestBody MomentDto momentDto);
+
+  /**
+   * Retrieves categories from the backend and adds them to the model.
+   *
+   * @param model the model to which categories will be added
+   */
+  default void getCategories(Model model, String endpoint) {
+    log.debug("Retrieving categories from backend for endpoint: {}", endpoint);
+    List<CategoryDto> categories = getAllCategoriesByMomentsCount();
+    log.info("Retrieved categories from backend for endpoint {}: {}", endpoint, categories.size());
+    model.addAttribute("categories", categories);
+  }
 
 //    default boolean fallbackMethod(String skuCode, Integer quantity, Throwable t) {
 //        logger.error("Can not get inventory for skuCode {}, failure reason: {}", skuCode, t

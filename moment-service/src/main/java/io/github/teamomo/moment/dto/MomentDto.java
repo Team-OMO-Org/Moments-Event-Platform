@@ -5,21 +5,16 @@ import io.github.teamomo.moment.entity.Location;
 import io.github.teamomo.moment.entity.MomentDetail;
 import io.github.teamomo.moment.entity.Recurrence;
 import io.github.teamomo.moment.entity.Status;
+import io.github.teamomo.moment.validation.ValidEnum;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Set;
-import validation.ValidEnum;
 
 public record MomentDto(
-    // ToDo: rename to MomentDetailsResponseDto, also need request Dtp,
-    //  change fields to be able to post a moment and read all MomentDetails
     Long id,
 
     @NotNull(message = "Host ID cannot be null")
