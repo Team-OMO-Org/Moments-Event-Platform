@@ -8,15 +8,18 @@
          style="
          border: 1px solid #fbbf6d;
          border-radius: 0.5rem;
-         margin: 0px;
-         "
-    >
+         margin: 0px;">
 
       <div class="d-flex justify-content-end align-items-center">
         <span class="font-weight-bold" th:text="${startDate}">startDate</span>
       </div>
 
-      <h6 style="color: darkorange; font-weight: bold" th:text="${title}">title</h6>
+      <h6 class="rounded py-1 px-2"
+          style="
+            background: linear-gradient(to bottom right, #ea7a02 5%, #ffbf2a 75%);
+            color: white;
+            font-weight: normal;"
+          th:text="${title}">title</h6>
 
       <a th:href="@{'/moment/' + ${moment.id}}">
         <img class="img-fluid" th:src="${imagePath}" alt="product image" />
