@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zxx" class="no-js">
+<head>
+  <!-- Include meta tags -->
+  <th:block th:replace="~{fragments/head :: meta}"/>
+
+  <!-- Page title -->
+  <title>Cart</title>
+
+  <!-- Include common CSS -->
+  <th:block th:replace="~{fragments/head :: common-css}"/>
+</head>
+
+<body>
+
+<!-- Include header -->
+<header th:replace="~{fragments/header :: header}"></header>
+
+<!-- Banner -->
+<div th:replace="~{fragments/banner :: banner('Moments Event Platform', 'Feel The Moment')}"></div>
+
+
+<!--================Cart Area =================-->
+<section class="cart_area">
+  <div class="container">
+    <div class="cart_inner">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+          <tr>
+            <section class="order_details">
+              <div class="container">
+                <h3 class="title_confirmation">Your cart is empty</h3>
+              </div>
+            </section>
+            <!-- TODo: choose one -->
+<!--            <th scope="col" style="text-align: right; font-size: 24px;">Your cart is empty</th>-->
+
+          </tr>
+          </thead>
+          <tbody>
+
+          <!-- Buttons Area -->
+
+          <tr class="bottom_button">
+            <td colspan="4">
+
+            </td>
+
+          </tr>
+
+
+          <tr class="out_button_area">
+            <td>
+
+            </td>
+            <td>
+
+            </td>
+            <td>
+
+            </td>
+            <td>
+              <div class="checkout_btn_inner d-flex align-items-center">
+                <a class="primary-btn" href="#" th:href="@{/index}">Continue Shopping</a>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+<!--================End Cart Area =================-->
+
+<!-- Include footer fragment -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<!-- JS Scripts -->
+<div th:replace="~{fragments/common-scripts}"></div>
+
+</body>
+
+</html>

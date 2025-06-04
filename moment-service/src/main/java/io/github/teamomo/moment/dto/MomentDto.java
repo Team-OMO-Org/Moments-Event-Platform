@@ -15,8 +15,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public record MomentDto(
-    // ToDo: rename to MomentDetailsResponseDto, also need request Dtp,
-    //  change fields to be able to post a moment and read all MomentDetails
     Long id,
 
     @NotNull(message = "Host ID cannot be null")

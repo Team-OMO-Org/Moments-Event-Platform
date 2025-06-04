@@ -8264,3 +8264,11 @@ label {
 }
 
 /*# sourceMappingURL=main.css.map */
+
+.not-available {
+  background-color: #e7e7e7; /* Light red background */
+  opacity: 0.7; /* Slightly faded */
+}
+.text-muted {
+  color: #6c757d; /* Gray text */
+}

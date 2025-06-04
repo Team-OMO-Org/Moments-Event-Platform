@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Update Cart</title>
+</head>
+<body>
+
+<h2>Update Cart (ID: <span th:text="${cartView.id}"></span>)</h2>
+
+<form th:action="@{/carts/{customerId}(customerId=${cartView.customerId})}" th:object="${cartView}" th:method="put">
+
+  <table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+    <tr>
+      <th>Title</th>
+      <th>Price (€)</th>
+      <th>Quantity</th>
+      <th>Total (€)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item, stat : ${cartView.items}">
+      <td th:text="${item.title}"></td>
+
+      <td>
+        <input type="hidden" th:field="*{items[__${stat.index}__].id}" />
+        <input type="hidden" th:field="*{items[__${stat.index}__].cartId}" />
+        <input type="hidden" th:field="*{items[__${stat.index}__].momentId}" />
+        <input type="hidden" th:field="*{items[__${stat.index}__].price}" />
+        <input type="hidden" th:field="*{items[__${stat.index}__].isAvailable}" />
+
+        <input type="number" min="1" th:field="*{items[__${stat.index}__].quantity}" />
+        <div th:if="${#fields.hasErrors('items[' + stat.index + '].quantity')}"
+             th:errors="*{items[__${stat.index}__].quantity}" style="color: red;"></div>
+      </td>
+
+      <td th:text="${item.totalPrice}"></td>
+    </tr>
+    </tbody>
+  </table>
+
+  <br/>
+  <button type="submit">Update Cart</button>
+</form>
+
+</body>
+</html>

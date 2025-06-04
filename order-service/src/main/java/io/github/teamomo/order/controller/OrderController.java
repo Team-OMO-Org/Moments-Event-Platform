@@ -177,5 +177,8 @@ public class OrderController {
     log.info("Cancelled {} tickets for moment with id {}", ticketsToCancel, id);
   }
 
-
+  @GetMapping("/kafka")
+  public void testKafka() {
+    orderService.testKafka();
+  }
 }

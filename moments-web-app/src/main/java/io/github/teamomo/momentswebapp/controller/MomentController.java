@@ -6,6 +6,7 @@ import io.github.teamomo.momentswebapp.dto.DateTimeDto;
 import io.github.teamomo.momentswebapp.dto.MomentDetail;
 import io.github.teamomo.momentswebapp.dto.MomentDto;
 import io.github.teamomo.momentswebapp.entity.Location;
+import io.github.teamomo.momentswebapp.util.CustomerManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class MomentController {
 
   private final BackendClient backendClient;
+  private final CustomerManager customerManager;
 
 
   @GetMapping("/moment/{id}")
@@ -59,10 +61,13 @@ public class MomentController {
 
   @GetMapping("/moment/add")
   public String addMomentForm(Model model, HttpServletRequest request) {
+    Long customerId = customerManager.getCustomerId();
     MomentDto momentDto = MomentDto.builder()
         .momentDetails(new MomentDetail())
         .location(new Location())
+        .hostId(customerId)
         .build();
+
     model.addAttribute("momentDto", momentDto);
 
     DateTimeDto dateTimeDto = DateTimeDto.from(LocalDateTime.now());
@@ -101,7 +106,7 @@ public class MomentController {
     if (bindingResult.hasErrors()) {
       log.warn("Validation errors occurred: {}", bindingResult.getAllErrors());
       model.addAttribute("momentDto", momentDto);
-      return "moment-details-form-raw"; // Return the form view with errors
+      return "moment-details-form"; // Return the form view with errors
     }
 
     momentDto = momentDto.withStartDate(dateTimeDto.toLocalDateTime());
@@ -113,7 +118,7 @@ public class MomentController {
       } catch (Exception e) {
         log.error("Failed to add moment: {}", momentDto, e);
         model.addAttribute("message", e.getMessage());
-        return "moment-details-form-raw";
+        return "moment-details-form";
       }
       log.info("Complete post moment to backend: {}", momentDtoResponse);
     } else {
@@ -123,7 +128,7 @@ public class MomentController {
       } catch (Exception e) {
         log.error("Failed to update moment: {}", e.getMessage(), e);
         model.addAttribute("message", e.getMessage());
-        return "moment-details-form-raw";
+        return "moment-details-form";
       }
       log.info("Complete update moment in backend: {}", momentDtoResponse);
     }
