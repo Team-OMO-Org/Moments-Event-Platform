@@ -79,6 +79,17 @@ public class MomentCustomRepositoryImpl implements MomentCustomRepository {
       parameters.add("%" + search + "%");
     }
 
+    // Sorting logic
+    if (pageable.getSort().isSorted()) {
+      queryBuilder.append(" ORDER BY ");
+      pageable.getSort().forEach(order -> {
+        queryBuilder.append("m.").append(order.getProperty())
+            .append(" ").append(order.getDirection().name()).append(", ");
+      });
+      // Remove trailing comma and space
+      queryBuilder.setLength(queryBuilder.length() - 2);
+    }
+
     TypedQuery<Moment> query = entityManager.createQuery(queryBuilder.toString(), Moment.class);
     for (int i = 0; i < parameters.size(); i++) {
       query.setParameter(i + 1, parameters.get(i));

@@ -1,6 +1,8 @@
 package io.github.teamomo.order.service;
 
 import io.github.teamomo.order.client.MomentClient;
+import io.github.teamomo.order.dto.CartDto;
+import io.github.teamomo.order.dto.CartItemInfoDto;
 import io.github.teamomo.order.dto.OrderDto;
 import io.github.teamomo.order.entity.*;
 import io.github.teamomo.order.exception.CartIsEmptyException;
@@ -39,8 +41,12 @@ class OrderServiceTest {
   @Mock
   private OrderMapper orderMapper;
 
+  @Mock
+  private CartService cartService;
+
   @InjectMocks
   private OrderService orderService;
+
 
   @BeforeEach
   void setUp() {
@@ -50,28 +56,33 @@ class OrderServiceTest {
   @Test
   void shouldThrowExceptionWhenCartIsEmpty() {
     Long customerId = 1L;
+    CartDto cartDto = new CartDto(1L, customerId, List.of()); // Empty cart items
+    Cart cart = new Cart();
+    cart.setCartItems(List.of());
 
-    when(cartRepository.findByCustomerId(customerId)).thenReturn(Optional.of(new Cart()));
+    when(cartService.findCartByCustomerId(customerId)).thenReturn(cartDto);
+    when(orderMapper.toCartEntity(cartDto)).thenReturn(cart);
 
     assertThrows(CartIsEmptyException.class, () -> orderService.createOrderByCustomerId(customerId));
-    verify(cartRepository, times(1)).findByCustomerId(customerId);
+    verify(cartService, times(1)).findCartByCustomerId(customerId);
   }
 
   @Test
   void shouldThrowExceptionWhenCartNotFound() {
     Long customerId = 1L;
 
-    when(cartRepository.findByCustomerId(customerId)).thenReturn(Optional.empty());
+    when(cartService.findCartByCustomerId(customerId)).thenThrow(new ResourceNotFoundException("Cart", "customerId", customerId.toString()));
 
     assertThrows(ResourceNotFoundException.class, () -> orderService.createOrderByCustomerId(customerId));
-    verify(cartRepository, times(1)).findByCustomerId(customerId);
+    verify(cartService, times(1)).findCartByCustomerId(customerId);
   }
 
   @Test
   void shouldCreateOrderSuccessfully() {
     Long customerId = 1L;
+    CartDto cartDto = new CartDto(1L, customerId, List.of(new CartItemInfoDto(1L, 1L, 1L,2, true)));
     Cart cart = new Cart();
-    cart.setCartItems(List.of(new CartItem(1L, cart, 1L,2)));
+    cart.setCartItems(List.of(new CartItem(1L, cart, 1L, 2)));
 
     Order order = new Order();
     order.setId(1L);
@@ -79,12 +90,8 @@ class OrderServiceTest {
 
     OrderDto orderDto = new OrderDto(1L, customerId, OrderStatus.COMPLETED, BigDecimal.TEN, List.of());
 
-    when(cartRepository.findByCustomerId(customerId)).thenReturn(Optional.of(cart));
-    when(momentClient.bookTickets(anyLong(), anyInt())).thenReturn(BigDecimal.TEN);
-    when(orderRepository.save(any(Order.class))).thenReturn(order);
-    when(orderMapper.toDto(any(Order.class))).thenReturn(orderDto);
-
-    when(cartRepository.findByCustomerId(customerId)).thenReturn(Optional.of(cart));
+    when(cartService.findCartByCustomerId(customerId)).thenReturn(cartDto);
+    when(orderMapper.toCartEntity(cartDto)).thenReturn(cart);
     when(momentClient.bookTickets(anyLong(), anyInt())).thenReturn(BigDecimal.TEN);
     when(orderRepository.save(any(Order.class))).thenReturn(order);
     when(orderMapper.toDto(any(Order.class))).thenReturn(orderDto);
@@ -93,7 +100,7 @@ class OrderServiceTest {
 
     assertNotNull(result);
     assertEquals(OrderStatus.COMPLETED, result.orderStatus());
-    verify(cartRepository, times(1)).findByCustomerId(customerId);
+    verify(cartService, times(1)).findCartByCustomerId(customerId);
     verify(momentClient, times(1)).bookTickets(anyLong(), anyInt());
     verify(orderRepository, times(1)).save(any(Order.class));
   }
@@ -101,15 +108,18 @@ class OrderServiceTest {
   @Test
   void shouldCancelOrderWhenTicketBookingFails() {
     Long customerId = 1L;
+    CartDto cartDto = new CartDto(1L, customerId, List.of(new CartItemInfoDto(1L, 1L, 1L,2, true)));
     Cart cart = new Cart();
-    cart.setCartItems(List.of(new CartItem(1L,cart, 1L, 2)));
+    CartItem cartItem = new CartItem(1L, cart, 1L, 2);
+    cart.setCartItems(List.of(cartItem));
 
     Order order = new Order();
     order.setOrderStatus(OrderStatus.CANCELLED);
 
     OrderDto orderDto = new OrderDto(1L, customerId, OrderStatus.CANCELLED, BigDecimal.ZERO, List.of());
 
-    when(cartRepository.findByCustomerId(customerId)).thenReturn(Optional.of(cart));
+    when(cartService.findCartByCustomerId(customerId)).thenReturn(cartDto);
+    when(orderMapper.toCartEntity(cartDto)).thenReturn(cart);
     doThrow(new RuntimeException("Booking failed")).when(momentClient).bookTickets(anyLong(), anyInt());
     when(orderRepository.save(any(Order.class))).thenReturn(order);
     when(orderMapper.toDto(any(Order.class))).thenReturn(orderDto);
@@ -125,18 +135,18 @@ class OrderServiceTest {
   @Test
   void shouldCancelOrderWhenPaymentFails() {
     Long customerId = 1L;
+    CartDto cartDto = new CartDto(1L, customerId, List.of(new CartItemInfoDto(1L, 1L,1L, 2, true)));
     Cart cart = new Cart();
-    cart.setCartItems(List.of(new CartItem(1L, cart, 1L, 2)));
+    CartItem cartItem = new CartItem(1L, cart, 1L, 2);
+    cart.setCartItems(List.of(cartItem));
 
     Order order = new Order();
     order.setOrderStatus(OrderStatus.CANCELLED);
 
     OrderDto orderDto = new OrderDto(1L, customerId, OrderStatus.CANCELLED, BigDecimal.ZERO, List.of());
 
-    when(cartRepository.findByCustomerId(customerId)).thenReturn(Optional.of(cart));
-    when(momentClient.bookTickets(anyLong(), anyInt())).thenReturn(BigDecimal.TEN);
-
-    when(cartRepository.findByCustomerId(customerId)).thenReturn(Optional.of(cart));
+    when(cartService.findCartByCustomerId(customerId)).thenReturn(cartDto);
+    when(orderMapper.toCartEntity(cartDto)).thenReturn(cart);
     when(momentClient.bookTickets(anyLong(), anyInt())).thenReturn(BigDecimal.TEN);
     when(orderRepository.save(any(Order.class))).thenReturn(order);
     when(orderMapper.toDto(any(Order.class))).thenReturn(orderDto);

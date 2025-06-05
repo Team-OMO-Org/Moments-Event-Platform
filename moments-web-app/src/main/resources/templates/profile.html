@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zxx" class="no-js">
+<head>
+    <!-- Include meta tags -->
+    <th:block th:replace="~{fragments/head :: meta}" />
+
+    <!-- Page title -->
+    <title>Moment Details</title>
+
+    <!-- Include common CSS -->
+    <th:block th:replace="~{fragments/head :: common-css}" />
+</head>
+
+<body>
+
+<!-- Include header -->
+<header th:replace="~{fragments/header :: header}"></header>
+
+<!-- Banner -->
+<div th:replace="~{fragments/banner :: banner('Moments Event Platform', 'Feel The Moment')}"></div>
+
+<!--================Single Product Area =================-->
+<div class="product_image_area">
+    <div class="container">
+        <div class="row s_product_inner">
+            <div class="col-lg-4">
+                    <div class="single-prd-item ">
+                        <img class="img-fluid rounded-circle" th:src="${customerDto.profilePicture != null && customerDto.profilePicture != '' ? customerDto.profilePicture : '/img/placeholder/profile.png'}" alt="Profile Image">
+                    </div>
+             </div>
+            <div class="col-lg-7 offset-lg-1">
+                <div class="s_product_text">
+                    <br>
+                    <h2 th:text="${customerDto.profileName}">Profile Name</h2>
+                    <br>
+                    <!--						-->
+                    <ul class="list">
+                        <li><a class="active" th:href="${' mailto: ' + customerDto.profileEmail}"><span>E-mail</span>
+                            <th:block th:text="${' : ' + customerDto.profileEmail}"></th:block></a></li>
+                        <li><a class="active" th:href="${customerDto.profileSiteUrl != null ? (#strings.startsWith(customerDto.profileSiteUrl, 'http') ? customerDto.profileSiteUrl : 'http://' + customerDto.profileSiteUrl) : '#'}">
+                            <span>Site</span>
+                            <th:block th:text="${' : ' + customerDto.profileSiteUrl}"></th:block>
+                        </a></li>
+                    </ul>
+                    <p th:text="${customerDto.profileDescription}">Placeholder text</p>
+                    <br>
+                    <div class="card_area d-flex align-items-center">
+                        <a class="primary-btn" th:href="${'/profile/update/' + customerDto.id()}">Edit profile</a>
+                   </div>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--================End Single Product Area =================-->
+
+<!-- Include footer fragment -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<!-- JS Scripts -->
+<div th:replace="~{fragments/common-scripts}"></div>
+
+</body>
+
+</html>

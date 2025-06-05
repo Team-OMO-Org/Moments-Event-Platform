@@ -7,6 +7,7 @@ import io.github.teamomo.moment.dto.ErrorResponseDto;
 import io.github.teamomo.moment.dto.MomentDto;
 import io.github.teamomo.moment.dto.MomentRequestDto;
 import io.github.teamomo.moment.dto.MomentResponseDto;
+import io.github.teamomo.moment.entity.Category;
 import io.github.teamomo.moment.service.MomentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -99,6 +100,51 @@ public class MomentController {
     logger.info("Successfully fetched {} moments", momentsResponseDto.getTotalElements());
 
     return momentsResponseDto;
+
+  }
+
+  @Operation(
+      summary = "Retrieve all moments by host ID",
+      description = "This endpoint retrieves a list of moments associated with a specific host ID.",
+      tags = {"Moments"},
+      parameters = {
+          @Parameter(
+              name = "id",
+              description = "The ID of the host whose moments are to be retrieved",
+              required = true,
+              example = "1"
+          )
+      },
+      responses = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "HTTP Status OK - Moments retrieved successfully"
+          ),
+          @ApiResponse(
+              responseCode = "404",
+              description = "HTTP Status Not Found - No moments found for the given host ID",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          ),
+          @ApiResponse(
+              responseCode = "500",
+              description = "HTTP Status Internal Server Error",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          )
+      }
+  )
+  @GetMapping("/host/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  public List<MomentDto> getMomentsByHostId(@PathVariable Long id)
+  {
+    logger.info("Fetching all moments for host_id: {}", id);
+    List<MomentDto> momentsDto = momentService.getMomentsByHostId(id);
+    logger.info("Successfully fetched {} moments for host_id: {}", momentsDto.size(), id);
+
+    return momentsDto;
 
   }
 
@@ -204,6 +250,17 @@ public class MomentController {
     logger.info("Successfully fetched all categories by moments count: {}", allCategoriesByMomentsCount.size());
 
     return allCategoriesByMomentsCount;
+  }
+
+  @GetMapping("/categories/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  public CategoryDto getCategoryById(@PathVariable Long id){
+
+    logger.info("Fetching category by id: {}", id);
+    CategoryDto categoryDto = momentService.getCategoryById(id);
+    logger.info("Successfully fetched category by id: {}", id);
+
+    return categoryDto;
   }
 
   @GetMapping("/cities")

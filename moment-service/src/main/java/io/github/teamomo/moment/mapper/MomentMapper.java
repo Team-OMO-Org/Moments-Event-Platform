@@ -1,6 +1,7 @@
 package io.github.teamomo.moment.mapper;
 
 import io.github.teamomo.moment.dto.CartItemDto;
+import io.github.teamomo.moment.dto.CategoryDto;
 import io.github.teamomo.moment.dto.MomentDto;
 import io.github.teamomo.moment.dto.MomentResponseDto;
 import io.github.teamomo.moment.entity.Category;
@@ -34,4 +35,8 @@ public interface MomentMapper {
 
     @Mapping(target = "momentId", source = "id")
     CartItemDto toCartItemDto(Moment moment);
+
+    @Mapping(target = "categoryId", source = "id")
+    @Mapping(target = "categoryName", source = "name")
+    CategoryDto toCategoryDto(Category category);
 }

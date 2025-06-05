@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zxx" class="no-js">
+<head>
+  <!-- Include meta tags -->
+  <th:block th:replace="~{fragments/head :: meta}"/>
+
+  <!-- Page title -->
+  <title>Moment Details</title>
+
+  <!-- Include common CSS -->
+  <th:block th:replace="~{fragments/head :: common-css}"/>
+</head>
+
+<body>
+
+<!-- Include header -->
+<header th:replace="~{fragments/header :: header}"></header>
+
+<!-- Banner -->
+<div th:replace="~{fragments/banner :: banner('Moments Event Platform', 'Feel The Moment')}"></div>
+
+<!-- Warning message -->
+<div th:if="${message}" class="alert alert-warning text-center" role="alert">
+  <span th:text="${message}"></span>
+</div>
+
+<form th:action="@{/profile}" th:object="${customerDto}" method="post" class="needs-validation">
+  <input type="hidden" id="id" name="id" th:field="*{id}" readonly>
+  <input type="hidden" id="keycloakUserId" name="keycloakUserId" th:field="*{keycloakUserId}" class="form-control" required>
+  <input type="hidden" id="active" name="active" th:field="*{active}" class="form-control" required>
+
+
+  <!--================Single Product Area =================-->
+  <div class="product_image_area">
+    <div class="container">
+      <div class="row s_product_inner">
+        <div class="col-lg-4">
+          <div class="single-prd-item">
+            <img class="img-fluid rounded-circle" th:src="${customerDto.profilePicture != null && customerDto.profilePicture != '' ? customerDto.profilePicture : '/img/placeholder/profile.png'}" alt="Profile Image">
+          </div>
+           <div>
+            <div class="my-3">
+              <label for="profilePicture" class="form-label profile_label">Image URL:</label>
+              <input type="url" id="profilePicture" name="profilePicture" th:field="*{profilePicture}"
+                     class="form-control">
+              <div class="text-danger" th:if="${#fields.hasErrors('profilePicture')}"
+                   th:errors="*{profilePicture}"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-7 offset-lg-1">
+          <div class="s_product_text">
+            <div class="mb-3 d-flex ">
+              <h2 class="col-4">Name: </h2>
+              <input class="form-control col-8" type="text" id="profileName" name="profileName" readonly
+                     th:field="*{profileName}"
+                     required>
+              <div class="text-danger" th:if="${#fields.hasErrors('profileName')}"
+                   th:errors="*{profileName}"></div>
+            </div>
+
+            <ul class="list">
+              <li class="mb-3 d-flex">
+                <a class="active col-4"><span>E-mail:</span></a>
+                <input type="email" id="profileEmail" name="profileEmail" readonly
+                       th:field="*{profileEmail}"  class="form-control col-8" required>
+                <div class="text-danger" th:if="${#fields.hasErrors('profileEmail')}"
+                     th:errors="*{profileEmail}"></div>
+              </li>
+
+              <li class="mb-3 d-flex ">
+                <a class="active col-4"><span>Site:</span></a>
+                <input type="url" id="profileSiteUrl" name="profileSiteUrl" th:field="*{profileSiteUrl}"
+                       class="form-control col-8">
+                <div class="text-danger" th:if="${#fields.hasErrors('profileSiteUrl')}"
+                     th:errors="*{profileSiteUrl}"></div>
+              </li>
+
+              <li class="mb-3 d-flex ">
+                <a class="active col-4"><span>Description:</span></a>
+                <textarea id="profileDescription" name="profileDescription"
+                          th:field="*{profileDescription}"
+                          class="form-control" maxlength="500" style="height: 250px"></textarea>
+                <div class="text-danger" th:if="${#fields.hasErrors('profileDescription')}"
+                     th:errors="*{profileDescription}"></div>
+              </li>
+            </ul>
+           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--================End Single Product Area =================-->
+
+  <div class="text-center mt-0 mb-3">
+    <button type="submit" class="primary-btn">Submit</button>
+  </div>
+
+</form>
+
+<!-- Include footer fragment -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+<div th:replace="~{fragments/common-scripts}"></div>
+
+</body>
+
+</html>

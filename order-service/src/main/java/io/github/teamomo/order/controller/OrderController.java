@@ -8,6 +8,7 @@ import io.github.teamomo.order.dto.CartItemInfoDto;
 import io.github.teamomo.order.dto.OrderDto;
 import io.github.teamomo.order.dto.OrderItemDto;
 import io.github.teamomo.order.entity.Order;
+import io.github.teamomo.order.service.CartService;
 import io.github.teamomo.order.service.OrderService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,7 +44,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/orders")
 @RequiredArgsConstructor
 @Slf4j
 public class OrderController {
@@ -74,16 +75,18 @@ public class OrderController {
           )
       }
   )
-  @PostMapping("/orders/{customerId}")
+  @PostMapping("/{customerId}")
   @ResponseStatus(HttpStatus.CREATED)
   public OrderDto createOrderByCustomerId(@PathVariable Long customerId) {
     log.info("Creating order for customer ID: {}", customerId);
     OrderDto orderDto = orderService.createOrderByCustomerId(customerId);
     log.info("Order created for customer ID: {} with order ID: {}", customerId, orderDto.id());
+    orderService.sendOrderNotification(orderDto);
     return orderDto;
   }
 
-  @GetMapping("orders/call")
+  // todo: remove later, added as an example
+  @GetMapping("/call")
   public void renderIndex() {
     List<Long> momentIds = List.of(1L, 2L, 3L);
     log.debug("Retrieving ...");
@@ -111,6 +114,7 @@ public class OrderController {
           )
       }
   )
+  // todo: remove later, added for testing purpose
   @GetMapping("/moments/{id}/check-availability")
   public boolean checkTicketAvailability(@PathVariable Long id, @RequestParam int requiredTickets) {
     log.info("Checking ticket availability for moment with id: {} and required tickets: {}", id, requiredTickets);
@@ -138,6 +142,7 @@ public class OrderController {
           )
       }
   )
+  // todo: remove later, added for testing purpose
   @GetMapping("/moments/{id}/book-tickets")
   public BigDecimal bookTickets(@PathVariable Long id, @RequestParam int requiredTickets) {
     log.info("Booking tickets for moment with id: {} and required tickets: {}", id, requiredTickets);
@@ -165,6 +170,7 @@ public class OrderController {
           )
       }
   )
+  // todo: remove later, added for testing purpose
   @GetMapping("/moments/{id}/cancel-tickets")
   public void cancelTicketBooking(@PathVariable Long id, @RequestParam int ticketsToCancel) {
     log.info("Cancelling ticket booking for moment with id: {} and tickets to cancel: {}", id, ticketsToCancel);
@@ -172,73 +178,8 @@ public class OrderController {
     log.info("Cancelled {} tickets for moment with id {}", ticketsToCancel, id);
   }
 
-  @GetMapping("/carts/{customerId}")
-  @ResponseStatus(HttpStatus.OK)
-  public CartDto getCartByCustomerId(@PathVariable Long customerId) {
-    log.info("Fetching cart with customerID: {}", customerId);
-    CartDto cartDto = orderService.findCartByCustomerId(customerId);
-    log.info("Successfully fetched cart: {}", cartDto);
-    return cartDto;
-  }
-
-  @PostMapping("/carts/{customerId}")
-  @ResponseStatus(HttpStatus.CREATED)
-  public CartDto createCart(@PathVariable Long customerId) {
-    log.info("Creating new cart with details for customerID: {}", customerId);
-    CartDto createdCartDto = orderService.createCart(customerId);
-    log.info("Successfully created cart with ID: {}", createdCartDto.id());
-    return createdCartDto;
-  }
-
-  @PutMapping("/carts/{customerId}")
-  @ResponseStatus(HttpStatus.OK)
-  public CartDto updateCart(@PathVariable Long customerId, @Valid @RequestBody CartDto cartDto) {
-    log.info("Updating cart with customerID: {}", customerId);
-    CartDto updatedCartDto = orderService.updateCart(customerId, cartDto);
-    log.info("Successfully updated cart with customerID: {}", customerId);
-    return updatedCartDto;
-  }
-
-  @DeleteMapping("/carts/{customerId}")
-  @ResponseStatus(HttpStatus.OK)
-  public void deleteCart(@PathVariable Long customerId) {
-    log.info("Deleting cart with customerID: {}", customerId);
-    orderService.deleteCart(customerId);
-    log.info("Successfully deleted cart with customerID: {}", customerId);
-  }
-
-  @GetMapping("/carts/{customerId}/items")
-  @ResponseStatus(HttpStatus.OK)
-  public List<CartItemInfoDto> getAllCartItems(@PathVariable Long customerId) {
-    log.info("Fetching all items with customerID: {}", customerId);
-    List<CartItemInfoDto> cartItemDtos= orderService.getAllCartItems(customerId);
-    log.info("Successfully fetched {} items", cartItemDtos.size());
-    return cartItemDtos;
-  }
-
-  @PostMapping("/carts/{customerId}/items")
-  @ResponseStatus(HttpStatus.CREATED)
-  public CartItemInfoDto createCartItem(@PathVariable Long customerId, @Valid @RequestBody CartItemInfoDto cartItemDto) {
-    log.info("Creating new cart item with details: {}", cartItemDto);
-    CartItemInfoDto createdCartItemDto = orderService.createCartItem(customerId, cartItemDto);
-    log.info("Successfully created cart item with ID: {}", createdCartItemDto.id());
-    return createdCartItemDto;
-  }
-
-  @PutMapping("/carts/{customerId}/items/{itemId}")
-  @ResponseStatus(HttpStatus.OK)
-  public CartItemInfoDto updateCartItem(@PathVariable Long customerId, @PathVariable Long itemId, @Valid @RequestBody CartItemInfoDto cartItemDto) {
-    log.info("Updating cart item with ID: {}", itemId);
-    CartItemInfoDto updatedCartItemDto = orderService.updateCartItem(itemId, cartItemDto);
-    log.info("Successfully updated cart item with ID: {}", itemId);
-    return updatedCartItemDto;
-  }
-
-  @DeleteMapping("/carts/{customerId}/items/{itemId}")
-  @ResponseStatus(HttpStatus.OK)
-  public void deleteCartItem(@PathVariable Long customerId, @PathVariable Long itemId) {
-    log.info("Deleting cart item with ID: {}", itemId);
-    orderService.deleteCartItem(itemId);
-    log.info("Successfully deleted cart item with ID: {}", itemId);
+  @GetMapping("/kafka")
+  public void testKafka() {
+    orderService.testKafka();
   }
 }

@@ -131,6 +131,12 @@ public class MomentService {
     return categoryRepository.findAllByMomentsCount();
   }
 
+  public CategoryDto getCategoryById(Long id){
+    Category category = categoryRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("Category", "Id", id.toString()));
+    return momentMapper.toCategoryDto(category);
+  }
+
   public List<CityDto> getAllCitiesByMomentsCount(){
     return locationRepository.findAllByMomentsCount();
   }
@@ -171,5 +177,15 @@ public class MomentService {
   private Moment getMoment(Long momentId) {
     return momentRepository.findById(momentId)
         .orElseThrow(() -> new ResourceNotFoundException("Moment", "Id", momentId.toString()));
+  }
+
+  public List<MomentDto> getMomentsByHostId(Long id) {
+    List<Moment> moments = momentRepository.findByHostIdOrderByIdDesc(id);
+    if (moments.isEmpty()) {
+      throw new ResourceNotFoundException("Moments list", "Host_Id" , id.toString());
+    }
+    return moments.stream()
+        .map(momentMapper::toDto)
+        .toList();
   }
 }
