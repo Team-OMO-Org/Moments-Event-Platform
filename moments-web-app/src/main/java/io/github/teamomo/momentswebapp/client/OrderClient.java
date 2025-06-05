@@ -38,6 +38,6 @@ public interface OrderClient {
   @PostExchange("/{customerId}")
   OrderDto createOrderByCustomerId(@PathVariable Long customerId);
 
-  @PostExchange("/{customerId}/items")
+  @PostExchange("/carts/{customerId}/items")
   CartItemInfoDto createCartItem(@PathVariable Long customerId, @Valid @RequestBody CartItemInfoDto cartItemDto);
 }

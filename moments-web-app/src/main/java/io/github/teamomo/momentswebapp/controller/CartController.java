@@ -9,6 +9,7 @@ import io.github.teamomo.momentswebapp.dto.CartViewDto;
 import io.github.teamomo.momentswebapp.dto.MomentDto;
 import io.github.teamomo.momentswebapp.util.CustomerManager;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
@@ -184,9 +186,17 @@ public class CartController {
     return new CartViewDto(cartDto.id(), customerId, new ArrayList<>(items), subtotal);
   }
 
- /* @PostMapping("/{customerId}/items")
-  public String addCartItem(@PathVariable Long customerId, @Valid @RequestBody CartItemInfoDto cartItemDto) {
-    log.info("Creating cart item for customer ID: {}", customerId);
-    return cartService.createCartItem(customerId, cartItemDto);
-  }*/
+  @PostMapping("/carts/item")
+  public String addCartItem(@RequestParam Long momentId, @RequestParam Integer quantity) {
+    log.info("Retrieved request param momentId: {}", momentId);
+    log.info("Retrieved request param quantity: {}", quantity);
+
+    //todo: add validation of quantity
+    Long customerId = customerManager.getCustomerId();
+    CartItemInfoDto cartItem = new CartItemInfoDto(null, null, momentId, quantity, true);
+    log.info("Retrieving saved cartItem for customerId: {}", customerId);
+    CartItemInfoDto updatedCartItem = orderClient.createCartItem(customerId, cartItem);
+    log.info("Retrieved saved cartItem for customerId: {}", customerId);
+    return "redirect:/carts";
+  }
 }
