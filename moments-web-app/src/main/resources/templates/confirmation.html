@@ -30,7 +30,7 @@
 						<ul class="list">
 							<li>
 								<a ><span>Order number</span> : </a>
-<!--								<a th:text="${orderDto.id}"></a>-->
+								<a th:text="${orderDto.id}"></a>
 							</li>
 							<li >
 								<a ><span>Date</span> : </a>
@@ -39,7 +39,7 @@
 							</li>
 							<li>
 								<a ><span>Total</span> : €</a>
-								<!--								<a th:text="${orderDto.total}"></a>-->
+																<a th:text="${orderDto.totalPrice}"></a>
 							</li>
 						</ul>
 					</div>
@@ -57,7 +57,7 @@
 								<th scope="col">Price</th>
 							</tr>
 						</thead>
-				<!--		<tbody>
+						<tbody>
 							<tr th:each="orderItem : ${orderDto.orderItems}">
 								<td>
 									<p></p>
@@ -80,7 +80,7 @@
 									<p th:text="${'€' + orderDto.totalPrice}">$0.00</p>
 								</td>
 							</tr>
-						</tbody>-->
+						</tbody>
 					</table>
 				</div>
 			</div>
