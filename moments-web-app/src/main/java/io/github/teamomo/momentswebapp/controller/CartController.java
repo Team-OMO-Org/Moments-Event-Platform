@@ -1,6 +1,6 @@
 package io.github.teamomo.momentswebapp.controller;
 
-import io.github.teamomo.momentswebapp.client.BackendClient;
+import io.github.teamomo.momentswebapp.client.MomentClientPublic;
 import io.github.teamomo.momentswebapp.client.OrderClient;
 import io.github.teamomo.momentswebapp.dto.CartDto;
 import io.github.teamomo.momentswebapp.dto.CartItemInfoDto;
@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class CartController {
 
   private final OrderClient orderClient;
-  private final BackendClient backendClient;
+  private final MomentClientPublic momentClientPublic;
 
   @GetMapping("/clear-cart")
   public String renderClearCartPage() {
@@ -56,7 +56,7 @@ public class CartController {
     List<CartItemViewDto> items = cartDto.cartItems().stream()
         .map(cartItem -> {
           log.debug("Retrieving moment for cart page from backend");
-          MomentDto moment = backendClient.getMomentById(cartItem.momentId());
+          MomentDto moment = momentClientPublic.getMomentById(cartItem.momentId());
           log.info("Retrieved moment for cart page from backend: {}",
               moment);
           BigDecimal totalPrice = moment.price().multiply(BigDecimal.valueOf(cartItem.quantity()));
@@ -98,7 +98,7 @@ public class CartController {
         List<CartItemViewDto> updatedItems = new ArrayList<>();
 
         for (CartItemViewDto item : cartView.getItems()) {
-          MomentDto moment = backendClient.getMomentById(item.getMomentId());
+          MomentDto moment = momentClientPublic.getMomentById(item.getMomentId());
 
           BigDecimal totalPrice = BigDecimal.ZERO;
 

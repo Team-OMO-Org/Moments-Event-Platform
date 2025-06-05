@@ -1,6 +1,6 @@
 package io.github.teamomo.momentswebapp.controller;
 
-import io.github.teamomo.momentswebapp.client.BackendClient;
+import io.github.teamomo.momentswebapp.client.MomentClientPublic;
 import io.github.teamomo.momentswebapp.dto.CityDto;
 import io.github.teamomo.momentswebapp.dto.MomentRequestDto;
 import io.github.teamomo.momentswebapp.dto.MomentResponseDto;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Slf4j
 public class PageController {
 
-  private final BackendClient backendClient;
+  private final MomentClientPublic momentClientPublic;
 
   @GetMapping("/")
   public String home() {
@@ -45,7 +45,7 @@ public class PageController {
 
     // MOMENTS retrieval
     log.debug("Retrieving moments for index page from backend");
-    PageResponse<MomentResponseDto> pageResponse = backendClient.getAllMoments(
+    PageResponse<MomentResponseDto> pageResponse = momentClientPublic.getAllMoments(
         momentRequestDto.getCategory(),
         momentRequestDto.getLocation(),
         momentRequestDto.getPriceFrom(),
@@ -75,11 +75,11 @@ public class PageController {
     model.addAttribute("currentPage", pageResponse.getNumber() + 1);
 
     // CATEGORIES retrieval from backend
-    backendClient.getCategories(model, request.getRequestURI());
+    momentClientPublic.getCategories(model, request.getRequestURI());
 
     // CITIES retrieval
     log.debug("Retrieving cities for index page from backend");
-    List<CityDto> cities = backendClient.getAllCitiesByMomentsCount();
+    List<CityDto> cities = momentClientPublic.getAllCitiesByMomentsCount();
     log.info("Retrieved cities for index page from backend: {}",
         cities.size());
     model.addAttribute("cities", cities);
@@ -133,5 +133,10 @@ public class PageController {
     model.addAttribute("currentUrlWithoutSearch",currentUrlWithoutSearch);
     String search = request.getParameter("search");
     model.addAttribute("search", search);
+  }
+
+  @GetMapping("/oauth2/code/moments-web-app")
+  public String afterLogin() {
+    return "redirect:/index";
   }
 }

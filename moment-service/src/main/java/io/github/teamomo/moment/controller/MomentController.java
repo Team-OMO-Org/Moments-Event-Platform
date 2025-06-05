@@ -94,7 +94,6 @@ public class MomentController {
       MomentRequestDto momentRequestDto,
       @PageableDefault(size = 12, sort = "startDate") Pageable pageable
   ) {
-    // ToDo: Default filtering: LIVE, FUTURE
     logger.info("Fetching all moments with filters: {}", momentRequestDto);
     Page<MomentResponseDto> momentsResponseDto = momentService.getAllMoments(momentRequestDto, pageable);
     logger.info("Successfully fetched {} moments", momentsResponseDto.getTotalElements());

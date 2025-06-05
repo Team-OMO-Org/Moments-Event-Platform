@@ -22,15 +22,11 @@ public class SecurityConfig {
       "/index*",
       "/moment/*",
       "/customerId",
+      "css/**",
+      "fonts/**",
+      "img/**",
+      "js/**"
   };
-
-  // ToDo: even if root is not secured, currently a jwt needs to be sent to the back-end
-//  @Bean
-//  public WebSecurityCustomizer webSecurityCustomizer() {
-//    return (web) -> web
-//        .ignoring()
-//        .requestMatchers(freeResourceUrls);
-//  }
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity,

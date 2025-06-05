@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity">
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <body>
 <header th:fragment="header" class="header_area sticky-header">
   <div class="main_menu">
@@ -36,7 +36,7 @@
                     </form>
 
                   <th:block sec:authorize="!isAuthenticated()">
-                    <a href="/oauth2/authorization/keycloak" class="nav-link" style="width: 100%; display: block; text-align: left; padding: 10px;">
+                    <a href="oauth2/code/moments-web-app" class="nav-link" style="width: 100%; display: block; text-align: left; padding: 10px;">
                       Login
                     </a>
                   </th:block>
