@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity">
 <body>
 <header th:fragment="header" class="header_area sticky-header">
   <div class="main_menu">
@@ -36,7 +37,22 @@
               <ul class="dropdown-menu">
                 <li class="nav-item"><a class="nav-link" th:href="@{/profile}">My Profile</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/events}">My Events</a></li>
-                <li class="nav-item"><a class="nav-link"  th:href="@{/logout}">Sign out</a></li>
+                <li class="nav-item">
+<!--                    Logged in as: <span sec:authentication="name"></span>-->
+                    <form th:action="@{/logout}" method="post" style="width: 100%;">
+                      <button type="submit"
+                          style="border: none; width: 100%; background: none; cursor: pointer; text-align: left;">
+                        <a sec:authorize="isAuthenticated()" class="nav-link" style="text-align: left;">Logout</a>
+                      </button>
+                    </form>
+
+                  <th:block sec:authorize="!isAuthenticated()">
+                    <a href="/oauth2/authorization/keycloak" class="nav-link" style="width: 100%; display: block; text-align: left; padding: 10px;">
+                      Login
+                    </a>
+                  </th:block>
+
+                </li>
               </ul>
             </li>
             <!--li class="nav-item submenu dropdown">
