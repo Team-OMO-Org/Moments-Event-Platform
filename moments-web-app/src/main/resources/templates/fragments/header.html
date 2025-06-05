@@ -63,7 +63,8 @@
   <div class="search_input" id="search_input_box">
     <div class="container">
       <form class="d-flex justify-content-between" method="get" th:action="@{/index}">
-        <input type="text" name="search" class="form-control" id="search_input" placeholder="Search Here">
+        <input type="text" name="search" class="form-control" id="search_input" placeholder="Search Here"
+               th:value="${search}">
         <button type="submit" class="btn"></button>
         <span class="lnr lnr-cross" id="close_search" title="Close Search"></span>
       </form>

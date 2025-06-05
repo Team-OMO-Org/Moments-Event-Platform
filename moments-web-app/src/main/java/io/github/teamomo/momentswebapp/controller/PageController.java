@@ -127,5 +127,11 @@ public class PageController {
     model.addAttribute("currentUrlWithoutLocation",currentUrlWithoutLocation);
     String location = request.getParameter("location");
     model.addAttribute("locationSelected", location);
+
+    // SEARCH
+    String currentUrlWithoutSearch = fullUrl.replaceAll("(&)?search=[^&]*", "");
+    model.addAttribute("currentUrlWithoutSearch",currentUrlWithoutSearch);
+    String search = request.getParameter("search");
+    model.addAttribute("search", search);
   }
 }
