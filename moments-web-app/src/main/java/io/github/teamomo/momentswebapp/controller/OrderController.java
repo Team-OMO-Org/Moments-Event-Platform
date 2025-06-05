@@ -23,11 +23,10 @@ public class OrderController {
   @PostMapping("/{customerId}")
   String placeOrder(@PathVariable Long customerId, Model model) {
 
-   /* log.debug("Retrieving order for confirmation page from backend");
+    log.debug("Retrieving order for confirmation page from backend");
     OrderDto orderDto = orderClient.createOrderByCustomerId(customerId);
     model.addAttribute("orderDto", orderDto);
     log.info("Retrieved order for confirmation page from backend: {}", orderDto);
-*/
     DateTimeDto dateTimeDto = DateTimeDto.from(LocalDateTime.now());
     model.addAttribute("dateTimeDto", dateTimeDto);
 

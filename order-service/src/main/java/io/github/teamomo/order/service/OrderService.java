@@ -51,6 +51,7 @@ public class OrderService {
     order.setCustomerId(customerId);
     order.setOrderStatus(OrderStatus.PENDING);
     order.setTotalPrice(BigDecimal.ZERO);
+    orderRepository.save(order);
 
     List<OrderItem> orderItems = new ArrayList<>();
     boolean allBooked = true;
@@ -62,12 +63,14 @@ public class OrderService {
         orderItem.setMomentId(cartItem.getMomentId());
         orderItem.setQuantity(cartItem.getQuantity());
         orderItem.setPrice(ticketsPrice);
+        orderItem.setCreatedAt(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
         orderItems.add(orderItem);
       } catch (Exception e) {
         log.error("Failed to book tickets for moment ID: {}", cartItem.getMomentId(), e);
         OrderItem failedOrderItem = new OrderItem();
         failedOrderItem.setMomentId(cartItem.getMomentId());
         failedOrderItem.setQuantity(cartItem.getQuantity());
+        failedOrderItem.setCreatedAt(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
         orderItems.add(failedOrderItem);
         allBooked = false;
         break;
@@ -105,10 +108,10 @@ public class OrderService {
       paymentStatus = PaymentStatus.FAILED;
     }
 
-    payment.setPaymentStatus(paymentStatus);
+   /* payment.setPaymentStatus(paymentStatus);
     payment.setProcessedAt(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
     paymentRepository.save(payment);
-
+*/
     if (paymentStatus == PaymentStatus.FAILED) {
       order.setOrderStatus(OrderStatus.CANCELLED);
       return orderMapper.toDto(orderRepository.save(order));

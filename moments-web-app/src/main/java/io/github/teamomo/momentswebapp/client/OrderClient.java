@@ -3,13 +3,16 @@ package io.github.teamomo.momentswebapp.client;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import io.github.teamomo.momentswebapp.dto.CartDto;
+import io.github.teamomo.momentswebapp.dto.CartItemInfoDto;
 import io.github.teamomo.momentswebapp.dto.OrderDto;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.service.annotation.DeleteExchange;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
@@ -34,4 +37,7 @@ public interface OrderClient {
 
   @PostExchange("/{customerId}")
   OrderDto createOrderByCustomerId(@PathVariable Long customerId);
+
+  @PostExchange("/{customerId}/items")
+  CartItemInfoDto createCartItem(@PathVariable Long customerId, @Valid @RequestBody CartItemInfoDto cartItemDto);
 }
