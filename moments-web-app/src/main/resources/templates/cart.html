@@ -154,7 +154,7 @@
 
                               <div class="checkout_btn_inner d-flex align-items-center" style="display: flex; justify-content: flex-end; ">
                                   <a class="gray_btn" href="#" th:href="@{/index}">Continue Shopping</a>
-                                  <a class="primary-btn" href="#">Proceed to checkout</a>
+                                  <a class="primary-btn" href="#" th:href="@{/carts/{customerId}/checkout(customerId=${cartView.customerId})}">Proceed to checkout</a>
                               </div>
 
                         </td>

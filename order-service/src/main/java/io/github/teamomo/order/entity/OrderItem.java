@@ -48,9 +48,9 @@ public class OrderItem {
   @Column(name = "price", nullable = false, precision = 10, scale = 2)
   private BigDecimal price;
 
-  @NotNull
+
   @ColumnDefault("CURRENT_TIMESTAMP")
-  @Column(name = "created_at", nullable = false)
+  @Column(name = "created_at")
   private Instant createdAt;
 
   @Column(name = "updated_at")
