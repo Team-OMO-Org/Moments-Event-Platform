@@ -7,6 +7,7 @@ import io.github.teamomo.momentswebapp.dto.CartItemInfoDto;
 import io.github.teamomo.momentswebapp.dto.CartItemViewDto;
 import io.github.teamomo.momentswebapp.dto.CartViewDto;
 import io.github.teamomo.momentswebapp.dto.MomentDto;
+import io.github.teamomo.momentswebapp.util.CustomerManager;
 import jakarta.validation.Valid;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class CartController {
 
   private final OrderClient orderClient;
   private final BackendClient backendClient;
+  private final CustomerManager customerManager;
 
   @GetMapping("/clear-cart")
   public String renderClearCartPage() {
@@ -49,11 +51,13 @@ public class CartController {
   }
 
 
-  @GetMapping("/carts/{customerId}")
-  public String showCartUpdateForm(@PathVariable Long customerId, Model model) {
+  @GetMapping("/carts")
+  public String showCartUpdateForm(Model model) {
 
+    Long customerId = customerManager.getCustomerId();
     CartViewDto cartViewDto = getCartViewDto(customerId);
     model.addAttribute("cartView", cartViewDto);
+    model.addAttribute("customerId", customerId);
     return "cart";
   }
 
@@ -131,7 +135,7 @@ public class CartController {
 
     orderClient.updateCart(customerId, cartDto);
 
-    return "redirect:/carts/" + customerId;
+    return "redirect:/carts";
   }
 
   @GetMapping("/carts/{customerId}/checkout")
