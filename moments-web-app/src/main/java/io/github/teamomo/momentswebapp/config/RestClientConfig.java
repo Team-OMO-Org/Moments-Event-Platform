@@ -49,7 +49,22 @@ public class RestClientConfig {
     }
 
     @Bean
-    public MomentClient momentClient(
+    public MomentClient momentClient(HttpServiceProxyFactory factory) {
+        return factory.createClient(MomentClient.class);
+    }
+
+    @Bean
+    public OrderClient orderClient(HttpServiceProxyFactory factory) {
+        return factory.createClient(OrderClient.class);
+    }
+
+    @Bean
+    public CustomerClient customerClient(HttpServiceProxyFactory factory) {
+        return factory.createClient(CustomerClient.class);
+    }
+
+    @Bean
+    public HttpServiceProxyFactory getHttpServiceProxyFactory(
         @Qualifier("authorizedClientManager") OAuth2AuthorizedClientManager manager) {
         OAuth2ClientHttpRequestInterceptor oauth2Interceptor =
             new OAuth2ClientHttpRequestInterceptor(manager);
@@ -66,50 +81,7 @@ public class RestClientConfig {
 
         RestClientAdapter adapter = RestClientAdapter.create(restClient);
         HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
-
-        return factory.createClient(MomentClient.class);
-    }
-
-    @Bean
-    public OrderClient orderClient(@Qualifier("authorizedClientManager") OAuth2AuthorizedClientManager manager) {
-        OAuth2ClientHttpRequestInterceptor oauth2Interceptor =
-            new OAuth2ClientHttpRequestInterceptor(manager);
-
-        RestClient restClient = RestClient.builder()
-            .baseUrl(backendUrl)
-            .requestFactory(getClientRequestFactory())  // to define timeouts
-            .requestInterceptor(oauth2Interceptor)  // adds JWT token to the request
-            .requestInterceptor(new LoggingInterceptor()) // Add the logging interceptor
-            .defaultRequest(r ->
-                r.attributes(clientRegistrationId(clientId))
-            )
-            .build();
-
-        RestClientAdapter adapter = RestClientAdapter.create(restClient);
-        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
-
-        return factory.createClient(OrderClient.class);
-    }
-
-    @Bean
-    public CustomerClient customerClient(@Qualifier("authorizedClientManager") OAuth2AuthorizedClientManager manager) {
-        OAuth2ClientHttpRequestInterceptor oauth2Interceptor =
-            new OAuth2ClientHttpRequestInterceptor(manager);
-
-        RestClient restClient = RestClient.builder()
-            .baseUrl(backendUrl)
-            .requestFactory(getClientRequestFactory())  // to define timeouts
-            .requestInterceptor(oauth2Interceptor)  // adds JWT token to the request
-            .requestInterceptor(new LoggingInterceptor()) // Add the logging interceptor
-            .defaultRequest(r ->
-                r.attributes(clientRegistrationId(clientId))
-            )
-            .build();
-
-        RestClientAdapter adapter = RestClientAdapter.create(restClient);
-        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
-
-        return factory.createClient(CustomerClient.class);
+        return factory;
     }
 
     // define timeouts for RestClient connection
