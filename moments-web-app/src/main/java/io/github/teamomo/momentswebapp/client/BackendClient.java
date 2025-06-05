@@ -40,6 +40,7 @@ public interface BackendClient {
       @RequestParam(required = false) LocalDateTime startDateTo,
       @RequestParam(required = false) Recurrence recurrence,
       @RequestParam(required = false) Status status,
+      @RequestParam(required = false) String search,
       @RequestParam(required = false) int page,
       @RequestParam(required = false, defaultValue = "12") int size,
       @RequestParam(required = false, defaultValue = "startDate") String sort
