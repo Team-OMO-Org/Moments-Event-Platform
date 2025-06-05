@@ -1,6 +1,8 @@
 package io.github.teamomo.order.service;
 
+import io.github.teamomo.order.client.CustomerClient;
 import io.github.teamomo.order.client.MomentClient;
+import io.github.teamomo.order.dto.CustomerDto;
 import io.github.teamomo.order.dto.OrderDto;
 import io.github.teamomo.order.entity.*;
 import io.github.teamomo.order.event.OrderPlacedEvent;
@@ -25,6 +27,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 public class OrderService {
 
   private final MomentClient momentClient;
+  private final CustomerClient customerClient;
   private final CartService cartService;
 
   private final OrderRepository orderRepository;
@@ -32,6 +35,7 @@ public class OrderService {
 
   private final PaymentRepository paymentRepository;
   private final KafkaTemplate<String, OrderPlacedEvent> kafkaTemplate;    // key: Topic name, value: Event
+
 
   @Transactional
   public OrderDto createOrderByCustomerId(Long customerId) {
@@ -113,20 +117,30 @@ public class OrderService {
     cartService.deleteCart(customerId);
     order.setOrderStatus(OrderStatus.COMPLETED);
 
-    // ToDo: set user info for email
-    // send the message to Kafka Topic -> email service, sending out email
-    // Create OrderPlacedEvent
-    OrderPlacedEvent orderPlacedEvent = new OrderPlacedEvent();
-    orderPlacedEvent.setOrderNumber(order.getId().toString());
-    orderPlacedEvent.setEmail("user@email.com"); // Replace with actual email from user details
-    orderPlacedEvent.setFirstName("John"); // Replace with actual first name from user details
-    orderPlacedEvent.setLastName("Doe"); // Replace with actual last name from user details
-
-    log.info("Start - Sending OrderPlacedEvent {} to Kafka topic order-placed", orderPlacedEvent);
-    kafkaTemplate.send("order-placed", orderPlacedEvent);
-    log.info("End - Sending OrderPlacedEvent {} to Kafka topic order-placed", orderPlacedEvent);
-
     return orderMapper.toDto(orderRepository.save(order));
+  }
+
+  public void sendOrderNotification(OrderDto orderDto) {
+    try {
+      CustomerDto customer = customerClient.getCustomerById(orderDto.customerId());
+      if (customer != null) {
+        String[] nameParts = customer.profileName().split(" ", 2); // Split into first name and last name
+        String firstName = nameParts.length > 0 ? nameParts[0] : "Dear";
+        String lastName = nameParts.length > 1 ? nameParts[1] : "customer";
+
+        OrderPlacedEvent orderPlacedEvent = new OrderPlacedEvent();
+        orderPlacedEvent.setOrderNumber(orderDto.id().toString());
+        orderPlacedEvent.setEmail(customer.profileEmail());
+        orderPlacedEvent.setFirstName(firstName);
+        orderPlacedEvent.setLastName(lastName);
+
+        log.info("Start - Sending OrderPlacedEvent {} to Kafka topic order-placed", orderPlacedEvent);
+        kafkaTemplate.send("order-placed", orderPlacedEvent);
+        log.info("End - Sending OrderPlacedEvent {} to Kafka topic order-placed", orderPlacedEvent);
+      }
+    } catch (Exception e) {
+      log.error("Failed to fetch customer details for customer ID: {}", orderDto.customerId(), e);
+    }
   }
 
   public void testKafka() {

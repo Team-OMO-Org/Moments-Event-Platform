@@ -180,7 +180,7 @@ public class MomentService {
   }
 
   public List<MomentDto> getMomentsByHostId(Long id) {
-    List<Moment> moments = momentRepository.findByHostId(id);
+    List<Moment> moments = momentRepository.findByHostIdOrderByIdDesc(id);
     if (moments.isEmpty()) {
       throw new ResourceNotFoundException("Moments list", "Host_Id" , id.toString());
     }
