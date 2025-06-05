@@ -40,6 +40,11 @@ public class PageController {
     // Get the current request URL including query parameters, remove parameter for functionality
     addRequestUrlsToModel(model, request);
 
+    // set default sort
+    String sort = request.getParameter("sort");
+    sort = sort == null || sort.equalsIgnoreCase("UNSORTED") ? "startDate,desc" : sort;
+    log.debug("sort request parameter: {}", sort);
+
     // MOMENTS retrieval
     log.debug("Retrieving moments for index page from backend");
     PageResponse<MomentResponseDto> pageResponse = backendClient.getAllMoments(
@@ -53,7 +58,7 @@ public class PageController {
         momentRequestDto.getStatus(),
         pageable.getPageNumber(),
         pageable.getPageSize(),
-        pageable.getSort().toString().replace(": ", ",")
+        sort.replace(": ", ",")
     );
     log.info("getTotalElements {} getTotalPages {} getNumber {} getSize {} getSort {}",
         pageResponse.getTotalElements(),
@@ -104,7 +109,7 @@ public class PageController {
     // capture sort parameter of the current request
     String sort = request.getParameter("sort");
     log.debug("sort parameter: {}", sort);
-    sort = sort == null || sort.equalsIgnoreCase("UNSORTED") ? "startDate,asc" : sort;
+    sort = sort == null || sort.equalsIgnoreCase("UNSORTED") ? "startDate,desc" : sort;
     String sortArray[] = sort.split(",");
     String sortType = sortArray[0];
     String sortDirection = sortArray[1];
