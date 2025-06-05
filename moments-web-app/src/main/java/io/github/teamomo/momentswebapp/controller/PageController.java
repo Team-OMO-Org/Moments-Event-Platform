@@ -5,6 +5,7 @@ import io.github.teamomo.momentswebapp.dto.CityDto;
 import io.github.teamomo.momentswebapp.dto.MomentRequestDto;
 import io.github.teamomo.momentswebapp.dto.MomentResponseDto;
 import io.github.teamomo.momentswebapp.dto.PageResponse;
+import io.github.teamomo.momentswebapp.entity.Status;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +53,7 @@ public class PageController {
         momentRequestDto.getStartDateFrom(),
         momentRequestDto.getStartDateTo(),
         momentRequestDto.getRecurrence(),
-        momentRequestDto.getStatus(),
+        Status.LIVE,
         momentRequestDto.getSearch(),
         pageable.getPageNumber(),
         pageable.getPageSize(),
