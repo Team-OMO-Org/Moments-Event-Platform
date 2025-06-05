@@ -128,7 +128,7 @@
               ${moment.id},
               ${moment.thumbnail},
               ${moment.title},
-              ${moment.startDate},
+              ${#temporals.format(moment.startDate, 'dd.MM.yyyy HH:mm')},
               ${moment.category},
               ${moment.location},
               ${'€' + moment.price},

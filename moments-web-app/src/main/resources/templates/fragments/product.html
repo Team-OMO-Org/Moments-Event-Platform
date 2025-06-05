@@ -11,8 +11,28 @@
          margin: 0px;">
 
       <div class="d-flex justify-content-end align-items-center">
-        <span class="font-weight-bold" th:text="${startDate}">startDate</span>
+        <span th:text="${startDate}"
+              style="
+                color: rgb(121,132,178);
+                font-weight: bold;"
+        >startDate</span>
       </div>
+
+<!--      <div class="d-flex justify-content-end align-items-center">-->
+<!--        <span th:text="${startDate}"-->
+<!--              style="-->
+<!--                color: darkgray;-->
+<!--                font-weight: bold;"-->
+<!--        >startDate</span>-->
+<!--      </div>-->
+
+<!--      <div class="d-flex justify-content-end align-items-center">-->
+<!--        <span th:text="${startDate}"-->
+<!--              style="-->
+<!--                color: black;-->
+<!--                font-weight: normal;"-->
+<!--        >startDate</span>-->
+<!--      </div>-->
 
       <h6 class="rounded py-1 px-2"
           style="
@@ -21,15 +41,37 @@
             font-weight: normal;"
           th:text="${title}">title</h6>
 
+<!--      <h6 class="rounded py-1 px-2"-->
+<!--          style="-->
+<!--            color: darkorange;-->
+<!--            font-weight: bold;"-->
+<!--          th:text="${title}">title</h6>-->
+
+<!--      <h6 class="rounded py-1 px-2"-->
+<!--          style="-->
+<!--            color: black;-->
+<!--            font-weight: normal;"-->
+<!--          th:text="${title}">title</h6>-->
+
       <a th:href="@{'/moment/' + ${moment.id}}">
         <img class="img-fluid" th:src="${imagePath}" alt="product image" />
       </a>
 
+<!--      <div class="d-flex justify-content-left align-items-center" style="margin: -12px 0 -3px 0">-->
+<!--        <p class="btn btn-secondary small py-0 px-1"-->
+<!--           style="background-color: rgb(119,142,219)" th:text="${category}">category</p>-->
+<!--        <p class="ml-2 btn btn-secondary small py-0 px-1"-->
+<!--           style="background-color:  rgb(119,142,219)"-->
+<!--           th:text="${location}">location</p>-->
+<!--      </div>-->
+
       <div class="d-flex justify-content-left align-items-center" style="margin: -12px 0 -3px 0">
         <p class="btn btn-secondary small py-0 px-1"
-           style="background-color: rgb(119,142,219)" th:text="${category}">category</p>
+           style="background-color: rgb(121,132,178);cursor: default;"
+           th:text="${category}">category</p>
         <p class="ml-2 btn btn-secondary small py-0 px-1"
-           style="background-color:  rgb(119,142,219)"
+           style="background-color:  rgb(121,132,178);
+           cursor: default;"
            th:text="${location}">location</p>
       </div>
 
