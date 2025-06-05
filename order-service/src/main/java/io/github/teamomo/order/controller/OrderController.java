@@ -81,6 +81,7 @@ public class OrderController {
     log.info("Creating order for customer ID: {}", customerId);
     OrderDto orderDto = orderService.createOrderByCustomerId(customerId);
     log.info("Order created for customer ID: {} with order ID: {}", customerId, orderDto.id());
+    orderService.sendOrderNotification(orderDto);
     return orderDto;
   }
 

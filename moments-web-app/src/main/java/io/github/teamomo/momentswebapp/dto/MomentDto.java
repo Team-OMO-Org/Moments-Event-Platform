@@ -11,6 +11,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Builder;
 import lombok.With;
 
@@ -27,6 +28,8 @@ public record MomentDto(
     @Positive(message = "Category ID must be positive")
     Long categoryId,
 
+    String categoryName,
+
     Location location,
 
     @NotNull(message = "Title cannot be null")
@@ -41,6 +44,8 @@ public record MomentDto(
     String thumbnail,
 
     LocalDateTime startDate,
+
+    String formattedStartDate,
 
     @NotNull(message = "Recurrence cannot be null")
     @ValidEnum(enumClass = Recurrence.class, message = "Status must be one of 'DRAFT', 'LIVE', or 'PAUSED'")
@@ -61,4 +66,6 @@ public record MomentDto(
     @NotNull(message = "Location cannot be null")
     MomentDetail momentDetails
 ) {
+
+
 }
