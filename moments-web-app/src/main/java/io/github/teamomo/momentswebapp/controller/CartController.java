@@ -111,11 +111,6 @@ public class CartController {
       }
 
     log.info("cartView items BEFORE mapping:");
-    cartView.getItems().forEach(item ->
-        log.info("Item - id: {}, cartId: {}, momentId: {}, quantity: {}, isAvailable: {}",
-            item.getId(), item.getCartId(), item.getMomentId(), item.getQuantity(), item.getIsAvailable())
-    );
-
     List<CartItemInfoDto> cartItems = cartView.getItems().stream()
         .map(item -> new CartItemInfoDto(
             item.getId(),
@@ -125,12 +120,6 @@ public class CartController {
             item.getIsAvailable()
         ))
         .toList();
-
-    log.info("Mapped CartItemInfoDto list:");
-    cartItems.forEach(item ->
-        log.info("CartItemInfoDto - id: {}, cartId: {}, momentId: {}, quantity: {}, isAvailable: {}",
-            item.id(), item.cartId(), item.momentId(), item.quantity(), item.isAvailable())
-    );
 
     CartDto cartDto = new CartDto(cartView.getId(), customerId, cartItems);
 
