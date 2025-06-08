@@ -60,7 +60,7 @@
                     </tr>
                     </thead>
 
-                    <form th:action="@{/carts/{customerId}(customerId=${customerId})}" th:object="${cartView}" th:method="put">
+                    <form th:action="@{'/carts/' +  ${customerId}}" th:object="${cartView}" th:method="put">
 
                     <tbody>
                     <tr th:if="${cartView.items != null}" th:each="cartItem, stat : ${cartView.items}" th:class="${!cartItem.isAvailable} ? 'not-available' : ''">
@@ -84,7 +84,8 @@
                         <td>
                             <!-- Todo: change total? -->
                             <!-- Todo: add REMOVE ITEM -->
-                            <div class="product_count" th:if="${cartItem.isAvailable}">
+<!--                            <div class="product_count" th:if="${cartItem.isAvailable}">-->
+                                <div class="product_count" >
                                 <input type="hidden" th:field="*{items[__${stat.index}__].id}" />
                                 <input type="hidden" th:field="*{items[__${stat.index}__].cartId}" />
                                 <input type="hidden" th:field="*{items[__${stat.index}__].momentId}" />
@@ -100,7 +101,7 @@
                                 </div>
                             </div>
 
-                            <h5 th:if="${!cartItem.isAvailable}" th:text="${cartItem.quantity}"  th:class="${!cartItem.isAvailable} ? 'text-muted' : ''"></h5>
+<!--                            <h5 th:if="${!cartItem.isAvailable}" th:text="${cartItem.quantity}"  th:class="${!cartItem.isAvailable} ? 'text-muted' : ''"></h5>-->
                         </td>
                         <td>
                             <h5 th:text="${'€' + cartItem.totalPrice}"  th:class="${!cartItem.isAvailable} ? 'text-muted' : ''"></h5>

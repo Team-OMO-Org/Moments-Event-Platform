@@ -3,11 +3,16 @@ package io.github.teamomo.order.mapper;
 import io.github.teamomo.order.dto.CartDto;
 import io.github.teamomo.order.dto.CartItemInfoDto;
 import io.github.teamomo.order.dto.OrderDto;
+import io.github.teamomo.order.dto.OrderInfoDto;
 import io.github.teamomo.order.dto.OrderItemDto;
+import io.github.teamomo.order.dto.OrderItemInfoDto;
 import io.github.teamomo.order.entity.Cart;
 import io.github.teamomo.order.entity.CartItem;
 import io.github.teamomo.order.entity.Order;
 import io.github.teamomo.order.entity.OrderItem;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -26,6 +31,13 @@ public interface OrderMapper {
   @Mapping(target = "quantity", source = "quantity")
   @Mapping(target = "price", source = "price")
   OrderItemDto toOrderItemDto(OrderItem orderItem);
+
+
+  OrderInfoDto toOrderInfoDto(Order order);
+
+  List<OrderItemInfoDto> toOrderItemInfoDtos(List<OrderItem> orderItems);
+
+  OrderItemInfoDto toOrderItemInfoDto(OrderItem orderItem);
 
   // Cart mappings
   CartDto toCartDto(Cart cart);

@@ -43,7 +43,6 @@ public class CartController {
     return "clear-cart";
   }
 
-
   @DeleteMapping("/carts/{customerId}")
   public String clearCart(@PathVariable Long customerId) {
     log.debug("Deleting cart for customerId from backend");
@@ -51,7 +50,6 @@ public class CartController {
     log.info("Deleted cart for customer ID: {}", customerId);
     return "redirect:/clear-cart";
   }
-
 
   @GetMapping("/carts")
   public String showCartUpdateForm(Model model) {
@@ -73,56 +71,60 @@ public class CartController {
     log.info("cartView items START:");
     if (bindingResult.hasErrors()) {
 
-        log.warn("Validation errors occurred, restoring moment data for display");
+      log.warn("Validation errors occurred, restoring moment data for display");
 
-        List<CartItemViewDto> updatedItems = new ArrayList<>();
+      List<CartItemViewDto> updatedItems = new ArrayList<>();
 
-        for (CartItemViewDto item : cartView.getItems()) {
-          MomentDto moment = backendClient.getMomentById(item.getMomentId());
+      for (CartItemViewDto item : cartView.getItems()) {
+        MomentDto moment = backendClient.getMomentById(item.getMomentId());
 
-          BigDecimal totalPrice = BigDecimal.ZERO;
+        BigDecimal totalPrice = BigDecimal.ZERO;
 
-          Integer quantity = item.getQuantity();
-          if (quantity != null && quantity > 0) {
-            totalPrice = moment.price().multiply(BigDecimal.valueOf(quantity));
-          }
-
-          updatedItems.add(new CartItemViewDto(
-              item.getId(),
-              item.getCartId(),
-              moment.id(),
-              moment.title(),
-              moment.thumbnail(),
-              moment.price(),
-              item.getQuantity(),
-              item.getIsAvailable(),
-              totalPrice));
+        Integer quantity = item.getQuantity();
+        if (quantity != null && quantity > 0) {
+          totalPrice = moment.price().multiply(BigDecimal.valueOf(quantity));
         }
 
-        BigDecimal subtotal = updatedItems.stream()
-            .map(CartItemViewDto::getTotalPrice)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        cartView.setItems(updatedItems);
-        cartView.setSubtotal(subtotal);
-
-        model.addAttribute("cartView", cartView);
-        return "cart";
+        updatedItems.add(
+            new CartItemViewDto(
+                item.getId(),
+                item.getCartId(),
+                moment.id(),
+                moment.title(),
+                moment.thumbnail(),
+                moment.price(),
+                item.getQuantity(),
+                item.getIsAvailable(),
+                totalPrice));
       }
 
+      BigDecimal subtotal =
+          updatedItems.stream()
+              .map(CartItemViewDto::getTotalPrice)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+      cartView.setItems(updatedItems);
+      cartView.setSubtotal(subtotal);
+
+      model.addAttribute("cartView", cartView);
+      model.addAttribute("customerId", customerId);
+      return "cart";
+    }
+
     log.info("cartView items BEFORE mapping:");
-    List<CartItemInfoDto> cartItems = cartView.getItems().stream()
-        .map(item -> new CartItemInfoDto(
-            item.getId(),
-            item.getCartId(),
-            item.getMomentId(),
-            item.getQuantity(),
-            item.getIsAvailable()
-        ))
-        .toList();
+    List<CartItemInfoDto> cartItems =
+        cartView.getItems().stream()
+            .map(
+                item ->
+                    new CartItemInfoDto(
+                        item.getId(),
+                        item.getCartId(),
+                        item.getMomentId(),
+                        item.getQuantity(),
+                        item.getIsAvailable()))
+            .toList();
 
     CartDto cartDto = new CartDto(cartView.getId(), customerId, cartItems);
-
 
     orderClient.updateCart(customerId, cartDto);
 
@@ -130,47 +132,45 @@ public class CartController {
   }
 
   @GetMapping("/carts/{customerId}/checkout")
-  public String checkout(@PathVariable Long customerId, Model model){
-
+  public String checkout(@PathVariable Long customerId, Model model) {
 
     CartViewDto cartViewDto = getCartViewDto(customerId);
     model.addAttribute("cartView", cartViewDto);
     return "order_checkout";
   }
 
-
   private CartViewDto getCartViewDto(Long customerId) {
 
     log.debug("Retrieving cart for cart page from backend");
     CartDto cartDto = orderClient.getCartByCustomerId(customerId);
-    log.info("Retrieved cart for cart page from backend: {}",
-        cartDto);
+    log.info("Retrieved cart for cart page from backend: {}", cartDto);
 
     log.debug("Retrieving list of items for cart page from backend");
-    List<CartItemViewDto> items = cartDto.cartItems().stream()
-        .map(cartItem -> {
-          log.debug("Retrieving moment for cart page from backend");
-          MomentDto moment = backendClient.getMomentById(cartItem.momentId());
-          log.info("Retrieved moment for cart page from backend: {}",
-              moment);
-          BigDecimal totalPrice = moment.price().multiply(BigDecimal.valueOf(cartItem.quantity()));
-          return new CartItemViewDto(
-              cartItem.id(),
-              cartItem.cartId(),
-              moment.id(),
-              moment.title(),
-              moment.thumbnail(),
-              moment.price(),
-              cartItem.quantity(),
-              cartItem.isAvailable(),
-              totalPrice);
-        }).toList();
-    log.info("Retrieved list of items for cart page from backend: {}",
-        items);
+    List<CartItemViewDto> items =
+        cartDto.cartItems().stream()
+            .map(
+                cartItem -> {
+                  log.debug("Retrieving moment for cart page from backend");
+                  MomentDto moment = backendClient.getMomentById(cartItem.momentId());
+                  log.info("Retrieved moment for cart page from backend: {}", moment);
+                  BigDecimal totalPrice =
+                      moment.price().multiply(BigDecimal.valueOf(cartItem.quantity()));
+                  return new CartItemViewDto(
+                      cartItem.id(),
+                      cartItem.cartId(),
+                      moment.id(),
+                      moment.title(),
+                      moment.thumbnail(),
+                      moment.price(),
+                      cartItem.quantity(),
+                      cartItem.isAvailable(),
+                      totalPrice);
+                })
+            .toList();
+    log.info("Retrieved list of items for cart page from backend: {}", items);
 
-    BigDecimal subtotal = items.stream()
-        .map(CartItemViewDto::getTotalPrice)
-        .reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal subtotal =
+        items.stream().map(CartItemViewDto::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
 
     return new CartViewDto(cartDto.id(), customerId, new ArrayList<>(items), subtotal);
   }
@@ -180,7 +180,7 @@ public class CartController {
     log.info("Retrieved request param momentId: {}", momentId);
     log.info("Retrieved request param quantity: {}", quantity);
 
-    //todo: add validation of quantity
+    // todo: add validation of quantity
     Long customerId = customerManager.getCustomerId();
     CartItemInfoDto cartItem = new CartItemInfoDto(null, null, momentId, quantity, true);
     log.info("Retrieving saved cartItem for customerId: {}", customerId);
