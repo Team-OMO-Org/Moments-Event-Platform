@@ -57,6 +57,7 @@
                         <th scope="col">Price</th>
                         <th scope="col">Quantity</th>
                         <th scope="col">Total</th>
+                        <th></th>
                     </tr>
                     </thead>
 
@@ -105,6 +106,16 @@
                         </td>
                         <td>
                             <h5 th:text="${'€' + cartItem.totalPrice}"  th:class="${!cartItem.isAvailable} ? 'text-muted' : ''"></h5>
+                        </td>
+                        <td>
+<!--                            <a class="gray_btn" href="#" th:href="@{'/' + ${customerId} + '/items/' + ${cartItem.id}}">Delete</a>-->
+                            <button type="submit"
+                                    name="action"
+                                    th:value="'delete-' + ${cartItem.id}"
+                                    class="gray_btn"
+                                    onclick="return confirm('Remove this item?');">
+                                Delete
+                            </button>
                         </td>
                     </tr>
                     <tr>

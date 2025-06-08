@@ -66,7 +66,14 @@ public class CartController {
       @PathVariable Long customerId,
       @Valid @ModelAttribute("cartView") CartViewDto cartView,
       BindingResult bindingResult,
+      @RequestParam(required = false) String action,
       Model model) {
+
+    if (action != null && action.startsWith("delete-")) {
+      Long itemId = Long.valueOf(action.substring("delete-".length()));
+      orderClient.deleteCartItem(customerId, itemId);
+      return "redirect:/carts";
+    }
 
     log.info("cartView items START:");
     if (bindingResult.hasErrors()) {
