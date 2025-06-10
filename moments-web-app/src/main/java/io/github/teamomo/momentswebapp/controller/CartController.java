@@ -191,7 +191,7 @@ public class CartController {
     Long customerId = customerManager.getCustomerId();
     CartItemInfoDto cartItem = new CartItemInfoDto(null, null, momentId, quantity, true);
     log.info("Retrieving saved cartItem for customerId: {}", customerId);
-    CartItemInfoDto updatedCartItem = orderClient.createCartItem(customerId, cartItem);
+    orderClient.createCartItem(customerId, cartItem);
     log.info("Retrieved saved cartItem for customerId: {}", customerId);
     return "redirect:/carts";
   }
