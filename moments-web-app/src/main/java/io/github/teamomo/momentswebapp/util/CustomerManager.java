@@ -4,6 +4,7 @@ import io.github.teamomo.momentswebapp.client.CustomerClient;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
@@ -22,6 +23,13 @@ public class CustomerManager {
   private final CustomerClient customerClient;
 
   public Long getCustomerId() {
+    // Retrieve the Authentication object from the SecurityContext
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    if (authentication == null
+        || !(authentication.getPrincipal() instanceof DefaultOidcUser oidcUser)) {
+      throw new AuthenticationCredentialsNotFoundException("Authentication is missing or invalid");
+    }
+
     // Retrieve the current HttpServletRequest
     ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
     if (attributes == null) {
@@ -64,10 +72,9 @@ public class CustomerManager {
   private static String getKeycloakUserIdFromToken() {
     // Retrieve the Authentication object from the SecurityContext
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
     if (authentication == null
         || !(authentication.getPrincipal() instanceof DefaultOidcUser oidcUser)) {
-      throw new IllegalStateException("Authentication is missing or invalid.");
+      throw new AuthenticationCredentialsNotFoundException("Authentication is missing or invalid");
     }
 
     String userId = oidcUser.getAttribute("sub");

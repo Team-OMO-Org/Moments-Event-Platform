@@ -24,16 +24,14 @@
               <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                  aria-expanded="false">Account</a>
               <ul class="dropdown-menu">
-                <li class="nav-item"><a class="nav-link" th:href="@{/profile}">My Profile</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/events}">My Events</a></li>
                 <li class="nav-item">
-<!--                    Logged in as: <span sec:authentication="name"></span>-->
-                    <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" style="width: 100%;">
-                      <button type="submit"
-                          style="border: none; width: 100%; background: none; cursor: pointer; text-align: left;">
-                        <a class="nav-link" style="text-align: left;">Logout</a>
-                      </button>
-                    </form>
+                  <!--                    Logged in as: <span sec:authentication="name"></span>-->
+                  <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" style="width: 100%;">
+                    <button type="submit"
+                            style="border: none; width: 100%; background: none; cursor: pointer; text-align: left;">
+                      <a class="nav-link" style="text-align: left;">Logout</a>
+                    </button>
+                  </form>
 
                   <th:block sec:authorize="!isAuthenticated()">
                     <a href="oauth2/code/moments-web-app" class="nav-link">
@@ -42,6 +40,8 @@
                   </th:block>
 
                 </li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/profile}">My Profile</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/events}">My Events</a></li>
               </ul>
             </li>
             <li class="nav-item"><a class="nav-link" href="contact.html">Contact us</a></li>
