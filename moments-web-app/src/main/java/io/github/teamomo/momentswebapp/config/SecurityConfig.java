@@ -21,7 +21,6 @@ public class SecurityConfig {
       "/*",
       "/index*",
       "/moment/*",
-      "/customerId",
       "css/**",
       "fonts/**",
       "img/**",
