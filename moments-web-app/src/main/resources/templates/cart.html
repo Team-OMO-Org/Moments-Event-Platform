@@ -139,7 +139,7 @@
                         <td></td>
                         <td class="text-end" style="text-align: right;">
                             <div class="checkout_btn_inner d-flex align-items-center">
-                                <button type="submit" class="primary-btn">Update Cart</button>
+                                <button type="submit" class="primary-btn" th:attr="disabled=${cartView.items == null || cartView.items.isEmpty()}">Update Cart</button>
                             </div>
                         </td>
                     </tr>
@@ -166,7 +166,12 @@
 
                               <div class="checkout_btn_inner d-flex align-items-center" style="display: flex; justify-content: flex-end; ">
                                   <a class="gray_btn" href="#" th:href="@{/index}">Continue Shopping</a>
-                                  <a class="primary-btn" href="#" th:href="@{/carts/{customerId}/checkout(customerId=${cartView.customerId})}">Proceed to checkout</a>
+                                  <a class="primary-btn" href="#"
+                                     th:href="@{/carts/{customerId}/checkout(customerId=${cartView.customerId})}"
+                                     th:if="${cartView.items != null && !cartView.items.isEmpty()}">Proceed to checkout</a>
+                                  <a class="primary-btn disabled" href="#"
+                                     th:if="${cartView.items == null || cartView.items.isEmpty()}" style="pointer-events: none; opacity: 0.5;">Proceed to checkout</a>
+<!--                                  <a class="primary-btn" href="#" th:href="@{/carts/{customerId}/checkout(customerId=${cartView.customerId})}">Proceed to checkout</a>-->
                               </div>
 
                         </td>
