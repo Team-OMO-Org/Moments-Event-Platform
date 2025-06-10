@@ -6,6 +6,7 @@ import io.github.teamomo.order.dto.CartDto;
 import io.github.teamomo.order.dto.CartItemDto;
 import io.github.teamomo.order.dto.CartItemInfoDto;
 import io.github.teamomo.order.dto.OrderDto;
+import io.github.teamomo.order.dto.OrderInfoDto;
 import io.github.teamomo.order.dto.OrderItemDto;
 import io.github.teamomo.order.entity.Order;
 import io.github.teamomo.order.service.CartService;
@@ -19,6 +20,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.ws.rs.Path;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -57,24 +59,21 @@ public class OrderController {
       description = "This endpoint creates an order for a specific customer by their ID.",
       tags = {"Orders"},
       responses = {
-          @ApiResponse(
-              responseCode = "201",
-              description = "Order created successfully",
-              content = @Content(
-                  mediaType = "application/json",
-                  schema = @Schema(implementation = Order.class)
-              )
-          ),
-          @ApiResponse(
-              responseCode = "404",
-              description = "Customer not found",
-              content = @Content(
-                  mediaType = "application/json",
-                  schema = @Schema(implementation = ErrorResponseDto.class)
-              )
-          )
-      }
-  )
+        @ApiResponse(
+            responseCode = "201",
+            description = "Order created successfully",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = Order.class))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Customer not found",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponseDto.class)))
+      })
   @PostMapping("/{customerId}")
   @ResponseStatus(HttpStatus.CREATED)
   public OrderDto createOrderByCustomerId(@PathVariable Long customerId) {
@@ -97,27 +96,28 @@ public class OrderController {
 
   @Operation(
       summary = "Check ticket availability for a specific moment via Order Service",
-      description = "This endpoint checks if the required number of tickets are available for a specific moment by its ID using the Moment Service.",
+      description =
+          "This endpoint checks if the required number of tickets are available for a specific moment by its ID using the Moment Service.",
       tags = {"Orders"},
       parameters = {
-          @Parameter(
-              name = "id",
-              description = "The ID of the moment to check ticket availability for",
-              required = true,
-              example = "1"
-          ),
-          @Parameter(
-              name = "requiredTickets",
-              description = "The number of tickets required",
-              required = true,
-              example = "5"
-          )
-      }
-  )
+        @Parameter(
+            name = "id",
+            description = "The ID of the moment to check ticket availability for",
+            required = true,
+            example = "1"),
+        @Parameter(
+            name = "requiredTickets",
+            description = "The number of tickets required",
+            required = true,
+            example = "5")
+      })
   // todo: remove later, added for testing purpose
   @GetMapping("/moments/{id}/check-availability")
   public boolean checkTicketAvailability(@PathVariable Long id, @RequestParam int requiredTickets) {
-    log.info("Checking ticket availability for moment with id: {} and required tickets: {}", id, requiredTickets);
+    log.info(
+        "Checking ticket availability for moment with id: {} and required tickets: {}",
+        id,
+        requiredTickets);
     boolean availability = momentClient.checkTicketAvailability(id, requiredTickets);
     log.info("Ticket availability for moment with id {}: {}", id, availability);
     return availability;
@@ -125,55 +125,59 @@ public class OrderController {
 
   @Operation(
       summary = "Book tickets for a specific moment via Order Service",
-      description = "This endpoint books the required number of tickets for a specific moment by its ID using the Moment Service.",
+      description =
+          "This endpoint books the required number of tickets for a specific moment by its ID using the Moment Service.",
       tags = {"Orders"},
       parameters = {
-          @Parameter(
-              name = "id",
-              description = "The ID of the moment to book tickets for",
-              required = true,
-              example = "1"
-          ),
-          @Parameter(
-              name = "requiredTickets",
-              description = "The number of tickets to book",
-              required = true,
-              example = "5"
-          )
-      }
-  )
+        @Parameter(
+            name = "id",
+            description = "The ID of the moment to book tickets for",
+            required = true,
+            example = "1"),
+        @Parameter(
+            name = "requiredTickets",
+            description = "The number of tickets to book",
+            required = true,
+            example = "5")
+      })
   // todo: remove later, added for testing purpose
   @GetMapping("/moments/{id}/book-tickets")
   public BigDecimal bookTickets(@PathVariable Long id, @RequestParam int requiredTickets) {
-    log.info("Booking tickets for moment with id: {} and required tickets: {}", id, requiredTickets);
+    log.info(
+        "Booking tickets for moment with id: {} and required tickets: {}", id, requiredTickets);
     BigDecimal totalSum = momentClient.bookTickets(id, requiredTickets);
-    log.info("Booked {} tickets for moment with id {} with total sum: {}", requiredTickets, id, totalSum);
+    log.info(
+        "Booked {} tickets for moment with id {} with total sum: {}",
+        requiredTickets,
+        id,
+        totalSum);
     return totalSum;
   }
 
   @Operation(
       summary = "Cancel ticket booking if Payment fails for a specific moment via Order Service",
-      description = "This endpoint cancels the booking of tickets for a specific moment by its ID using the Moment Service.",
+      description =
+          "This endpoint cancels the booking of tickets for a specific moment by its ID using the Moment Service.",
       tags = {"Orders"},
       parameters = {
-          @Parameter(
-              name = "id",
-              description = "The ID of the moment to cancel ticket booking for",
-              required = true,
-              example = "1"
-          ),
-          @Parameter(
-              name = "ticketsToCancel",
-              description = "The number of tickets to cancel",
-              required = true,
-              example = "2"
-          )
-      }
-  )
+        @Parameter(
+            name = "id",
+            description = "The ID of the moment to cancel ticket booking for",
+            required = true,
+            example = "1"),
+        @Parameter(
+            name = "ticketsToCancel",
+            description = "The number of tickets to cancel",
+            required = true,
+            example = "2")
+      })
   // todo: remove later, added for testing purpose
   @GetMapping("/moments/{id}/cancel-tickets")
   public void cancelTicketBooking(@PathVariable Long id, @RequestParam int ticketsToCancel) {
-    log.info("Cancelling ticket booking for moment with id: {} and tickets to cancel: {}", id, ticketsToCancel);
+    log.info(
+        "Cancelling ticket booking for moment with id: {} and tickets to cancel: {}",
+        id,
+        ticketsToCancel);
     momentClient.cancelTicketBooking(id, ticketsToCancel);
     log.info("Cancelled {} tickets for moment with id {}", ticketsToCancel, id);
   }
@@ -181,5 +185,13 @@ public class OrderController {
   @GetMapping("/kafka")
   public void testKafka() {
     orderService.testKafka();
+  }
+
+  @GetMapping("/{orderId}")
+  public OrderInfoDto getOrderById(@PathVariable Long orderId) {
+    log.info("Getting order with id: {}", orderId);
+    OrderInfoDto orderInfoDto = orderService.getOrderById(orderId);
+    log.info("Got order with id: {}", orderId);
+    return orderInfoDto;
   }
 }

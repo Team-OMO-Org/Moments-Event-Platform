@@ -4,10 +4,12 @@ import io.github.teamomo.order.client.CustomerClient;
 import io.github.teamomo.order.client.MomentClient;
 import io.github.teamomo.order.dto.CustomerDto;
 import io.github.teamomo.order.dto.OrderDto;
+import io.github.teamomo.order.dto.OrderInfoDto;
 import io.github.teamomo.order.entity.*;
 import io.github.teamomo.order.event.OrderPlacedEvent;
 import io.github.teamomo.order.exception.CartIsEmptyException;
 import io.github.teamomo.order.exception.PaymentProcessingException;
+import io.github.teamomo.order.exception.ResourceNotFoundException;
 import io.github.teamomo.order.mapper.OrderMapper;
 import io.github.teamomo.order.repository.*;
 import jakarta.transaction.Transactional;
@@ -34,13 +36,13 @@ public class OrderService {
   private final OrderMapper orderMapper;
 
   private final PaymentRepository paymentRepository;
-  private final KafkaTemplate<String, OrderPlacedEvent> kafkaTemplate;    // key: Topic name, value: Event
-
+  private final KafkaTemplate<String, OrderPlacedEvent>
+      kafkaTemplate; // key: Topic name, value: Event
 
   @Transactional
   public OrderDto createOrderByCustomerId(Long customerId) {
 
-     Cart cart = orderMapper.toCartEntity(cartService.findCartByCustomerId(customerId));
+    Cart cart = orderMapper.toCartEntity(cartService.findCartByCustomerId(customerId));
 
     if (cart.getCartItems().isEmpty()) {
       log.error("Cart is empty for customer ID: {}", customerId);
@@ -58,7 +60,8 @@ public class OrderService {
 
     for (CartItem cartItem : cart.getCartItems()) {
       try {
-        BigDecimal ticketsPrice = momentClient.bookTickets(cartItem.getMomentId(), cartItem.getQuantity());
+        BigDecimal ticketsPrice =
+            momentClient.bookTickets(cartItem.getMomentId(), cartItem.getQuantity());
         OrderItem orderItem = new OrderItem();
         orderItem.setOrder(storedOrder);
         orderItem.setMomentId(cartItem.getMomentId());
@@ -72,7 +75,8 @@ public class OrderService {
         failedOrderItem.setOrder(storedOrder);
         failedOrderItem.setMomentId(cartItem.getMomentId());
         failedOrderItem.setQuantity(cartItem.getQuantity());
-        failedOrderItem.setCreatedAt(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+        failedOrderItem.setCreatedAt(
+            LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
         orderItems.add(failedOrderItem);
         allBooked = false;
         break;
@@ -80,14 +84,14 @@ public class OrderService {
     }
 
     if (!allBooked) {
-      orderItems.forEach(item -> momentClient.cancelTicketBooking(item.getMomentId(), item.getQuantity()));
+      orderItems.forEach(
+          item -> momentClient.cancelTicketBooking(item.getMomentId(), item.getQuantity()));
       order.setOrderStatus(OrderStatus.CANCELLED);
       return orderMapper.toDto(orderRepository.save(order));
     }
 
-    BigDecimal totalPrice = orderItems.stream()
-        .map(OrderItem::getPrice)
-        .reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal totalPrice =
+        orderItems.stream().map(OrderItem::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
 
     order.setOrderItems(orderItems);
     order.setTotalPrice(totalPrice);
@@ -129,7 +133,8 @@ public class OrderService {
     try {
       CustomerDto customer = customerClient.getCustomerById(orderDto.customerId());
       if (customer != null) {
-        String[] nameParts = customer.profileName().split(" ", 2); // Split into first name and last name
+        String[] nameParts =
+            customer.profileName().split(" ", 2); // Split into first name and last name
         String firstName = nameParts.length > 0 ? nameParts[0] : "Dear";
         String lastName = nameParts.length > 1 ? nameParts[1] : "customer";
 
@@ -139,7 +144,8 @@ public class OrderService {
         orderPlacedEvent.setFirstName(firstName);
         orderPlacedEvent.setLastName(lastName);
 
-        log.info("Start - Sending OrderPlacedEvent {} to Kafka topic order-placed", orderPlacedEvent);
+        log.info(
+            "Start - Sending OrderPlacedEvent {} to Kafka topic order-placed", orderPlacedEvent);
         kafkaTemplate.send("order-placed", orderPlacedEvent);
         log.info("End - Sending OrderPlacedEvent {} to Kafka topic order-placed", orderPlacedEvent);
       }
@@ -161,5 +167,15 @@ public class OrderService {
     log.info("Start - Sending OrderPlacedEvent {} to Kafka topic order-placed", orderPlacedEvent);
     kafkaTemplate.send("order-placed", orderPlacedEvent);
     log.info("End - Sending OrderPlacedEvent {} to Kafka topic order-placed", orderPlacedEvent);
+  }
+
+  public OrderInfoDto getOrderById(Long orderId) {
+    Order order =
+        orderRepository
+            .findById(orderId)
+            .orElseThrow(
+                () -> new ResourceNotFoundException("Order", "orderId", orderId.toString()));
+
+    return orderMapper.toOrderInfoDto(order);
   }
 }

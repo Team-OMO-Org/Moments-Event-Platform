@@ -30,16 +30,17 @@
 						<ul class="list">
 							<li>
 								<a ><span>Order number</span> : </a>
-<!--								<a th:text="${orderDto.id}"></a>-->
+								<a th:text="${orderView.id}"></a>
 							</li>
 							<li >
 								<a ><span>Date</span> : </a>
+								<!-- todo: take date from orderView -->
 								<a type="date" id="startDate" th:text="${dateTimeDto.date}"></a>
 								<a type="time" id="startTime" th:text="${dateTimeDto.time}"></a>
 							</li>
 							<li>
 								<a ><span>Total</span> : €</a>
-								<!--								<a th:text="${orderDto.total}"></a>-->
+																<a th:text="${orderView.total}"></a>
 							</li>
 						</ul>
 					</div>
@@ -57,16 +58,16 @@
 								<th scope="col">Price</th>
 							</tr>
 						</thead>
-				<!--		<tbody>
-							<tr th:each="orderItem : ${orderDto.orderItems}">
+						<tbody>
+							<tr th:each="orderItem : ${orderView.orderItems}">
 								<td>
-									<p></p>
+									<p th:text="${orderItem.momentTitle}"></p>
 								</td>
 								<td>
 									<h5 th:text="${'x ' + orderItem.quantity}"> </h5>
 								</td>
 								<td>
-									<p th:text="${'€' + orderItem.price}">€ 0.00</p>
+									<p th:text="${'€' + orderItem.totalPrice}">€ 0.00</p>
 								</td>
 
 							<tr>
@@ -77,10 +78,10 @@
 									<h5></h5>
 								</td>
 								<td>
-									<p th:text="${'€' + orderDto.totalPrice}">$0.00</p>
+									<p th:text="${'€' + orderView.total}">$0.00</p>
 								</td>
 							</tr>
-						</tbody>-->
+						</tbody>
 					</table>
 				</div>
 			</div>

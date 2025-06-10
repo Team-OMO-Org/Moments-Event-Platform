@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zxx" class="no-js">
+<head>
+  <!-- Include meta tags -->
+  <th:block th:replace="~{fragments/head :: meta}" />
+
+  <!-- Page title -->
+  <title>Order Confirmation</title>
+
+  <!-- Include common CSS -->
+  <th:block th:replace="~{fragments/head :: common-css}" />
+</head>
+
+<body>
+
+<!-- Include header -->
+<header th:replace="~{fragments/header :: header}"></header>
+
+<!-- Banner -->
+<div th:replace="~{fragments/banner :: banner('Moments Event Platform', 'Feel The Moment')}"></div>
+
+<!-- Error message-->
+
+<!--<div th:if="${error}" class="container mt-4">
+  <div class="alert alert-danger text-center" role="alert">
+    <p th:text="${error}"></p>
+  </div>
+</div>-->
+<div class="container">
+<div class="table-responsive">
+  <table class="table">
+    <tbody>
+    <tr th:if="${error}" class="container mt-4">
+      <td>
+        <div class="alert alert-danger text-center" role="alert">
+          <p th:text="${error}"></p>
+        </div>
+      </td>
+
+    </tr>
+    <tr class="out_button_area">
+      <td colspan="4">
+        <div style="display: flex; justify-content: space-between;">
+<div class="checkout_btn_inner d-flex align-items-center mt-4 mb-4" style="display: flex;">
+  <a class="gray_btn" href="#" th:href="@{/carts}">Back to Cart</a>
+</div>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</div>
+<!-- Include footer fragment -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<!-- JS Scripts -->
+<div th:replace="~{fragments/common-scripts}"></div>
+
+</body>
+
+</html>

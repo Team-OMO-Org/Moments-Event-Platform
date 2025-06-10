@@ -2,6 +2,7 @@ package io.github.teamomo.order.service;
 
 import io.github.teamomo.order.client.MomentClient;
 import io.github.teamomo.order.dto.CartDto;
+import io.github.teamomo.order.dto.CartItemDto;
 import io.github.teamomo.order.dto.CartItemInfoDto;
 import io.github.teamomo.order.entity.Cart;
 import io.github.teamomo.order.entity.CartItem;
@@ -84,6 +85,13 @@ public class CartService {
           newCart.setCustomerId(customerId);
           return cartRepository.save(newCart);
         });
+    //check if same item exists in the cart, increase ticket quantity and update
+    CartItem existItem = cartItemRepository.findByCartIdAndMomentId(cart.getId(), cartItemDto.momentId());
+    if(existItem != null){
+      Integer quantity = cartItemDto.quantity() + existItem.getQuantity();
+      CartItemInfoDto cartItem = new CartItemInfoDto(existItem.getId(), cart.getId(), cartItemDto.momentId(), quantity, cartItemDto.isAvailable());
+      return updateCartItem(existItem.getId(), cartItem);
+    }
     CartItem item = orderMapper.toCartItemEntity(cartItemDto);
     item.setCart(cart);
     CartItem savedItem = cartItemRepository.save(item);
