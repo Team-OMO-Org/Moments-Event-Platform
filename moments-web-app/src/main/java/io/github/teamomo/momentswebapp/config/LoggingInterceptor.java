@@ -17,7 +17,7 @@ public class LoggingInterceptor implements ClientHttpRequestInterceptor {
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
         // Log the request details
         logger.info("Request: {} {}", request.getMethod(), request.getURI());
-//        logger.info("Request Headers: {}", request.getHeaders());   // ToDo: remove after testing
+        logger.info("Request Headers: {}", request.getHeaders());   // ToDo: remove after testing
 
         // Proceed with the request
         return execution.execute(request, body);

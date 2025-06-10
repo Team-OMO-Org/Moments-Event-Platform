@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <body>
 <header th:fragment="header" class="header_area sticky-header">
   <div class="main_menu">
@@ -19,35 +20,30 @@
           <ul class="nav navbar-nav menu_nav ml-auto">
             <li class="nav-item active"><a class="nav-link" th:href="@{/index}">Home</a></li>
             <li class="nav-item"><a class="nav-link" th:href="@{/index}">Events</a></li>
-            <!--li class="nav-item submenu dropdown">
-              <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                 aria-expanded="false">Moments</a>
-              <ul class="dropdown-menu">
-                <li class="nav-item"><a class="nav-link" th:href="@{/index}">Shop Category</a></li>
-                <li class="nav-item"><a class="nav-link" href="single-product.html">Product Details</a></li>
-                <li class="nav-item"><a class="nav-link" href="checkout.html">Product Checkout</a></li>
-                <li class="nav-item"><a class="nav-link" href="cart.html">Shopping Cart</a></li>
-                <li class="nav-item"><a class="nav-link" href="confirmation.html">Confirmation</a></li>
-              </ul>
-            </li-->
             <li class="nav-item submenu dropdown">
               <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                  aria-expanded="false">Account</a>
               <ul class="dropdown-menu">
                 <li class="nav-item"><a class="nav-link" th:href="@{/profile}">My Profile</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/events}">My Events</a></li>
-                <li class="nav-item"><a class="nav-link"  th:href="@{/logout}">Sign out</a></li>
+                <li class="nav-item">
+<!--                    Logged in as: <span sec:authentication="name"></span>-->
+                    <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" style="width: 100%;">
+                      <button type="submit"
+                          style="border: none; width: 100%; background: none; cursor: pointer; text-align: left;">
+                        <a class="nav-link" style="text-align: left;">Logout</a>
+                      </button>
+                    </form>
+
+                  <th:block sec:authorize="!isAuthenticated()">
+                    <a href="oauth2/code/moments-web-app" class="nav-link">
+                      Login
+                    </a>
+                  </th:block>
+
+                </li>
               </ul>
             </li>
-            <!--li class="nav-item submenu dropdown">
-              <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                 aria-expanded="false">Pages</a>
-              <ul class="dropdown-menu">
-                <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
-                <li class="nav-item"><a class="nav-link" href="tracking.html">Tracking</a></li>
-                <li class="nav-item"><a class="nav-link" href="elements.html">Elements</a></li>
-              </ul>
-            </li-->
             <li class="nav-item"><a class="nav-link" href="contact.html">Contact us</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
@@ -62,8 +58,9 @@
   </div>
   <div class="search_input" id="search_input_box">
     <div class="container">
-      <form class="d-flex justify-content-between">
-        <input type="text" class="form-control" id="search_input" placeholder="Search Here">
+      <form class="d-flex justify-content-between" method="get" th:action="@{/index}">
+        <input type="text" name="search" class="form-control" id="search_input" placeholder="Search Here"
+               th:value="${search}">
         <button type="submit" class="btn"></button>
         <span class="lnr lnr-cross" id="close_search" title="Close Search"></span>
       </form>

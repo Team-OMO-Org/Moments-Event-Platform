@@ -1,5 +1,7 @@
 package io.github.teamomo.gateway.config;
 
+import static org.springframework.http.HttpMethod.GET;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -26,7 +28,11 @@ public class SecurityConfig {
             "/v3/api-docs/**",
             "/swagger-resources/**",
             "/api-docs/**",
-            "/aggregate/**",
+            "/aggregate/**"
+    };
+    private final String[] freeGETRequestUrls = {
+            "/api/v1/moments",
+            "/api/v1/moments/**"
     };
 
     @Bean
@@ -36,6 +42,7 @@ public class SecurityConfig {
                 .csrf(CsrfConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(freeResourceUrls).permitAll()
+                        .requestMatchers(GET, freeGETRequestUrls).permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session ->
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -1,6 +1,6 @@
 package io.github.teamomo.momentswebapp.controller;
 
-import io.github.teamomo.momentswebapp.client.BackendClient;
+import io.github.teamomo.momentswebapp.client.MomentClientPublic;
 import io.github.teamomo.momentswebapp.client.OrderClient;
 import io.github.teamomo.momentswebapp.dto.CartDto;
 import io.github.teamomo.momentswebapp.dto.CartItemViewDto;
@@ -32,7 +32,7 @@ import org.springframework.web.client.RestClientException;
 public class OrderController {
 
   private final OrderClient orderClient;
-  private final BackendClient backendClient;
+  private final MomentClientPublic momentClientPublic;
 
   @PostMapping("/{customerId}")
   String placeOrder(@PathVariable Long customerId, Model model) {
@@ -82,7 +82,7 @@ public class OrderController {
     List<OrderItemViewDto> items = orderInfoDto.orderItems().stream()
         .map(orderItem -> {
           log.debug("Retrieving moment for confirmation page from backend");
-          MomentDto moment = backendClient.getMomentById(orderItem.momentId());
+          MomentDto moment = momentClientPublic.getMomentById(orderItem.momentId());
           log.info("Retrieved moment for cart page from backend: {}",
               moment);
           BigDecimal totalPrice = orderItem.price().multiply(BigDecimal.valueOf(orderItem.quantity()));

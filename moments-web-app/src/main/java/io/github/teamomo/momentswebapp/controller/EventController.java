@@ -1,6 +1,6 @@
 package io.github.teamomo.momentswebapp.controller;
 
-import io.github.teamomo.momentswebapp.client.BackendClient;
+import io.github.teamomo.momentswebapp.client.MomentClientPublic;
 import io.github.teamomo.momentswebapp.client.CustomerClient;
 import io.github.teamomo.momentswebapp.dto.CategoryDto;
 import io.github.teamomo.momentswebapp.dto.MomentDto;
@@ -22,7 +22,7 @@ public class EventController {
 
   private final CustomerManager customerManager;
   private final CustomerClient customerClient;
-  private final BackendClient backendClient;
+  private final MomentClientPublic momentClientPublic;
 
   @GetMapping("/events")
   public String showEvents(
@@ -36,12 +36,12 @@ public class EventController {
 
     // CATEGORIES retrieval
     log.debug("Retrieving list of moments for customer from backend");
-    List<MomentDto> moments = backendClient.getMomentsByHostId(customerId);
+    List<MomentDto> moments = momentClientPublic.getMomentsByHostId(customerId);
    // moments.stream().map()
     log.info("Retrieved list of moments for customer from backend: {}",
         moments.size());
 
-    List<CategoryDto> categories = backendClient.getAllCategoriesByMomentsCount();
+    List<CategoryDto> categories = momentClientPublic.getAllCategoriesByMomentsCount();
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM, yyyy");
 

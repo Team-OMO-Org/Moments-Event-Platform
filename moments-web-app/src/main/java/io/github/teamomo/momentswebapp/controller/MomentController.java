@@ -1,6 +1,7 @@
 package io.github.teamomo.momentswebapp.controller;
 
-import io.github.teamomo.momentswebapp.client.BackendClient;
+import io.github.teamomo.momentswebapp.client.MomentClient;
+import io.github.teamomo.momentswebapp.client.MomentClientPublic;
 import io.github.teamomo.momentswebapp.dto.CategoryDto;
 import io.github.teamomo.momentswebapp.dto.DateTimeDto;
 import io.github.teamomo.momentswebapp.dto.MomentDetail;
@@ -26,7 +27,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Slf4j
 public class MomentController {
 
-  private final BackendClient backendClient;
+  private final MomentClientPublic momentClientPublic;
+  private final MomentClient momentClient;
   private final CustomerManager customerManager;
 
 
@@ -39,7 +41,7 @@ public class MomentController {
 //    System.out.println(oidcUser != null ? oidcUser.getSubject() : "no user");
 
     log.debug("Retrieving moment for moment-details page from backend");
-    MomentDto momentDto = backendClient.getMomentById(id);
+    MomentDto momentDto = momentClientPublic.getMomentById(id);
     log.info("Retrieved moment for moment-details page from backend: {}",
         momentDto);
     model.addAttribute("momentDto", momentDto);
@@ -50,7 +52,7 @@ public class MomentController {
 
     log.debug("Retrieving category for moment-details page from backend for categoryId: {}",
         momentDto.categoryId());
-    CategoryDto category = backendClient.getCategoryById(momentDto.categoryId());
+    CategoryDto category = momentClientPublic.getCategoryById(momentDto.categoryId());
     log.info("Retrieved category for moment-details page from backend for categoryId: {}",
         momentDto.categoryId());
 
@@ -76,7 +78,7 @@ public class MomentController {
     model.addAttribute("dateTimeDto", dateTimeDto);
 
     // CATEGORIES retrieval from backend
-    backendClient.getCategories(model, request.getRequestURI());
+    momentClientPublic.getCategories(model, request.getRequestURI());
 
     return "moment-details-form";
   }
@@ -84,7 +86,7 @@ public class MomentController {
   @GetMapping("/moment/update/{id}")
   public String updateMomentForm(@PathVariable Long id, Model model, HttpServletRequest request) {
     log.debug("Retrieving moment for moment-details-form page from backend");
-    MomentDto momentDto = backendClient.getMomentById(id);
+    MomentDto momentDto = momentClientPublic.getMomentById(id);
     log.info("Retrieved moment for moment-details-form page from backend: {}",
         momentDto);
     model.addAttribute("momentDto", momentDto);
@@ -93,7 +95,7 @@ public class MomentController {
     model.addAttribute("dateTimeDto", dateTimeDto);
 
     // CATEGORIES retrieval from backend
-    backendClient.getCategories(model, request.getRequestURI());
+    momentClientPublic.getCategories(model, request.getRequestURI());
 
     return "moment-details-form";
   }
@@ -116,7 +118,7 @@ public class MomentController {
     if (momentDto.id() == null) {
       log.debug("Post moment to backend: {}", momentDto);
       try {
-        momentDtoResponse = backendClient.addMoment(momentDto);
+        momentDtoResponse = momentClient.addMoment(momentDto);
       } catch (Exception e) {
         log.error("Failed to add moment: {}", momentDto, e);
         model.addAttribute("message", e.getMessage());
@@ -126,7 +128,7 @@ public class MomentController {
     } else {
       log.debug("Update moment in backend: {}", momentDto);
       try {
-        momentDtoResponse = backendClient.updateMoment(momentDto.id(), momentDto);
+        momentDtoResponse = momentClient.updateMoment(momentDto.id(), momentDto);
       } catch (Exception e) {
         log.error("Failed to update moment: {}", e.getMessage(), e);
         model.addAttribute("message", e.getMessage());

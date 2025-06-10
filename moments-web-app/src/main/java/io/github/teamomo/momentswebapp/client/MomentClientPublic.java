@@ -26,9 +26,9 @@ import org.springframework.web.service.annotation.PutExchange;
 @HttpExchange("/api/v1/moments")
 @CircuitBreaker(name = "backend")
 @Retry(name = "backend")
-public interface BackendClient {
+public interface MomentClientPublic {
 
-  Logger log = LoggerFactory.getLogger(BackendClient.class);
+  Logger log = LoggerFactory.getLogger(MomentClientPublic.class);
 
   @GetExchange
   PageResponse<MomentResponseDto> getAllMoments(
@@ -40,6 +40,7 @@ public interface BackendClient {
       @RequestParam(required = false) LocalDateTime startDateTo,
       @RequestParam(required = false) Recurrence recurrence,
       @RequestParam(required = false) Status status,
+      @RequestParam(required = false) String search,
       @RequestParam(required = false) int page,
       @RequestParam(required = false, defaultValue = "12") int size,
       @RequestParam(required = false, defaultValue = "startDate") String sort
@@ -59,12 +60,6 @@ public interface BackendClient {
 
   @GetExchange("/categories/{id}")
   CategoryDto getCategoryById(@PathVariable Long id);
-
-  @PostExchange
-  MomentDto addMoment(@RequestBody MomentDto momentDto);
-
-  @PutExchange("/{id}")
-  MomentDto updateMoment(@PathVariable Long id, @RequestBody MomentDto momentDto);
 
   /**
    * Retrieves categories from the backend and adds them to the model.

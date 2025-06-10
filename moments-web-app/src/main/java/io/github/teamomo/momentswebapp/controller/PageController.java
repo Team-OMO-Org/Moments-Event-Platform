@@ -1,19 +1,17 @@
 package io.github.teamomo.momentswebapp.controller;
 
-import io.github.teamomo.momentswebapp.client.BackendClient;
-import io.github.teamomo.momentswebapp.dto.CategoryDto;
+import io.github.teamomo.momentswebapp.client.MomentClientPublic;
 import io.github.teamomo.momentswebapp.dto.CityDto;
 import io.github.teamomo.momentswebapp.dto.MomentRequestDto;
 import io.github.teamomo.momentswebapp.dto.MomentResponseDto;
 import io.github.teamomo.momentswebapp.dto.PageResponse;
+import io.github.teamomo.momentswebapp.entity.Status;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Slf4j
 public class PageController {
 
-  private final BackendClient backendClient;
+  private final MomentClientPublic momentClientPublic;
 
   @GetMapping("/")
   public String home() {
@@ -40,9 +38,14 @@ public class PageController {
     // Get the current request URL including query parameters, remove parameter for functionality
     addRequestUrlsToModel(model, request);
 
+    // set default sort
+    String sort = request.getParameter("sort");
+    sort = sort == null || sort.equalsIgnoreCase("UNSORTED") ? "startDate,desc" : sort;
+    log.debug("sort request parameter: {}", sort);
+
     // MOMENTS retrieval
     log.debug("Retrieving moments for index page from backend");
-    PageResponse<MomentResponseDto> pageResponse = backendClient.getAllMoments(
+    PageResponse<MomentResponseDto> pageResponse = momentClientPublic.getAllMoments(
         momentRequestDto.getCategory(),
         momentRequestDto.getLocation(),
         momentRequestDto.getPriceFrom(),
@@ -50,10 +53,11 @@ public class PageController {
         momentRequestDto.getStartDateFrom(),
         momentRequestDto.getStartDateTo(),
         momentRequestDto.getRecurrence(),
-        momentRequestDto.getStatus(),
+        Status.LIVE,
+        momentRequestDto.getSearch(),
         pageable.getPageNumber(),
         pageable.getPageSize(),
-        pageable.getSort().toString().replace(": ", ",")
+        sort.replace(": ", ",")
     );
     log.info("getTotalElements {} getTotalPages {} getNumber {} getSize {} getSort {}",
         pageResponse.getTotalElements(),
@@ -71,11 +75,11 @@ public class PageController {
     model.addAttribute("currentPage", pageResponse.getNumber() + 1);
 
     // CATEGORIES retrieval from backend
-    backendClient.getCategories(model, request.getRequestURI());
+    momentClientPublic.getCategories(model, request.getRequestURI());
 
     // CITIES retrieval
     log.debug("Retrieving cities for index page from backend");
-    List<CityDto> cities = backendClient.getAllCitiesByMomentsCount();
+    List<CityDto> cities = momentClientPublic.getAllCitiesByMomentsCount();
     log.info("Retrieved cities for index page from backend: {}",
         cities.size());
     model.addAttribute("cities", cities);
@@ -90,7 +94,9 @@ public class PageController {
     String fullUrl = queryString != null ? currentUrl + "?" + queryString : currentUrl + "?";
     model.addAttribute("currentUrl", fullUrl);
     log.debug("currentUrl: {}", fullUrl);
+
     // Add url without corresponding query parameter for functionality
+    // PAGE AND SIZE
     String currentUrlWithoutPage = fullUrl.replaceAll("(&)?page=\\d+", "");
     model.addAttribute("currentUrlWithoutPage", currentUrlWithoutPage);
     String currentUrlWithoutSize = fullUrl.replaceAll("(&)?size=\\d+", "");
@@ -101,15 +107,36 @@ public class PageController {
     model.addAttribute("currentUrlWithoutSort",currentUrlWithoutSort);
     // capture sort parameter of the current request
     String sort = request.getParameter("sort");
-    log.info("sort parameter: {}", sort);
-    sort = sort == null || sort.equalsIgnoreCase("UNSORTED") ? "startDate,asc" : sort;
+    log.debug("sort parameter: {}", sort);
+    sort = sort == null || sort.equalsIgnoreCase("UNSORTED") ? "startDate,desc" : sort;
     String sortArray[] = sort.split(",");
     String sortType = sortArray[0];
     String sortDirection = sortArray[1];
-
     // add to model
     model.addAttribute("sortType", sortType);
     model.addAttribute("sortDirection", sortDirection);
-    // log sort type and direction
+
+    // CATEGORIES
+    String currentUrlWithoutCategory = fullUrl.replaceAll("(&)?category=[^&]*", "");
+    model.addAttribute("currentUrlWithoutCategory",currentUrlWithoutCategory);
+    String category = request.getParameter("category");
+    model.addAttribute("categorySelected", category);
+
+    // CITIES
+    String currentUrlWithoutLocation = fullUrl.replaceAll("(&)?location=[^&]*", "");
+    model.addAttribute("currentUrlWithoutLocation",currentUrlWithoutLocation);
+    String location = request.getParameter("location");
+    model.addAttribute("locationSelected", location);
+
+    // SEARCH
+    String currentUrlWithoutSearch = fullUrl.replaceAll("(&)?search=[^&]*", "");
+    model.addAttribute("currentUrlWithoutSearch",currentUrlWithoutSearch);
+    String search = request.getParameter("search");
+    model.addAttribute("search", search);
+  }
+
+  @GetMapping("/oauth2/code/moments-web-app")
+  public String afterLogin() {
+    return "redirect:/index";
   }
 }

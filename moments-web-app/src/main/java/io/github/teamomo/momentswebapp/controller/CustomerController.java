@@ -1,15 +1,10 @@
 package io.github.teamomo.momentswebapp.controller;
 
-import io.github.teamomo.momentswebapp.client.BackendClient;
+import io.github.teamomo.momentswebapp.client.MomentClientPublic;
 import io.github.teamomo.momentswebapp.client.CustomerClient;
-import io.github.teamomo.momentswebapp.dto.CategoryDto;
 import io.github.teamomo.momentswebapp.dto.CustomerDto;
-import io.github.teamomo.momentswebapp.dto.DateTimeDto;
-import io.github.teamomo.momentswebapp.dto.MomentDto;
 import io.github.teamomo.momentswebapp.util.CustomerManager;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -28,7 +23,7 @@ public class CustomerController {
 
   private final CustomerManager customerManager;
   private final CustomerClient customerClient;
-  private final BackendClient backendClient;
+  private final MomentClientPublic momentClientPublic;
 
   @GetMapping("/customerId")
   @ResponseBody

@@ -148,18 +148,16 @@
                      th:errors="*{ticketCount}"></div>
               </li>
 
-              <li class="d-flex align-items-center">
+              <li class="form-select d-flex align-items-center gap-10">
                 <a class="active col-4">
                   <span>Recurrence</span>
                 </a>
-                <div class="form-select col-8">
-                  <select id="recurrence" name="recurrence" th:field="*{recurrence}">
+                  <select class="form-select col-8" id="recurrence" name="recurrence" th:field="*{recurrence}">
                     <option
                         th:each="recurrence : ${T(io.github.teamomo.momentswebapp.entity.Recurrence).values()}"
                         th:value="${recurrence}"
                         th:text="${recurrence}"></option>
                   </select>
-                </div>
               </li>
 
               <li class="d-flex align-items-center">
