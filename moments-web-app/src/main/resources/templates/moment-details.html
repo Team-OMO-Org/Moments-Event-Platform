@@ -62,23 +62,28 @@
 							<span class="col-4 moment_label">Ticket Price:</span>
 							<h2 class="col-6" th:text="${'€' + momentDto.price}">€0.00</h2>
 						</div>
-
+						<form th:action="@{/carts/item}" th:method="post" class="add-to-cart-form">
 						<div class="product_count">
               <div class="row">
 								<span class="col-6 moment_label">Quantity:</span>
-								<input class="col-6 w-100 input-text qty border text-center" type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:">
+								<input class="col-6 w-100 input-text qty border text-center" type="text" min=1 name="quantity" id="sst" maxlength="12" th:value="${quantity}" title="Quantity:">
               </div>
                 <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
 							 class="increase items-count" type="button"><i class="lnr lnr-chevron-up"></i></button>
-							<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
+							<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 1 ) result.value--;return false;"
 							 class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button>
 						</div>
 						<div class="card_area d-flex align-items-center">
-							<a class="primary-btn" >Add to Cart</a>
-							<a class="primary-btn" >Direct buy</a>
-<!--							<a class="icon_btn" ><i class="lnr lnr lnr-diamond"></i></a>-->
-<!--							<a class="icon_btn" ><i class="lnr lnr lnr-heart"></i></a>-->
+
+								<input type="hidden" th:value="${momentDto.id}" name="momentId" />
+								<button type="submit" class="primary-btn">Add to Cart</button>
+
+<!--							<a class="primary-btn" href="#">Add to Cart</a>-->
+<!--							<a class="primary-btn" href="#">Direct buy</a>-->
+<!--							<a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a>-->
+<!--							<a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>-->
 						</div>
+						</form>
 					</div>
 				</div>
 			</div>

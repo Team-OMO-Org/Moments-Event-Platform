@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zxx" class="no-js">
+<head>
+  <!-- Include meta tags -->
+  <th:block th:replace="~{fragments/head :: meta}" />
+
+  <!-- Page title -->
+  <title>Order Checkout</title>
+
+  <!-- Include common CSS -->
+  <th:block th:replace="~{fragments/head :: common-css}" />
+</head>
+
+<body>
+
+<!-- Include header -->
+<header th:replace="~{fragments/header :: header}"></header>
+
+<!-- Banner -->
+<div th:replace="~{fragments/banner :: banner('Moments Event Platform', 'Feel The Moment')}"></div>
+
+<!--================Order Details Area =================-->
+<section class="order_details section_gap">
+  <div class="container">
+
+    <div class="order_details_table">
+      <h2>Order Details</h2>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+          <tr>
+            <th scope="col">Moment</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Total</th>
+          </tr>
+          </thead>
+          <tbody >
+          <tr th:each="cartItem : ${cartView.items}">
+            <td>
+              <p th:text="${cartItem.title}">title</p>
+            </td>
+            <td>
+              <h5 th:text="${'x ' + cartItem.quantity}">x 02</h5>
+            </td>
+            <td>
+              <p th:text="${'€' + cartItem.totalPrice}">0.00</p>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <h4>Total</h4>
+            </td>
+            <td>
+              <h5></h5>
+            </td>
+            <td>
+              <p th:text="${'€' + cartView.subtotal}">0.00</p>
+            </td>
+          </tr>
+
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+</section>
+<div class="container">
+
+    <div class="table-responsive">
+      <table class="table">
+        <tbody>
+        <tr class="out_button_area">
+          <td colspan="4">
+            <div style="display: flex; justify-content: space-between;">
+              <div class="checkout_btn_inner d-flex align-items-center">
+                <a class="gray_btn" href="#" th:href="@{/carts}">Back to Cart</a>
+              </div>
+              <!--<div class="checkout_btn_inner d-flex align-items-center">
+                <a class="primary-btn" href="#" th:href="@{/{customerId}(customerId=${cartView.customerId})}">Proceed to Pay</a>
+              </div>-->
+              <form th:action="@{/{customerId}(customerId=${cartView.customerId})}"
+                    th:method="post"
+                    style="display:inline;">
+                <button type="submit" class="primary-btn">Proceed to Pay</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+</div>
+<!--================End Order Details Area =================-->
+
+<!-- Include footer fragment -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<!-- JS Scripts -->
+<div th:replace="~{fragments/common-scripts}"></div>
+
+</body>
+
+</html>

@@ -57,6 +57,8 @@ public class MomentController {
         momentDto.categoryId());
 
     model.addAttribute("category", category);
+    Integer quantity = 1;
+    model.addAttribute("quantity", quantity);
 
     return "moment-details";
   }

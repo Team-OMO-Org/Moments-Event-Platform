@@ -43,7 +43,7 @@
                         <th></th>
                         <th></th>
                         <th class="text-end">
-                            <form th:action="@{/carts/{customerId}(customerId=${cartView.customerId})}"
+                            <form th:action="@{/carts/{customerId}(customerId=${customerId})}"
                                   th:method="delete"
                                   onsubmit="return confirm('Are you sure you want to clear the cart?');"
                                   style="display:inline;">
@@ -57,10 +57,11 @@
                         <th scope="col">Price</th>
                         <th scope="col">Quantity</th>
                         <th scope="col">Total</th>
+                        <th></th>
                     </tr>
                     </thead>
 
-                    <form th:action="@{/carts/{customerId}(customerId=${cartView.customerId})}" th:object="${cartView}" th:method="put">
+                    <form th:action="@{'/carts/' +  ${customerId}}" th:object="${cartView}" th:method="put">
 
                     <tbody>
                     <tr th:if="${cartView.items != null}" th:each="cartItem, stat : ${cartView.items}" th:class="${!cartItem.isAvailable} ? 'not-available' : ''">
@@ -84,7 +85,8 @@
                         <td>
                             <!-- Todo: change total? -->
                             <!-- Todo: add REMOVE ITEM -->
-                            <div class="product_count" th:if="${cartItem.isAvailable}">
+<!--                            <div class="product_count" th:if="${cartItem.isAvailable}">-->
+                                <div class="product_count" >
                                 <input type="hidden" th:field="*{items[__${stat.index}__].id}" />
                                 <input type="hidden" th:field="*{items[__${stat.index}__].cartId}" />
                                 <input type="hidden" th:field="*{items[__${stat.index}__].momentId}" />
@@ -100,10 +102,20 @@
                                 </div>
                             </div>
 
-                            <h5 th:if="${!cartItem.isAvailable}" th:text="${cartItem.quantity}"  th:class="${!cartItem.isAvailable} ? 'text-muted' : ''"></h5>
+<!--                            <h5 th:if="${!cartItem.isAvailable}" th:text="${cartItem.quantity}"  th:class="${!cartItem.isAvailable} ? 'text-muted' : ''"></h5>-->
                         </td>
                         <td>
                             <h5 th:text="${'€' + cartItem.totalPrice}"  th:class="${!cartItem.isAvailable} ? 'text-muted' : ''"></h5>
+                        </td>
+                        <td>
+<!--                            <a class="gray_btn" href="#" th:href="@{'/' + ${customerId} + '/items/' + ${cartItem.id}}">Delete</a>-->
+                            <button type="submit"
+                                    name="action"
+                                    th:value="'delete-' + ${cartItem.id}"
+                                    class="gray_btn"
+                                    onclick="return confirm('Remove this item?');">
+                                Delete
+                            </button>
                         </td>
                     </tr>
                     <tr>
@@ -154,7 +166,7 @@
 
                               <div class="checkout_btn_inner d-flex align-items-center" style="display: flex; justify-content: flex-end; ">
                                   <a class="gray_btn" href="#" th:href="@{/index}">Continue Shopping</a>
-                                  <a class="primary-btn" href="#">Proceed to checkout</a>
+                                  <a class="primary-btn" href="#" th:href="@{/carts/{customerId}/checkout(customerId=${cartView.customerId})}">Proceed to checkout</a>
                               </div>
 
                         </td>
