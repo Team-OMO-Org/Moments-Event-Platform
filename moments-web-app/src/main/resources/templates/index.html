@@ -125,7 +125,7 @@
 
           <!-- single product -->
           <div th:each="moment : ${moments}" class="col-lg-4 col-md-6">
-<!--            ToDo: Add to cart url here-->
+
             <div th:insert="~{fragments/product :: product(
               ${moment.id},
               ${moment.thumbnail},
@@ -134,7 +134,7 @@
               ${moment.category},
               ${moment.location},
               ${'€' + moment.price},
-              ${'ToDo: Add to cart url here' + moment.id},
+              ${null},
               ${'/moment/' + moment.id})}">
             </div>
           </div>
