@@ -51,6 +51,7 @@
               the MCSE study materials yourself at a fraction.</p>
             <br/>
             <a th:href="@{'/moment/update/' + ${id}}" class="orange_bg_btn">Edit Event</a>
+            <a th:href="@{'/events/delete/' + ${id}}" class="orange_bg_btn" onclick="return confirm('Do you want to delete event?');">Delete Event</a>
           </div>
         </div>
       </div>
