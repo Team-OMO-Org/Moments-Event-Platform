@@ -85,12 +85,15 @@
         </div>
       </div>
 
+      <form th:action="@{/carts/item}" th:method="get">
       <div class="d-flex justify-content-start align-items-center"
            style="margin: -10px 0 -3px 0">
         <div class="prd-bottom">
-          <a th:href="${href1}" class="social-info">
-            <span class="ti-bag"></span>
-            <p class="hover-text">add to cart</p>
+          <a class="social-info" onclick="this.closest('form').submit()">
+              <input type="hidden" name="momentId" th:value="${id}" />
+              <input type="hidden" name="quantity" value="1" />
+                <span class="ti-bag"></span>
+                <p class="hover-text">add to cart</p>
           </a>
           <a th:href="${href2}" class="social-info">
             <span class="lnr lnr-move"></span>
@@ -98,6 +101,7 @@
           </a>
         </div>
       </div>
+      </form>
 
     </div>
   </div>

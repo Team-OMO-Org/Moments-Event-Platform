@@ -21,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -183,7 +184,7 @@ public class CartController {
     return new CartViewDto(cartDto.id(), customerId, new ArrayList<>(items), subtotal);
   }
 
-  @PostMapping("/carts/item")
+  @GetMapping("/carts/item")
   public String addCartItem(@RequestParam Long momentId, @RequestParam Integer quantity) {
     log.info("Retrieved request param momentId: {}", momentId);
     log.info("Retrieved request param quantity: {}", quantity);
