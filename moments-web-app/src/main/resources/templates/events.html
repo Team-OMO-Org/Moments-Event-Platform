@@ -21,6 +21,11 @@
 <!-- Banner -->
 <div th:replace="~{fragments/banner :: banner('Moments Event Platform', 'Feel The Moment')}"></div>
 
+<!-- Warning message -->
+<div th:if="${message}" class="alert alert-warning text-center" role="alert">
+    <span th:text="${message}"></span>
+</div>
+
     <!--================Blog Categorie Area =================-->
 <section class="blog_categorie_area">
     <div class="container">
