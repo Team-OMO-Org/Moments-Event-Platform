@@ -137,25 +137,9 @@ The platform follows a **Microservices Architecture** with each service being re
 
 Below is a high-level system design diagram showcasing the different services and how they interact:
 
-![Moments Event Platform Architecture](https://via.placeholder.com/800x500.png?text=eCommerce+Platform+System+Architecture)
+![Moments Event Platform Architecture](./architecture.png)
 
 ## System Design
-
-### Database Design:
-
-* **Users**:
-
-  * Stores details about users such as name, email, password (hashed), shipping addresses, and roles.
-
-* **Products**:
-
-  * A collection of all the products with details like name, description, price, stock levels, and category.
-
-* **Orders**:
-
-  * Represents customer orders, including order status, user ID, product IDs, quantities, and total amounts.
-
-  * Tracks payment details including the payment method, status (successful/failed), transaction ID, and amount.
 
 ### API Gateway:
 
@@ -173,13 +157,45 @@ Below is a high-level system design diagram showcasing the different services an
 
 * To publish from order service, store and sent messages to the notification service, which in turn sends an email to the user with Javamail using Mailtrap.
 
+### Database Design:
+
+* **Customers**:  
+ Stores customer profiles, linking users via their Keycloak identity. Includes details like name, email, profile picture, personal website URL, and a short description. Tracks account activity status and timestamps for creation and updates.
+* **Moments**:  
+ Represents events or moments created by users. Contains information such as title, short description, thumbnail, pricing, ticket count, scheduling (including recurrence), and status (e.g., draft, live). Each moment is linked to a host, a category, and a location.
+* **Moment Details**:  
+ Holds extended descriptions for each moment, allowing richer content separate from the core moment data. Tracks creation and update timestamps and links directly to the corresponding moment.
+* **Categories**:  
+ Maintains a catalog of moment categories, with each entry including a name and an optional description. Used to classify moments/events.
+* **Locations**:  
+ Defines geographic locations for moments. Includes city and address fields. Used to assign a specific place to each event.
+* **Carts**:  
+ Represents shopping carts created by customers. Each cart belongs to a specific customer and tracks its creation and update times.
+* **Cart Items**:  
+ Tracks the contents of each cart, linking individual moments (events) with quantities to specific carts. Supports the process of assembling orders before purchase.
+
 ### Database Schema Diagrams:
 
-![Moment Service Database Schema Diagram](./moment-service_db.png)
+* Moment Service Database Schema
 
-![Order Service Database Schema Diagram](./order-service_db.png)
+<div align="center">
+  <img src="./moment-service_db.png" alt="Moment Service Database Schema" width="650px"/>
+</div>
+<br>
 
-![Customer Service Database Schema Diagram](./customers_db.png)
+* Order Service Database Schema
+
+<div align="center">
+  <img src="./order-service_db.png" alt="Order Service Database Schema" width="650px"/>
+</div>
+<br>
+
+* Customer Service Database Schema
+
+<div align="center">
+  <img src="./customers_db.png" alt="Customer Service Database Schema" width="320px"/>
+</div>
+<br>
 
 ## Setup and Installation
 
