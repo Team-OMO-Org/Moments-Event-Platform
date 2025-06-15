@@ -6,7 +6,9 @@ import io.github.teamomo.momentswebapp.client.MomentClient;
 import io.github.teamomo.momentswebapp.client.MomentClientPublic;
 import io.github.teamomo.momentswebapp.client.OrderClient;
 import io.github.teamomo.momentswebapp.client.CustomerClient;
+import io.micrometer.observation.ObservationRegistry;
 import java.time.Duration;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.ClientHttpRequestFactories;
@@ -21,11 +23,14 @@ import org.springframework.web.client.support.RestClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 @Configuration
+@RequiredArgsConstructor
 public class RestClientConfig {
     @Value("${backend-service.url}")
     private String backendUrl;
     @Value("${spring.security.oauth2.client.registration.moments-web-app.client-id}")
     private String clientId;
+    private final ObservationRegistry observationRegistry;
+
 
     /**
      * Creates a RestClient bean for the Inventory service.
@@ -39,6 +44,7 @@ public class RestClientConfig {
         RestClient restClient = RestClient.builder()
                 .baseUrl(backendUrl)
                 .requestFactory(getClientRequestFactory())  // to define timeouts
+                .observationRegistry(observationRegistry)
                 .requestInterceptor(new LoggingInterceptor()) // Add the logging interceptor
                 .build();
 
@@ -72,6 +78,7 @@ public class RestClientConfig {
         RestClient restClient = RestClient.builder()
                 .baseUrl(backendUrl)
                 .requestFactory(getClientRequestFactory())  // to define timeouts
+                .observationRegistry(observationRegistry)
                 .requestInterceptor(oauth2Interceptor)  // adds JWT token to the request
                 .requestInterceptor(new LoggingInterceptor()) // Add the logging interceptor
                 .defaultRequest(r ->

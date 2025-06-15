@@ -2,7 +2,9 @@ package io.github.teamomo.order.config;
 
 import io.github.teamomo.order.client.CustomerClient;
 import io.github.teamomo.order.client.MomentClient;
+import io.micrometer.observation.ObservationRegistry;
 import java.time.Duration;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.ClientHttpRequestFactories;
@@ -18,11 +20,13 @@ import org.springframework.web.client.support.RestClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 @Configuration
+@RequiredArgsConstructor
 public class RestClientConfig {
     @Value("${backend-service.url}")
     private String momentClientUrl;
     @Value("http://localhost:8083")
     private String customerClientUrl;
+    private final ObservationRegistry observationRegistry;
 
     /**
      * Creates a RestClient bean for the Inventory service.
@@ -35,6 +39,7 @@ public class RestClientConfig {
         RestClient restClient = RestClient.builder()
                 .baseUrl(momentClientUrl)
                 .requestFactory(getClientRequestFactory())  // to define timeouts
+                .observationRegistry(observationRegistry)
                 .build();
         RestClientAdapter adapter = RestClientAdapter.create(restClient);
         HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();

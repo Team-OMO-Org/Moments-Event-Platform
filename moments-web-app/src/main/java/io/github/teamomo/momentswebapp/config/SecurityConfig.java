@@ -24,7 +24,8 @@ public class SecurityConfig {
       "css/**",
       "fonts/**",
       "img/**",
-      "js/**"
+      "js/**",
+      "/actuator/prometheus"
   };
 
   @Bean

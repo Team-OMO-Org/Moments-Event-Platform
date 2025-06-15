@@ -1,6 +1,7 @@
 package io.github.teamomo.moment.repository;
 
 import io.github.teamomo.moment.entity.Moment;
+import io.micrometer.observation.annotation.Observed;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+@Observed
 public interface MomentRepository extends JpaRepository<Moment, Long>
 , MomentCustomRepository
 {
