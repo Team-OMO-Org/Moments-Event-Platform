@@ -6,14 +6,13 @@ Welcome to the **Moments Event Platform** repository! This is a fully-featured e
 
 1. [Project Overview](#project-overview)
 2. [Features](#features)
-3. [Technologies Used](#technologies-used)
-4. [Architecture](#architecture)
-5. [System Design](#system-design)
-6. [Setup and Installation](#setup-and-installation)
-7. [Folder Structure](#folder-structure)
-8. [API Documentation](#api-documentation)
-9. [Contributing](#contributing)
-10. [License](#license)
+3. [Architecture](#architecture)
+4. [System Design](#system-design)
+5. [Setup and Installation](#setup-and-installation)
+6. [Folder Structure](#folder-structure)
+7. [API Documentation](#api-documentation)
+8. [Contributing](#contributing)
+9. [License](#license)
 
 ## Project Overview
 
@@ -76,32 +75,6 @@ This platform supports:
 
 * **Contact support**: Customers can directly contact support teams for assistance via email or live chat.
 * **Help Center**: A knowledge base where customers can find answers to common questions. --->
-
-## Technologies Used
-
-replace part with oru technologies HERE
-
-<!-- ### **Backend**
-
-* **Node.js**: A non-blocking, event-driven server for handling large-scale requests.
-* **Express.js**: A minimal web framework to handle routing and middleware.
-* **MongoDB**: A NoSQL database that allows for flexible data modeling (products, orders, users, etc.).
-* **JWT (JSON Web Tokens)**: Used for user authentication and token-based authorization.
-* **Mongoose**: An ODM (Object Data Modeling) library to interact with MongoDB, ensuring a clear structure for data.
-
-### **Frontend**
-
-* **React.js**: A JavaScript library for building dynamic, component-based user interfaces.
-* **Redux**: A state management library to manage the application state centrally.
-* **Sass**: A CSS preprocessor for maintaining scalable styles.
-* **Axios**: For HTTP requests to the backend API.
-* **React Router**: For dynamic navigation and route handling in the frontend. -->
-
-### **Third-Party Services**
-
-* **Mailtrap**: For email notifications (order confirmations).
-* **Docker**: For containerizing the platform and making deployment easier.
-* **Stripe**: The platform is planned and developed with Stripe integration in mind.
 
 ## Architecture
 
@@ -238,7 +211,7 @@ Below are the ports for all services in the Moments Event Platform (can be found
 | **Core Services** | Moment Service | `http://localhost:8081` |
 | | Order Service | `http://localhost:8082` |
 | | Customer Service | `http://localhost:8083` |
-| | Notification Service | `http://localhost:8084` |
+| | Notification Service | `localhost:8084` |
 | **Infrastructure** | Naming Server (Eureka) | `http://localhost:8761` |
 | | Keycloak | `http://localhost:8181` |
 | **Messaging** | Schema Registry | `http://localhost:8085` |
@@ -251,87 +224,91 @@ Below are the ports for all services in the Moments Event Platform (can be found
 
 ## Step 3: Build the Application
 
-First, build all microservices. We recommend running with tests whenever possible. The -DskipTests flag should only be used during initial setup or if you're experiencing specific test-related issues.
+We recommend running applications including tests first since Eureka and databases must be running for those.  
+Then build all microservices.
 
 ```bash
-# For each service
-cd service-name
-./mvnw clean package
-cd ..
-
-# Only for services where tests might not yet be implemented
-cd service-name-without-tests
-./mvnw clean package -DskipTests
-cd ..
+# Build services (skip tests for final build, to include them Eureka and databases must be running)
+./mvnw -f naming-server/pom.xml clean package -DskipTests
+./mvnw -f api-gateway/pom.xml clean package -DskipTests
+./mvnw -f moment-service/pom.xml clean package -DskipTests
+./mvnw -f order-service/pom.xml clean package -DskipTests
+./mvnw -f customer-service/pom.xml clean package -DskipTests
+./mvnw -f notification-service/pom.xml clean package -DskipTests
+./mvnw -f moments-web-app/pom.xml clean package -DskipTests
 ```
 
-## Step 4: Configure Environment Variables
+## Step 4: Run Applications with Environment Variables
+Launch each service with the appropriate configuration by providing environment variables when starting the applications:
 
-Create environment files for each service or set them through your IDE:
+### Infrastructure Services
 
-### Service
-```properties
-# application.properties or environment variables
-spring.datasource.url=jdbc:mysql://localhost:3306/moment_service
-spring.datasource.username=root
-spring.datasource.password=root
-eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka
-```
-
-### Order Service
-```properties
-# application.properties or environment variables
-spring.datasource.url=jdbc:mysql://localhost:3306/order_service
-spring.datasource.username=root
-spring.datasource.password=root
-eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka
-backend-service.url=http://localhost:8081
-```
-
-### Customer Service
-```properties
-# application.properties or environment variables
-spring.datasource.url=jdbc:mysql://localhost:3306/customer_service
-spring.datasource.username=root
-spring.datasource.password=root
-eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka
-```
-
-### Web App
-```properties
-# application.properties or environment variables
-backend-service.url=http://localhost:8081
-spring.security.oauth2.client.registration.moments-web-app.client-id=moments-web-app
-spring.security.oauth2.client.registration.moments-web-app.client-secret=YOUR_CLIENT_SECRET
-spring.security.oauth2.client.provider.keycloak.issuer-uri=http://localhost:8181/realms/moments
-```
-
-## Step 5: Start Eureka Naming Server
-
-Start the service discovery server first:
+These services provide platform capabilities and don't require custom configuration for development:
 
 ```bash
-cd naming-server
-java -jar target/naming-server-0.0.1-SNAPSHOT.jar
+# Naming Server (Eureka)
+java -jar naming-server/target/naming-server-0.0.1-SNAPSHOT.jar
+
+# API Gateway
+java -jar api-gateway/target/api-gateway-0.0.1-SNAPSHOT.jar
+
+# Start Docker Infrastructure (Keycloak)
+docker-compose -f api-gateway/docker-compose.yml up -d
+
+# Start Messaging Infrastructure (Kafka ecosystem)
+docker-compose -f notification-service/docker-compose.yml up -d
+
+# Start Database Infrastructure (if not using existing databases)
+docker-compose -f moment-service/docker-compose.yml up -d
+docker-compose -f order-service/docker-compose.yml up -d
+docker-compose -f customer-service/docker-compose.yml up -d
 ```
 
-Verify Eureka is running by visiting: http://localhost:8761
+### Core Services
 
-## Step 6: Start the Infrastructure Services
+Databases are set to work out of the box with the ones provided by docker compose in a development environment (leave the environment variables for the database away then e.g. ava -jar target/moment-service-0.0.1-SNAPSHOT.jar), but should be changed for production.
 
-You can use Docker Compose to start the required infrastructure services:
-
+#### Moment Service
 ```bash
-# Set up Keycloak for authentication
-cd ../customer-service
-docker-compose up -d
-
-# In a new terminal, start Kafka and related services for notifications
-cd ../notification-service
-docker-compose up -d
+java -jar target/moment-service-0.0.1-SNAPSHOT.jar \
+  --spring.datasource.url=jdbc:mysql://localhost:3307/moments_db \
+  --spring.datasource.username=your_username \
+  --spring.datasource.password=your_password
 ```
 
-## Step 7: Configure Keycloak
+#### Order Service
+```bash
+java -jar target/order-service-0.0.1-SNAPSHOT.jar \
+  --spring.datasource.url=jdbc:mysql://localhost:3308/orders_db \
+  --spring.datasource.username=your_username \
+  --spring.datasource.password=your_password
+```
+
+#### Customer Service
+```bash
+java -jar target/customer-service-0.0.1-SNAPSHOT.jar \
+  --spring.datasource.url=jdbc:mysql://localhost:3309/customers_db \
+  --spring.datasource.username=your_username \
+  --spring.datasource.password=your_password
+```
+
+#### Notification Service
+```bash
+java -jar target/notification-service-0.0.1-SNAPSHOT.jar \
+  --spring.mail.host=sandbox.smtp.mailtrap.io \
+  --spring.mail.port=2525 \
+  --spring.mail.username=your_username \
+  --spring.mail.password=your_password \
+  --email-address=your_email
+```
+
+> **Note:** For the Notification Service, you'll need to register for a [Mailtrap](https://mailtrap.io/) account (or an alternative SMTP service) to obtain your username and password credentials. Set these as environment variables or replace the placeholders directly.
+
+> **Database Configuration Note:** The development environment uses pre-configured database settings that work out of the box with the Docker setup. When moving to production, you should replace the database connection details with your production database parameters and implement proper security measures such as encrypted passwords and restricted database access.
+
+### Configure Keycloak
+
+For production change credentials after first login.
 
 1. Access Keycloak admin console at http://localhost:8181
 2. Login with the default credentials:
@@ -342,63 +319,13 @@ docker-compose up -d
 5. Reset the client secret:
    - Go to the "Credentials" tab
    - Click "Regenerate Secret"
-   - Copy the new client secret
-6. Update the client secret in your web-app's application.properties or environment variables
+   - Copy the new client secret for the next step
 
-## Step 8: Run the Core Microservices
-
-Start each microservice in separate terminal windows:
-
-### Moment Service
-```bash
-cd moment-service
-java -jar target/moment-service-0.0.1-SNAPSHOT.jar
-```
-
-### Order Service
-```bash
-cd order-service
-java -jar target/order-service-0.0.1-SNAPSHOT.jar
-```
-
-### Customer Service
-```bash
-cd customer-service
-java -jar target/customer-service-0.0.1-SNAPSHOT.jar
-```
-
-### Notification Service
-```bash
-cd notification-service
-java -jar target/notification-service-0.0.1-SNAPSHOT.jar
-```
-
-## Step 9: Start the API Gateway
+### Run the Web Application
 
 ```bash
-cd api-gateway
-java -jar target/api-gateway-0.0.1-SNAPSHOT.jar
-```
-
-## Step 10: Start the Web Application
-
-```bash
-cd moments-web-app
-java -jar target/moments-web-app-0.0.1-SNAPSHOT.jar
-```
-
-Access the web application at: http://localhost:8090
-
-## Alternative: Run Using Docker
-
-For a fully containerized setup, use the prepared Docker files:
-
-```bash
-# Build Docker images
-docker-compose build
-
-# Start all services
-docker-compose up -d
+java -jar target/moments-web-app-0.0.1-SNAPSHOT.jar \
+  --spring.security.oauth2.client.registration.moments-web-app.client-secret=YOUR_CLIENT_SECRET
 ```
 
 ## Verification
@@ -414,20 +341,6 @@ docker-compose up -d
 - **Database connection errors**: Verify MySQL is running and credentials are correct
 - **Keycloak authentication issues**: Ensure the client secret is correctly set in the web-app configuration
 - **Services cannot communicate**: Make sure client interfaces are correctly configured with proper URLs
-
-## API Testing
-
-You can test the REST endpoints using tools like Postman or curl. For example:
-
-```bash
-# Get all moments through API Gateway
-curl -X GET http://localhost:9000/api/v1/moments
-
-# Create a cart (authenticated request)
-curl -X POST http://localhost:9000/api/v1/carts/1 -H "Authorization: Bearer YOUR_JWT_TOKEN"
-```
-
-This microservices architecture enables you to work on individual services independently while maintaining the integrated functionality of the entire platform.
 
 ## Folder Structure
 
@@ -540,21 +453,21 @@ Each microservice follows a similar structure:
 - **MySQL**: Database initialization and configuration
 - **Avro Schemas**: Message format definitions for event streaming
 
-## Frontend Structure (moments-web-app)
+### Frontend Structure (moments-web-app)
 
 The frontend is built using Spring Boot with Thymeleaf for server-side rendering:
 
-### Controllers
+#### Controllers
 - **Handle HTTP requests and prepare model data for views**
   - Map to specific URL paths
   - Communicate with microservices via clients
 
-### Templates
+#### Templates
 - **Thymeleaf HTML templates**
   - Organized by feature/page
   - Use fragments for reusable components
 
-### Static Resources
+#### Static Resources
 - **CSS** for styling
 - **JavaScript** for client-side interactions
 - **Images** and other media
@@ -563,7 +476,7 @@ This architecture enables the platform to scale individual services independentl
 
 ## API Documentation
 
-Each microservice's REST API is documented by Swagger using OpenAPI v3.1.0, aggregated
+Each microservice's REST API is documented by **Swagger using OpenAPI v3.1.0**, aggregated
 on the API Gateway and can be found
 under: http://localhost:9000/swagger-ui/index.html
 
@@ -572,10 +485,10 @@ Moments Event Platform.
 All endpoints listed below are rerouted through a secured API Gateway, which ensures centralized
 authentication, authorisation, and request routing.
 
-## Moment Service
+### Moment Service
 **Base URL**: `/api/v1/moments`
 
-### Moment Endpoints
+#### Moment Endpoints
 - **GET** : Retrieve all moments with optional filters.
 - **GET** `/{id}`: Retrieve a moment by its ID.
 - **POST** : Create a new moment.
@@ -594,9 +507,9 @@ authentication, authorisation, and request routing.
 
 ---
 
-## Order Service
+### Order Service
 
-### Cart Endpoints
+#### Cart Endpoints
 **Base URL**: `/api/v1/orders/carts`
 
 - **GET** `/{customerId}`: Retrieve the cart for a specific customer. If no cart exists, a new one
@@ -609,7 +522,7 @@ authentication, authorisation, and request routing.
 - **PUT** `/{customerId}/items/{itemId}`: Update an item in the cart for a specific customer.
 - **DELETE** `/{customerId}/items/{itemId}`: Delete an item from the cart for a specific customer.
 
-### Order Endpoints
+#### Order Endpoints
 **Base URL**: `/api/v1/orders`
 
 - **GET** `/{orderId}`: Retrieve an order by its ID.
@@ -617,10 +530,10 @@ authentication, authorisation, and request routing.
 
 ---
 
-## Customer Service
+### Customer Service
 **Base URL**: `/api/v1/customers`
 
-### Customer Endpoints
+#### Customer Endpoints
 - **GET** `/{id}`: Retrieve a customer by its ID.
 - **POST** `/check`: Check if a customer exists by Keycloak user ID, create a new one if not.
 - **PUT** `/{id}`: Update a customer by its ID.
