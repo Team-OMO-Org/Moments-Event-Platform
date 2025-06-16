@@ -210,82 +210,356 @@ Below is a high-level system design diagram showcasing the different services an
 
 ## Setup and Installation
 
-### 1. Clone the Repository
+This guide will walk you through setting up the Moments Event Platform on your local development environment. The platform consists of several microservices that need to be configured and run together.
+
+## Prerequisites
+
+- Java 21 or higher
+- Maven 3.9+
+- Docker and Docker Compose
+- MySQL 8.0+ (if not using Docker)
+- Git
+
+## Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/YourUsername/eCommerce-Platform.git
-cd eCommerce-Platform
+git clone https://github.com/Team-OMO-Org/Moments-Event-Platform.git
+cd Moments-Event-Platform
 ```
 
-### 2. Install Dependencies
+## Step 2: Review Service Ports
 
-Run the following commands to install the dependencies for both the frontend and backend:
+Below are the ports for all services in the Moments Event Platform (can be found in server_ports.txt):
+
+| Service Type | Service Name | URL |
+|--------------|-------------|-----|
+| **Frontend** | Web Application | `http://localhost:8090` |
+| **API Layer** | API Gateway | `http://localhost:9000` |
+| **Core Services** | Moment Service | `http://localhost:8081` |
+| | Order Service | `http://localhost:8082` |
+| | Customer Service | `http://localhost:8083` |
+| | Notification Service | `http://localhost:8084` |
+| **Infrastructure** | Naming Server (Eureka) | `http://localhost:8761` |
+| | Keycloak | `http://localhost:8181` |
+| **Messaging** | Schema Registry | `http://localhost:8085` |
+| | Kafka UI | `http://localhost:8086` |
+| | Zookeeper | `localhost:2181` |
+| | Kafka | `localhost:9092`, `localhost:29092` |
+| **Databases** | MySQL (Moments) | `localhost:3307` |
+| | MySQL (Orders) | `localhost:3308` |
+| | MySQL (Customers) | `localhost:3309` |
+
+## Step 3: Build the Application
+
+First, build all microservices. We recommend running with tests whenever possible. The -DskipTests flag should only be used during initial setup or if you're experiencing specific test-related issues.
 
 ```bash
-# Backend dependencies
-cd backend
-npm install
+# For each service
+cd service-name
+./mvnw clean package
+cd ..
 
-# Frontend dependencies
-cd ../frontend
-npm install
+# Only for services where tests might not yet be implemented
+cd service-name-without-tests
+./mvnw clean package -DskipTests
+cd ..
 ```
 
-### 3. Configure Environment Variables
+## Step 4: Configure Environment Variables
 
-Create a `.env` file in the root of the project directory and fill it with the required environment
-variables for database connection, JWT secret, payment keys, etc.
+Create environment files for each service or set them through your IDE:
 
-Example `.env` file:
-
-```env
-DB_URI=mongodb://localhost:27017/ecommerce-platform
-JWT_SECRET=your-secret-key
-STRIPE_SECRET_KEY=your-stripe-secret-key
-SENDGRID_API_KEY=your-sendgrid-api-key
-PORT=3000
+### Service
+```properties
+# application.properties or environment variables
+spring.datasource.url=jdbc:mysql://localhost:3306/moment_service
+spring.datasource.username=root
+spring.datasource.password=root
+eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka
 ```
 
-### 4. Run the Application
+### Order Service
+```properties
+# application.properties or environment variables
+spring.datasource.url=jdbc:mysql://localhost:3306/order_service
+spring.datasource.username=root
+spring.datasource.password=root
+eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka
+backend-service.url=http://localhost:8081
+```
 
-Start the backend and frontend services in separate terminal windows:
+### Customer Service
+```properties
+# application.properties or environment variables
+spring.datasource.url=jdbc:mysql://localhost:3306/customer_service
+spring.datasource.username=root
+spring.datasource.password=root
+eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka
+```
+
+### Web App
+```properties
+# application.properties or environment variables
+backend-service.url=http://localhost:8081
+spring.security.oauth2.client.registration.moments-web-app.client-id=moments-web-app
+spring.security.oauth2.client.registration.moments-web-app.client-secret=YOUR_CLIENT_SECRET
+spring.security.oauth2.client.provider.keycloak.issuer-uri=http://localhost:8181/realms/moments
+```
+
+## Step 5: Start Eureka Naming Server
+
+Start the service discovery server first:
 
 ```bash
-# Backend
-cd backend
-npm start
-
-# Frontend
-cd frontend
-npm start
+cd naming-server
+java -jar target/naming-server-0.0.1-SNAPSHOT.jar
 ```
 
-The backend will be running at `http://localhost:3000`, and the frontend at `http://localhost:3001`.
+Verify Eureka is running by visiting: http://localhost:8761
+
+## Step 6: Start the Infrastructure Services
+
+You can use Docker Compose to start the required infrastructure services:
+
+```bash
+# Set up Keycloak for authentication
+cd ../customer-service
+docker-compose up -d
+
+# In a new terminal, start Kafka and related services for notifications
+cd ../notification-service
+docker-compose up -d
+```
+
+## Step 7: Configure Keycloak
+
+1. Access Keycloak admin console at http://localhost:8181
+2. Login with the default credentials:
+   - Username: `admin`
+   - Password: `admin`
+3. The "moments" realm should be automatically created 
+4. Find the client "moments-web-app" in the clients section
+5. Reset the client secret:
+   - Go to the "Credentials" tab
+   - Click "Regenerate Secret"
+   - Copy the new client secret
+6. Update the client secret in your web-app's application.properties or environment variables
+
+## Step 8: Run the Core Microservices
+
+Start each microservice in separate terminal windows:
+
+### Moment Service
+```bash
+cd moment-service
+java -jar target/moment-service-0.0.1-SNAPSHOT.jar
+```
+
+### Order Service
+```bash
+cd order-service
+java -jar target/order-service-0.0.1-SNAPSHOT.jar
+```
+
+### Customer Service
+```bash
+cd customer-service
+java -jar target/customer-service-0.0.1-SNAPSHOT.jar
+```
+
+### Notification Service
+```bash
+cd notification-service
+java -jar target/notification-service-0.0.1-SNAPSHOT.jar
+```
+
+## Step 9: Start the API Gateway
+
+```bash
+cd api-gateway
+java -jar target/api-gateway-0.0.1-SNAPSHOT.jar
+```
+
+## Step 10: Start the Web Application
+
+```bash
+cd moments-web-app
+java -jar target/moments-web-app-0.0.1-SNAPSHOT.jar
+```
+
+Access the web application at: http://localhost:8090
+
+## Alternative: Run Using Docker
+
+For a fully containerized setup, use the prepared Docker files:
+
+```bash
+# Build Docker images
+docker-compose build
+
+# Start all services
+docker-compose up -d
+```
+
+## Verification
+
+1. Check Eureka dashboard (http://localhost:8761) to ensure all services are registered
+2. Visit the web app at http://localhost:8090
+3. Test API endpoints through the API gateway at http://localhost:9000
+   - Example: `http://localhost:9000/api/v1/moments` (note: no service name in path when using API gateway)
+
+## Troubleshooting
+
+- **Service not registering with Eureka**: Check if the service has the correct Eureka client configuration
+- **Database connection errors**: Verify MySQL is running and credentials are correct
+- **Keycloak authentication issues**: Ensure the client secret is correctly set in the web-app configuration
+- **Services cannot communicate**: Make sure client interfaces are correctly configured with proper URLs
+
+## API Testing
+
+You can test the REST endpoints using tools like Postman or curl. For example:
+
+```bash
+# Get all moments through API Gateway
+curl -X GET http://localhost:9000/api/v1/moments
+
+# Create a cart (authenticated request)
+curl -X POST http://localhost:9000/api/v1/carts/1 -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+This microservices architecture enables you to work on individual services independently while maintaining the integrated functionality of the entire platform.
 
 ## Folder Structure
 
-The project
+The Moments Event Platform follows a microservices architecture, with each service focused on specific business capabilities.
 
-is organized in a modular manner:
+The Service Structure is exemplified here by order-service.
 
 ```
-eCommerce-Platform/
-├── backend/                  # Backend API code
-│   ├── controllers/          # Logic for handling incoming API requests
-│   ├── models/               # Database models (Mongoose schemas)
-│   ├── routes/               # API route definitions
-│   ├── services/             # Business logic for each service (Product, Order, User)
-│   ├── config/               # Configuration files (DB, payment gateways, etc.)
-│   └── utils/                # Utility functions and helpers
-├── frontend/                 # Frontend code (React)
-│   ├── components/           # UI components (buttons, modals, etc.)
-│   ├── pages/                # Pages (Home, Product Detail, Checkout, etc.)
-│   ├── redux/                # Redux store and reducers
-│   └── public/               # Static assets (images, fonts, etc.)
-├── .env                      # Environment variables
-├── README.md                 # Project documentation
-└── package.json              # Project dependencies
+Moments-Event-Platform/
+│
+├── api-gateway/                   # API Gateway Service (entry point for requests)
+│
+├── customer-service/              # Customer Authentication and User Profiles
+│
+├── moment-service/                # Event/Moments Management Service
+│
+├── moments-web-app/               # Thymeleaf Frontend Application
+│   └── src/
+│       └── main/
+│           ├── java/              # Java backend code
+│           │   └── io/github/teamomo/momentswebapp/
+│           │       ├── client/    # API clients to communicate with backend services
+│           │       ├── config/    # Application configuration classes
+│           │       ├── controller/ # MVC controllers
+│           │       ├── dto/       # Data transfer objects
+│           │       ├── entity/    # Domain models
+│           │       ├── exception/ # Custom exception handling
+│           │       ├── mapper/    # Object mappers between DTOs and entities
+│           │       ├── security/  # Authentication and authorization
+│           │       ├── service/   # Business logic
+│           │       └── util/      # Helper utilities and common functions
+│           │
+│           └── resources/
+│               ├── static/        # Static assets
+│               │   ├── css/       # CSS stylesheets
+│               │   ├── js/        # JavaScript files
+│               │   └── img/       # Images
+│               │
+│               └── templates/     # Thymeleaf templates
+│                   ├── fragments/ # Reusable template fragments
+│                   └── [view templates]  # Individual page templates
+│
+├── naming-server/                 # Eureka Service Discovery
+│
+├── notification-service/          # Email and Notifications Service
+│
+├── order-service/                 # Order and Cart Management
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/
+│   │   │   │   └── io/github/teamomo/order/
+│   │   │   │       ├── client/    # API clients to other microservices
+│   │   │   │       ├── config/    # Service configuration
+│   │   │   │       ├── controller/ # REST API controllers
+│   │   │   │       ├── dto/       # Data transfer objects
+│   │   │   │       ├── entity/    # JPA entities 
+│   │   │   │       ├── exception/ # Custom exceptions
+│   │   │   │       ├── mapper/    # Object mappers
+│   │   │   │       ├── repository/ # Data access layer
+│   │   │   │       ├── security/  # Service security configuration
+│   │   │   │       ├── service/   # Business logic
+│   │   │   │       └── util/      # Utility classes
+│   │   │   │
+│   │   │   └── resources/
+│   │   │       ├── application.properties # Service configuration
+│   │   │       ├── avro/          # Avro schema definitions for messaging
+│   │   │       └── db/migration/           # SQL migration scripts
+│   │   │
+│   │   └── test/                  # Unit and integration tests
+│   │
+│   ├── docker/                    # Docker configuration and volumes
+│   │
+│   └── mysql/                     # MySQL database initialization script
 ```
+<br>  
+
+Each microservice follows a similar structure:
+
+### Controller Layer
+- **REST API endpoints** that handle HTTP requests and responses
+  - Responsible for input validation and request routing
+  - Maps DTOs to appropriate service methods
+
+### Service Layer
+- **Core business logic implementation**
+  - Transaction management
+  - Coordinates between repositories and external services
+  - Implements domain-specific operations
+
+### Repository Layer
+- **Data access abstractions**
+  - JPA repositories for database operations
+  - Custom query methods
+
+### Entity Layer
+- **JPA entities that map to database tables**
+  - Domain model with relationships and constraints
+
+### DTO Layer
+- **Data transfer objects for API communication**
+  - Separates internal models from external representations
+
+### Client Interfaces
+- **Communication with other microservices**
+  - Using Spring Declarative HTTP Interface Clients (RestClient)
+  - Circuit breakers and retry mechanisms for resilience
+
+### Infrastructure Components
+- **Docker**: Container configurations and volume mappings
+- **MySQL**: Database initialization and configuration
+- **Avro Schemas**: Message format definitions for event streaming
+
+## Frontend Structure (moments-web-app)
+
+The frontend is built using Spring Boot with Thymeleaf for server-side rendering:
+
+### Controllers
+- **Handle HTTP requests and prepare model data for views**
+  - Map to specific URL paths
+  - Communicate with microservices via clients
+
+### Templates
+- **Thymeleaf HTML templates**
+  - Organized by feature/page
+  - Use fragments for reusable components
+
+### Static Resources
+- **CSS** for styling
+- **JavaScript** for client-side interactions
+- **Images** and other media
+
+This architecture enables the platform to scale individual services independently while maintaining clear separation of concerns and supporting independent development teams.
 
 ## API Documentation
 
@@ -361,5 +635,4 @@ documentation improvements, your help is appreciated.
 
 ## License
 
-This project is licensed under the **MIT License**. See the [LICENSE](./LICENSE) file for more
-information.
+This project is licensed under the **Apache-2.0 License**. See the [LICENSE](./LICENSE) file for more information.
