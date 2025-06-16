@@ -1,6 +1,18 @@
-moments-web-app	localhost:8090
-api-gateway 	localhost:9000
-moment-service	localhost:8081
-order-service	localhost:8082
-naming-server 	localhost:8761	eureka
-keycloak        localhost:8181
+moments-web-app		localhost:8090
+api-gateway 		localhost:9000
+moment-service		localhost:8081
+order-service		localhost:8082
+customer-service  	localhost:8083
+naming-server 		localhost:8761	eureka
+keycloak    		localhost:8181
+
+notification-service	localhost:8084
+schema-registry		localhost:8085
+kafka-ui		localhost:8086
+zookeeper		localhost:2181
+kafka			localhost:9092
+				localhost:29092
+
+mysql_moments		localhost:3307
+mysql_orders		localhost:3308
+mysql_customers		localhost:3309

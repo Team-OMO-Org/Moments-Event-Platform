@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zxx" class="no-js">
+<head>
+  <!-- Include meta tags -->
+  <th:block th:replace="~{fragments/head :: meta}"/>
+
+  <!-- Page title -->
+  <title>Moment Details</title>
+
+  <!-- Include common CSS -->
+  <th:block th:replace="~{fragments/head :: common-css}"/>
+</head>
+
+<body>
+
+<!-- Include header -->
+<header th:replace="~{fragments/header :: header}"></header>
+
+<!-- Banner -->
+<div th:replace="~{fragments/banner :: banner('Moments Event Platform', 'Feel The Moment')}"></div>
+
+<!-- Warning message -->
+<div th:if="${message}" class="alert alert-warning text-center" role="alert">
+  <span th:text="${message}"></span>
+</div>
+
+<form th:action="@{/moment}" th:object="${momentDto}" method="post" class="needs-validation">
+
+  <input type="hidden" id="momentId" name="id" th:field="*{id}" readonly>
+  <input type="hidden" id="hostId" name="hostId" th:field="*{hostId}" class="form-control" required>
+  <input type="hidden" id="locationId" name="location.id" th:field="*{location.id}"
+         class="form-control">
+  <input type="hidden" id="momentDetailsId" name="momentDetails.id" th:field="*{momentDetails.id}"
+         class="form-control">
+
+
+  <!--================Single Product Area =================-->
+  <div class="product_image_area">
+    <div class="container">
+      <div class="row s_product_inner">
+        <div class="col-lg-6">
+          <!--          <div class="s_Product_carousel">-->
+          <div class="single-prd-item">
+            <!--img class="img-fluid" th:src="${momentDto.thumbnail}" alt=""-->
+            <img class="img-fluid" th:src="${momentDto.thumbnail != null && momentDto.thumbnail != '' ? momentDto.thumbnail : '/img/placeholder/event.png'}" alt="Event Image">
+          </div>
+          <!--			ToDo: add more images or remove-->
+          <!--            <div class="single-prd-item">-->
+          <!--              <img class="img-fluid" th:src="${momentDto.thumbnail}" alt="">-->
+          <!--            </div>-->
+          <!--            <div class="single-prd-item">-->
+          <!--              <img class="img-fluid" th:src="${momentDto.thumbnail}" alt="">-->
+          <!--            </div>-->
+          <!--          </div>-->
+          <div class="image_url">
+            <div class="my-3">
+              <label for="thumbnail" class="form-label moment_label">Image URL:</label>
+              <input type="url" id="thumbnail" name="thumbnail" th:field="*{thumbnail}"
+                     class="form-control" required>
+              <div class="text-danger" th:if="${#fields.hasErrors('thumbnail')}"
+                   th:errors="*{thumbnail}"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-5 mt-3 mt-lg-0 offset-lg-1">
+          <div class="s_product_text">
+            <div class="mb-3 d-flex align-items-center">
+              <h3 class="col-4">Title: </h3>
+              <input class="form-control col-8" type="text" id="title" name="title"
+                     th:field="*{title}"
+                     required>
+              <div class="text-danger" th:if="${#fields.hasErrors('title')}"
+                   th:errors="*{title}"></div>
+            </div>
+
+            <ul class="list">
+              <li class="form-select mb-3 d-flex align-items-center gap-10">
+                <a class="active col-4"><span>Status:</span></a>
+                <select class="form-select col-8" id="status" name="status" th:field="*{status}"
+                        required>
+                  <option
+                      th:each="status : ${T(io.github.teamomo.momentswebapp.entity.Status).values()}"
+                      th:value="${status}" th:text="${status}"></option>
+                </select>
+                <div class="text-danger" th:if="${#fields.hasErrors('status')}"
+                     th:errors="*{status}"></div>
+              </li>
+
+              <li class="mb-3 d-flex align-items-center">
+                <a class="active col-4"><span>Start Date:</span></a>
+                <input type="date" id="startDate" name="startDate" th:field="${dateTimeDto.date}"
+                       class="form-control col-8" required>
+                <!--      <div class="text-danger" th:if="${#fields.hasErrors('dateTimeDto.date')}" th:errors="${dateTimeDto.date}"></div>-->
+              </li>
+
+              <li class="mb-3 d-flex align-items-center">
+                <a class="active col-4"><span>Start Time:</span></a>
+                <input type="time" id="startTime" name="startTime" th:field="${dateTimeDto.time}"
+                       class="form-control col-8" required>
+                <!--      <div class="text-danger" th:if="${#fields.hasErrors('dateTimeDto.time')}" th:errors="${dateTimeDto.time}"></div>-->
+              </li>
+              <!--						-->
+              <!--					<h4 th:text="${startDate}">Start Date</h4>-->
+
+            </ul>
+
+            <ul class="list">
+              <li>
+                <div class="d-flex align-items-center">
+                  <a class="active col-4">
+                    <span>Category</span>
+                  </a>
+                  <div class="col-8 default-select" id="default-select">
+                    <select style="display: none;" id="categoryId" name="categoryId"
+                            th:field="*{categoryId}" required>
+                      <option th:each="category : ${categories}"
+                              th:value="${category.categoryId}"
+                              th:text="${category.categoryName}"></option>
+                    </select>
+                    <div class="nice-select w-100" tabindex="0">
+										<span th:each="category : ${categories}"
+                          th:if="${category.categoryId == momentDto.categoryId}"
+                          th:text="${category.categoryName}"
+                          class="current">Select Category</span>
+                      <span th:if="${momentDto.categoryId == null}"
+                            class="current">Select Category</span>
+                      <ul class="list">
+                        <li th:each="category : ${categories}"
+                            th:data-value="${category.categoryId}"
+                            th:text="${category.categoryName}"
+                            class="option"
+                            th:classappend="${category.categoryId == momentDto.categoryId} ? ' selected focus' : ''"
+                        ></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-danger" th:if="${#fields.hasErrors('categoryId')}"
+                     th:errors="*{categoryId}"></div>
+              <li class="d-flex align-items-center">
+                <a class="active col-4">
+                  <span>Available tickets</span>
+                </a>
+                <input class="form-control col-8" type="number" id="ticketCount" name="ticketCount"
+                       th:field="*{ticketCount}" required>
+                <div class="text-danger" th:if="${#fields.hasErrors('ticketCount')}"
+                     th:errors="*{ticketCount}"></div>
+              </li>
+
+              <li class="form-select d-flex align-items-center gap-10">
+                <a class="active col-4">
+                  <span>Recurrence</span>
+                </a>
+                  <select class="form-select col-8" id="recurrence" name="recurrence" th:field="*{recurrence}">
+                    <option
+                        th:each="recurrence : ${T(io.github.teamomo.momentswebapp.entity.Recurrence).values()}"
+                        th:value="${recurrence}"
+                        th:text="${recurrence}"></option>
+                  </select>
+              </li>
+
+              <li class="d-flex align-items-center">
+                <a class="active col-4"><span>Price (€):</span></a>
+                <input class="form-control col-8" type="number" id="price" name="price"
+                       th:field="*{price}" step="1.00" required>
+                <div class="text-danger" th:if="${#fields.hasErrors('price')}"
+                     th:errors="*{price}"></div>
+              </li>
+
+              <li class="mt-4 ml-3">
+                <label for="shortDescription" class="form-label moment_label">Short
+                  Description:</label>
+                <textarea id="shortDescription" name="shortDescription"
+                          th:field="*{shortDescription}"
+                          class="form-control" maxlength="255"></textarea>
+                <div class="text-danger" th:if="${#fields.hasErrors('shortDescription')}"
+                     th:errors="*{shortDescription}"></div>
+              </li>
+            </ul>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--================End Single Product Area =================-->
+  <!--================End Single Product Area =================-->
+
+  <!--================Product Description Area =================-->
+  <section class="product_description_area">
+    <div class="container">
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
+             aria-controls="home" aria-selected="true">Description</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="location-tab" data-toggle="tab" href="#profile" role="tab"
+             aria-controls="profile"
+             aria-selected="false">Location</a>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+          <div class="mb-3">
+            <label for="momentDetailsDescription"
+                   class="form-label moment_label">Description:</label>
+            <textarea id="momentDetailsDescription" name="momentDetails.description"
+                      th:field="*{momentDetails.description}" class="form-control" maxlength="1000"
+                      required></textarea>
+            <div class="text-danger" th:if="${#fields.hasErrors('momentDetails.description')}"
+                 th:errors="*{momentDetails.description}"></div>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="location-tab">
+          <div class="table-responsive">
+            <table class="table">
+              <tbody>
+              <tr>
+                <td></td>
+                <td>
+                  <h5>City</h5>
+                </td>
+                <td>
+                  <input class="form-control" type="text" id="locationCity" name="location.city"
+                         th:field="*{location.city}"
+                         style="min-width: 250px;"
+                         required>
+                  <div class="text-danger" th:if="${#fields.hasErrors('location.city')}"
+                       th:errors="*{location.city}"></div>
+                </td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>
+                  <h5>Address</h5>
+                </td>
+                <td>
+                  <input class="form-control" type="text" id="locationAddress"
+                         name="location.address" th:field="*{location.address}"
+                         style="min-width: 250px;"
+                         required>
+                  <div class="text-danger" th:if="${#fields.hasErrors('location.address')}"
+                       th:errors="*{location.address}"></div>
+                </td>
+                <td></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!--================End Product Description Area =================-->
+
+  <div class="text-center mt-0 mb-3">
+    <button type="submit" class="primary-btn">Submit</button>
+  </div>
+
+</form>
+
+<!-- Include footer fragment -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+<div th:replace="~{fragments/common-scripts}"></div>
+
+</body>
+
+</html>

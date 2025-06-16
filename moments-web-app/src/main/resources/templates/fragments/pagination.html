@@ -1,0 +1,18 @@
+<!-- fragments/pagination.html -->
+<div th:fragment="pagination(currentPage, totalPages, currentUrlWithoutPage)">
+  <div class="pagination">
+    <a class="prev-arrow" th:if="${currentPage > 1}" th:href="${currentUrlWithoutPage + '&page=' + (currentPage - 1 - 1)}">
+      <i class="fa fa-long-arrow-left" aria-hidden="true"></i>
+    </a>
+    <a th:if="${currentPage > 1}" th:href="${currentUrlWithoutPage + '&page=0'}">1</a>
+    <a th:if="${currentPage > 3}" class="dot-dot"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a>
+    <a th:if="${currentPage > 2}" th:text="${currentPage - 1}" th:href="${currentUrlWithoutPage + '&page=' + (currentPage - 1 - 1)}"></a>
+    <a th:classappend="active" th:text="${currentPage}"></a>
+    <a th:if="${currentPage + 1 < totalPages}" th:text="${currentPage} + 1" th:href="${currentUrlWithoutPage + '&page=' + (currentPage + 1 - 1)}"></a>
+    <a th:if="${currentPage + 2 < totalPages}" class="dot-dot"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a>
+    <a th:if="${totalPages > currentPage }" th:text="${totalPages}" th:href="${currentUrlWithoutPage + '&page=' + (totalPages - 1)}"></a>
+    <a th:if="${currentPage < totalPages}" class="next-arrow"  th:href="${currentUrlWithoutPage + '&page=' + (currentPage + 1 - 1)}">
+      <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+    </a>
+  </div>
+</div>

@@ -1,0 +1,50 @@
+<div th:fragment="paginationAndSorting(
+    sortType,
+    sortDirection,
+    currentUrlWithoutSort,
+    pageSize,
+    currentUrlWithoutSize,
+    currentPage,
+    totalPages,
+    currentUrlWithoutPage
+)">
+  <!-- Start Filter Bar -->
+  <div class="filter-bar d-flex flex-wrap align-items-center">
+    <!--   SORTING CONTROL     -->
+    <div class="sorting">
+      <select class="rounded" name="sortType"
+              th:attr="onchange=|window.location.href = '${currentUrlWithoutSort}&sort=' + this.value + ',${sortDirection}'|">
+        <option value="startDate" th:selected="${sortType == 'startDate'}">Date</option>
+        <option value="category" th:selected="${sortType == 'category'}">Category</option>
+        <option value="location" th:selected="${sortType == 'location'}">City</option>
+        <option value="price" th:selected="${sortType == 'price'}">Price</option>
+        <option value="title" th:selected="${sortType == 'title'}">Title</option>
+        <option value="recurrence" th:selected="${sortType == 'recurrence'}">Recurrence</option>
+      </select>
+    </div>
+
+    <div class="sorting">
+      <select class="rounded" name="sortDirection"
+              th:attr="onchange=|window.location.href = '${currentUrlWithoutSort}&sort=${sortType},' + this.value|">
+        <option value="asc" th:selected="${sortDirection == 'asc'}">Ascending</option>
+        <option value="desc" th:selected="${sortDirection == 'desc'}">Descending</option>
+      </select>
+    </div>
+
+    <div class="sorting mr-auto">
+      <select class="rounded" name="pageSize"
+              th:attr="onchange=|window.location.href = '${currentUrlWithoutSize}&size=' + this.value|">
+        <option value="9" th:selected="${pageSize == 9}">Show 9</option>
+        <option value="12" th:selected="${pageSize == 12}">Show 12</option>
+        <option value="15" th:selected="${pageSize == 15}">Show 15</option>
+      </select>
+    </div>
+
+    <div th:replace="~{fragments/pagination :: pagination(
+        currentPage=${currentPage},
+        totalPages=${totalPages},
+        currentUrlWithoutPage=${currentUrlWithoutPage})}">
+    </div>
+  </div>
+  <!-- End Filter Bar -->
+</div>

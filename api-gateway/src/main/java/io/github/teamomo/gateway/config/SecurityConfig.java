@@ -1,5 +1,7 @@
 package io.github.teamomo.gateway.config;
 
+import static org.springframework.http.HttpMethod.GET;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -26,21 +28,21 @@ public class SecurityConfig {
             "/v3/api-docs/**",
             "/swagger-resources/**",
             "/api-docs/**",
-            "/aggregate/**",
-                "/api/orders",
-                "/api/products",
+            "/aggregate/**"
+    };
+    private final String[] freeGETRequestUrls = {
+            "/api/v1/moments",
+            "/api/v1/moments/**"
     };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .cors(
-//                    Customizer.withDefaults()
-//                    cors -> cors.configurationSource(corsConfigurationSource())
-                ).disable()
+                .cors().disable()
                 .csrf(CsrfConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(freeResourceUrls).permitAll()
+                        .requestMatchers(GET, freeGETRequestUrls).permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session ->
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -48,27 +50,4 @@ public class SecurityConfig {
                 .build();
     }
 
-//    @Bean
-//    CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.applyPermitDefaultValues();
-//        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//        return source;
-//    }
-
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(Collections.singletonList("*"));
-//        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-//        configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
-//        configuration.setExposedHeaders(Collections.singletonList("x-auth-token"));
-//        configuration.setAllowCredentials(false); // Must be false when allowedOrigins contains "*"
-//
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//        return source;
-//    }
 }

@@ -1,15 +1,15 @@
 package io.github.teamomo.order.service;
 
-import io.github.teamomo.order.exception.ResourceNotFoundException;
+import io.github.teamomo.order.client.CustomerClient;
 import io.github.teamomo.order.client.MomentClient;
-import io.github.teamomo.order.dto.CartDto;
-import io.github.teamomo.order.dto.CartItemInfoDto;
+import io.github.teamomo.order.dto.CustomerDto;
 import io.github.teamomo.order.dto.OrderDto;
+import io.github.teamomo.order.dto.OrderInfoDto;
 import io.github.teamomo.order.entity.*;
+import io.github.teamomo.order.event.OrderPlacedEvent;
 import io.github.teamomo.order.exception.CartIsEmptyException;
 import io.github.teamomo.order.exception.PaymentProcessingException;
-import io.github.teamomo.order.exception.ResourceAlreadyExistsException;
-import io.github.teamomo.order.exception.TicketsBookingFailedException;
+import io.github.teamomo.order.exception.ResourceNotFoundException;
 import io.github.teamomo.order.mapper.OrderMapper;
 import io.github.teamomo.order.repository.*;
 import jakarta.transaction.Transactional;
@@ -21,136 +21,28 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.kafka.core.KafkaTemplate;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class OrderService {
 
-  private final CartRepository cartRepository;
-  private final CartItemRepository cartItemRepository;
-  private final OrderRepository orderRepository;
-  private final OrderItemRepository orderItemRepository;
-  private final PaymentRepository paymentRepository;
-  private final OrderMapper orderMapper;
   private final MomentClient momentClient;
+  private final CustomerClient customerClient;
+  private final CartService cartService;
 
-  // --- Cart Management ---
+  private final OrderRepository orderRepository;
+  private final OrderMapper orderMapper;
 
-  public CartDto findCartByCustomerId(Long customerId) {
-    Cart cart = cartRepository
-        .findByCustomerId(customerId)
-        .orElseGet(() -> {
-          Cart newCart = new Cart();
-          newCart.setCustomerId(customerId);
-          return cartRepository.save(newCart);
-        });
-    return mapToCartDtoWithUpdatedAvailability(cart);
-  }
-
-  public CartDto createCart(Long customerId) {
-    if (cartRepository.findByCustomerId(customerId).isPresent()) {
-      throw new ResourceAlreadyExistsException("Cart already exists for customer ID " + customerId);
-    }
-    Cart cart = new Cart();
-    cart.setCustomerId(customerId);
-    Cart savedCart = cartRepository.save(cart);
-    return orderMapper.toCartDto(savedCart);
-  }
-
-  public CartDto updateCart(Long customerId, CartDto cartDto) {
-    Cart cart = cartRepository.findByCustomerId(customerId)
-        .orElseThrow(() -> new ResourceNotFoundException("Cart", "customerId", customerId.toString()));
-    Cart updatedCart = orderMapper.toCartEntity(cartDto);
-    updatedCart.setId(cart.getId());
-    Cart savedCart = cartRepository.save(updatedCart);
-    return mapToCartDtoWithUpdatedAvailability(savedCart);
-  }
-
-  public void deleteCart(Long customerId) {
-    Cart cart = cartRepository.findByCustomerId(customerId)
-        .orElseThrow(() -> new ResourceNotFoundException("Cart", "customerId", customerId.toString()));
-    cartRepository.delete(cart);
-  }
-
-  public List<CartItemInfoDto> getAllCartItems(Long customerId) {
-    Cart cart = cartRepository.findByCustomerId(customerId)
-        .orElseThrow(() -> new ResourceNotFoundException("Cart", "customerId", customerId.toString()));
-    return cart.getCartItems()
-        .stream()
-        .map(orderMapper::toCartItemInfoDto)
-        .toList();
-  }
-
-  public CartItemInfoDto createCartItem(Long customerId, CartItemInfoDto cartItemDto) {
-    Cart cart = cartRepository.findByCustomerId(customerId)
-        .orElseGet(() -> {
-          Cart newCart = new Cart();
-          newCart.setCustomerId(customerId);
-          return cartRepository.save(newCart);
-        });
-    CartItem item = orderMapper.toCartItemEntity(cartItemDto);
-    item.setCart(cart);
-    CartItem savedItem = cartItemRepository.save(item);
-    cart.getCartItems().add(savedItem);
-    cartRepository.save(cart);
-    return orderMapper.toCartItemInfoDto(savedItem);
-  }
-
-  public CartItemInfoDto updateCartItem(Long itemId, CartItemInfoDto cartItemDto) {
-    CartItem item = cartItemRepository.findById(itemId)
-        .orElseThrow(() -> new ResourceNotFoundException("CartItem", "id", itemId.toString()));
-    Cart cart = cartRepository.findById(item.getCart().getId())
-        .orElseThrow(() -> new ResourceNotFoundException("Cart", "id", item.getCart().getId().toString()));
-    CartItem updatedItem = orderMapper.toCartItemEntity(cartItemDto);
-    updatedItem.setId(item.getId());
-    updatedItem.setCart(cart);
-    cart.getCartItems().removeIf(cartItem -> cartItem.getId().equals(itemId));
-    cart.getCartItems().add(updatedItem);
-    cartRepository.save(cart);
-    CartItem savedItem = cartItemRepository.findById(itemId)
-        .orElseThrow(() -> new ResourceNotFoundException("CartItem", "id", itemId.toString()));
-    return orderMapper.toCartItemInfoDto(savedItem);
-  }
-
-  public void deleteCartItem(Long itemId) {
-    CartItem item = cartItemRepository.findById(itemId)
-        .orElseThrow(() -> new ResourceNotFoundException("CartItem", "id", itemId.toString()));
-    Cart cart = cartRepository.findById(item.getCart().getId())
-        .orElseThrow(() -> new ResourceNotFoundException("Cart", "id", item.getCart().getId().toString()));
-    cart.getCartItems().removeIf(cartItem -> cartItem.getId().equals(itemId));
-    cartRepository.save(cart);
-  }
-
-  private List<CartItemInfoDto> updateItemsAvailability(List<CartItemInfoDto> cartItemDtos) {
-    return cartItemDtos.stream()
-        .map(item -> new CartItemInfoDto(
-            item.id(),
-            item.cartId(),
-            item.momentId(),
-            item.quantity(),
-            momentClient.checkTicketAvailability(item.momentId(), item.quantity())
-        ))
-        .toList();
-  }
-
-  private CartDto mapToCartDtoWithUpdatedAvailability(Cart cart) {
-    List<CartItemInfoDto> updatedItems = updateItemsAvailability(
-        cart.getCartItems()
-            .stream()
-            .map(orderMapper::toCartItemInfoDto)
-            .toList());
-    CartDto cartDto = orderMapper.toCartDto(cart);
-    return new CartDto(cartDto.id(), cartDto.customerId(), updatedItems);
-  }
-
-
-  // --- Order creation and processing ---
+  private final PaymentRepository paymentRepository;
+  private final KafkaTemplate<String, OrderPlacedEvent>
+      kafkaTemplate; // key: Topic name, value: Event
 
   @Transactional
   public OrderDto createOrderByCustomerId(Long customerId) {
-    Cart cart = cartRepository.findByCustomerId(customerId)
-        .orElseThrow(() -> new ResourceNotFoundException("Cart", "ID", customerId.toString()));
+
+    Cart cart = orderMapper.toCartEntity(cartService.findCartByCustomerId(customerId));
 
     if (cart.getCartItems().isEmpty()) {
       log.error("Cart is empty for customer ID: {}", customerId);
@@ -161,23 +53,30 @@ public class OrderService {
     order.setCustomerId(customerId);
     order.setOrderStatus(OrderStatus.PENDING);
     order.setTotalPrice(BigDecimal.ZERO);
+    Order storedOrder = orderRepository.save(order);
 
     List<OrderItem> orderItems = new ArrayList<>();
     boolean allBooked = true;
 
     for (CartItem cartItem : cart.getCartItems()) {
       try {
-        BigDecimal ticketsPrice = momentClient.bookTickets(cartItem.getMomentId(), cartItem.getQuantity());
+        BigDecimal ticketsPrice =
+            momentClient.bookTickets(cartItem.getMomentId(), cartItem.getQuantity());
         OrderItem orderItem = new OrderItem();
+        orderItem.setOrder(storedOrder);
         orderItem.setMomentId(cartItem.getMomentId());
         orderItem.setQuantity(cartItem.getQuantity());
         orderItem.setPrice(ticketsPrice);
+        orderItem.setCreatedAt(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
         orderItems.add(orderItem);
       } catch (Exception e) {
         log.error("Failed to book tickets for moment ID: {}", cartItem.getMomentId(), e);
         OrderItem failedOrderItem = new OrderItem();
+        failedOrderItem.setOrder(storedOrder);
         failedOrderItem.setMomentId(cartItem.getMomentId());
         failedOrderItem.setQuantity(cartItem.getQuantity());
+        failedOrderItem.setCreatedAt(
+            LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
         orderItems.add(failedOrderItem);
         allBooked = false;
         break;
@@ -185,14 +84,14 @@ public class OrderService {
     }
 
     if (!allBooked) {
-      orderItems.forEach(item -> momentClient.cancelTicketBooking(item.getMomentId(), item.getQuantity()));
+      orderItems.forEach(
+          item -> momentClient.cancelTicketBooking(item.getMomentId(), item.getQuantity()));
       order.setOrderStatus(OrderStatus.CANCELLED);
       return orderMapper.toDto(orderRepository.save(order));
     }
 
-    BigDecimal totalPrice = orderItems.stream()
-        .map(OrderItem::getPrice)
-        .reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal totalPrice =
+        orderItems.stream().map(OrderItem::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
 
     order.setOrderItems(orderItems);
     order.setTotalPrice(totalPrice);
@@ -224,12 +123,59 @@ public class OrderService {
       return orderMapper.toDto(orderRepository.save(order));
     }
 
-    cartRepository.delete(cart);
+    cartService.deleteCart(customerId);
     order.setOrderStatus(OrderStatus.COMPLETED);
-
-    // TODO: Add notification logic here
 
     return orderMapper.toDto(orderRepository.save(order));
   }
 
+  public void sendOrderNotification(OrderDto orderDto) {
+    try {
+      CustomerDto customer = customerClient.getCustomerById(orderDto.customerId());
+      if (customer != null) {
+        String[] nameParts =
+            customer.profileName().split(" ", 2); // Split into first name and last name
+        String firstName = nameParts.length > 0 ? nameParts[0] : "Dear";
+        String lastName = nameParts.length > 1 ? nameParts[1] : "customer";
+
+        OrderPlacedEvent orderPlacedEvent = new OrderPlacedEvent();
+        orderPlacedEvent.setOrderNumber(orderDto.id().toString());
+        orderPlacedEvent.setEmail(customer.profileEmail());
+        orderPlacedEvent.setFirstName(firstName);
+        orderPlacedEvent.setLastName(lastName);
+
+        log.info(
+            "Start - Sending OrderPlacedEvent {} to Kafka topic order-placed", orderPlacedEvent);
+        kafkaTemplate.send("order-placed", orderPlacedEvent);
+        log.info("End - Sending OrderPlacedEvent {} to Kafka topic order-placed", orderPlacedEvent);
+      }
+    } catch (Exception e) {
+      log.error("Failed to fetch customer details for customer ID: {}", orderDto.customerId(), e);
+    }
+  }
+
+  public void testKafka() {
+    // ToDo: remove, just for testing
+    // send the message to Kafka Topic -> email service, sending out email
+    // Create OrderPlacedEvent
+    OrderPlacedEvent orderPlacedEvent = new OrderPlacedEvent();
+    orderPlacedEvent.setOrderNumber("12345"); // Replace with actual order number
+    orderPlacedEvent.setEmail("user@email.com"); // Replace with actual email from user details
+    orderPlacedEvent.setFirstName("John"); // Replace with actual first name from user details
+    orderPlacedEvent.setLastName("Doe"); // Replace with actual last name from user details
+
+    log.info("Start - Sending OrderPlacedEvent {} to Kafka topic order-placed", orderPlacedEvent);
+    kafkaTemplate.send("order-placed", orderPlacedEvent);
+    log.info("End - Sending OrderPlacedEvent {} to Kafka topic order-placed", orderPlacedEvent);
+  }
+
+  public OrderInfoDto getOrderById(Long orderId) {
+    Order order =
+        orderRepository
+            .findById(orderId)
+            .orElseThrow(
+                () -> new ResourceNotFoundException("Order", "orderId", orderId.toString()));
+
+    return orderMapper.toOrderInfoDto(order);
+  }
 }

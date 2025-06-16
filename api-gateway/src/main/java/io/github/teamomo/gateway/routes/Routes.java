@@ -69,6 +69,30 @@ public class Routes {
     }
 
     @Bean
+    public RouterFunction<ServerResponse> customerServiceRoute() {
+        return GatewayRouterFunctions.route("customer_service")
+            .route(RequestPredicates.path("/api/v1/customers")
+                    .or(RequestPredicates.path("/api/v1/customers/**")),
+                HandlerFunctions.http())
+            .filter(lb("customer-service"))
+            .filter(CircuitBreakerFilterFunctions.circuitBreaker("customerServiceCircuitBreaker",
+                URI.create("forward:/fallbackRoute")))
+            .build();
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> customerServiceSwaggerRoute() {
+        return GatewayRouterFunctions.route("customer_service_swagger")
+            .route(RequestPredicates.path("/aggregate/customer-service/v3/api-docs"),
+                HandlerFunctions.http())
+            .filter(lb("customer-service"))
+            .filter(CircuitBreakerFilterFunctions.circuitBreaker("customerServiceSwaggerCircuitBreaker",
+                URI.create("forward:/fallbackRoute")))
+            .filter(setPath("/api-docs"))   // replaces the path
+            .build();
+    }
+
+    @Bean
     public RouterFunction<ServerResponse> fallbackRoute() {
         return GatewayRouterFunctions.route("fallback")
                 .GET("/fallbackRoute",

@@ -1,0 +1,60 @@
+<!-- File: fragments/product.html -->
+<div th:fragment="event(id, imagePath, title, shortDescription, price, recurrence, city, tickets_count, category, date)">
+  <article class="row blog_item">
+    <div class="col-md-2">
+      <div class="blog_info text-right">
+        <ul class="blog_meta list">
+          <li><a class="active"  >
+            <span th:text="${category}">Music</span>
+            <i class="lnr lnr-tag"></i>
+          </a></li>
+          <li><a >
+            <span  th:text="${recurrence}">Onetime</span>
+            <i class="lnr lnr-sync"></i>
+          </a></li>
+          <li><a >
+            <span  th:text="${date}">12 Dec, 2018</span>
+            <i class="lnr lnr-calendar-full"></i>
+          </a></li>
+          <li><a >
+            <span  th:text="${city}">San Francisco</span>
+            <i class="lnr lnr-map-marker"></i>
+          </a></li>
+          <li><a >
+            <span th:text="${tickets_count + ' Tickets'}">50 Tickets</span>
+            <i class="lnr lnr-bookmark"></i>
+          </a></li>
+          <li><a  >
+            <span th:text="${price}">100</span>
+            <i class="fa fa-euro"></i>
+          </a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-10">
+      <div class="blog_post d-flex">
+        <div class="col-lg-5">
+          <div class="blog_image">
+            <a th:href="@{'/moment/update/' + ${id}}">
+              <img th:src="${imagePath}" alt="product image" class="img-fluid">
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-7">
+          <div class="blog_details">
+            <a th:href="@{'/moment/update/' + ${id}}">
+              <h2 th:text="${title}">Astronomy Binoculars A Great Alternative</h2>
+            </a>
+            <br/>
+            <p th:text="${shortDescription}">MCSE boot camps have its supporters and its detractors. Some people do not
+              understand why you should have to spend money on boot camp when you can get
+              the MCSE study materials yourself at a fraction.</p>
+            <br/>
+            <a th:href="@{'/moment/update/' + ${id}}" class="orange_bg_btn">Edit Event</a>
+            <a th:href="@{'/events/delete/' + ${id}}" class="orange_bg_btn" onclick="return confirm('Do you want to delete event?');">Delete Event</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+</div>>
