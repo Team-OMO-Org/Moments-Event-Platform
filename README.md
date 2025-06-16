@@ -6,14 +6,13 @@ Welcome to the **Moments Event Platform** repository! This is a fully-featured e
 
 1. [Project Overview](#project-overview)
 2. [Features](#features)
-3. [Technologies Used](#technologies-used)
-4. [Architecture](#architecture)
-5. [System Design](#system-design)
-6. [Setup and Installation](#setup-and-installation)
-7. [Folder Structure](#folder-structure)
-8. [API Documentation](#api-documentation)
-9. [Contributing](#contributing)
-10. [License](#license)
+3. [Architecture](#architecture)
+4. [System Design](#system-design)
+5. [Setup and Installation](#setup-and-installation)
+6. [Folder Structure](#folder-structure)
+7. [API Documentation](#api-documentation)
+8. [Contributing](#contributing)
+9. [License](#license)
 
 ## Project Overview
 
@@ -77,32 +76,6 @@ This platform supports:
 * **Contact support**: Customers can directly contact support teams for assistance via email or live chat.
 * **Help Center**: A knowledge base where customers can find answers to common questions. --->
 
-## Technologies Used
-
-replace part with oru technologies HERE
-
-<!-- ### **Backend**
-
-* **Node.js**: A non-blocking, event-driven server for handling large-scale requests.
-* **Express.js**: A minimal web framework to handle routing and middleware.
-* **MongoDB**: A NoSQL database that allows for flexible data modeling (products, orders, users, etc.).
-* **JWT (JSON Web Tokens)**: Used for user authentication and token-based authorization.
-* **Mongoose**: An ODM (Object Data Modeling) library to interact with MongoDB, ensuring a clear structure for data.
-
-### **Frontend**
-
-* **React.js**: A JavaScript library for building dynamic, component-based user interfaces.
-* **Redux**: A state management library to manage the application state centrally.
-* **Sass**: A CSS preprocessor for maintaining scalable styles.
-* **Axios**: For HTTP requests to the backend API.
-* **React Router**: For dynamic navigation and route handling in the frontend. -->
-
-### **Third-Party Services**
-
-* **Mailtrap**: For email notifications (order confirmations).
-* **Docker**: For containerizing the platform and making deployment easier.
-* **Stripe**: The platform is planned and developed with Stripe integration in mind.
-
 ## Architecture
 
 The platform follows a **Microservices Architecture** with each service being responsible for a specific feature:
@@ -151,28 +124,39 @@ Below is a high-level system design diagram showcasing the different services an
 
 ### Keycloak:
 
-* Secure OAuth 2.0 and OpenID Connect (OIDC) server for both login and user registration with verified email.
+* Secure OAuth 2.0 and OpenID Connect (OIDC) server for both login and user registration with
+  verified email.
 
 ### Kafka, Zookeeper, Kafka UI, Avro, Schema registry:
 
-* To publish from order service, store and sent messages to the notification service, which in turn sends an email to the user with Javamail using Mailtrap.
+* To publish from order service, store and sent messages to the notification service, which in turn
+  sends an email to the user with Javamail using Mailtrap.
 
 ### Database Design:
 
 * **Customers**:  
- Stores customer profiles, linking users via their Keycloak identity. Includes details like name, email, profile picture, personal website URL, and a short description. Tracks account activity status and timestamps for creation and updates.
+  Stores customer profiles, linking users via their Keycloak identity. Includes details like name,
+  email, profile picture, personal website URL, and a short description. Tracks account activity
+  status and timestamps for creation and updates.
 * **Moments**:  
- Represents events or moments created by users. Contains information such as title, short description, thumbnail, pricing, ticket count, scheduling (including recurrence), and status (e.g., draft, live). Each moment is linked to a host, a category, and a location.
+  Represents events or moments created by users. Contains information such as title, short
+  description, thumbnail, pricing, ticket count, scheduling (including recurrence), and status (
+  e.g., draft, live). Each moment is linked to a host, a category, and a location.
 * **Moment Details**:  
- Holds extended descriptions for each moment, allowing richer content separate from the core moment data. Tracks creation and update timestamps and links directly to the corresponding moment.
+  Holds extended descriptions for each moment, allowing richer content separate from the core moment
+  data. Tracks creation and update timestamps and links directly to the corresponding moment.
 * **Categories**:  
- Maintains a catalog of moment categories, with each entry including a name and an optional description. Used to classify moments/events.
+  Maintains a catalog of moment categories, with each entry including a name and an optional
+  description. Used to classify moments/events.
 * **Locations**:  
- Defines geographic locations for moments. Includes city and address fields. Used to assign a specific place to each event.
+  Defines geographic locations for moments. Includes city and address fields. Used to assign a
+  specific place to each event.
 * **Carts**:  
- Represents shopping carts created by customers. Each cart belongs to a specific customer and tracks its creation and update times.
+  Represents shopping carts created by customers. Each cart belongs to a specific customer and
+  tracks its creation and update times.
 * **Cart Items**:  
- Tracks the contents of each cart, linking individual moments (events) with quantities to specific carts. Supports the process of assembling orders before purchase.
+  Tracks the contents of each cart, linking individual moments (events) with quantities to specific
+  carts. Supports the process of assembling orders before purchase.
 
 ### Database Schema Diagrams:
 
@@ -199,97 +183,369 @@ Below is a high-level system design diagram showcasing the different services an
 
 ## Setup and Installation
 
-### 1. Clone the Repository
+This guide will walk you through setting up the Moments Event Platform on your local development environment. The platform consists of several microservices that need to be configured and run together.
+
+## Prerequisites
+
+- Java 21 or higher
+- Maven 3.9+
+- Docker and Docker Compose
+- MySQL 8.0+ (if not using Docker)
+- Git
+
+## Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/YourUsername/eCommerce-Platform.git
-cd eCommerce-Platform
+git clone https://github.com/Team-OMO-Org/Moments-Event-Platform.git
+cd Moments-Event-Platform
 ```
 
-### 2. Install Dependencies
+## Step 2: Review Service Ports
 
-Run the following commands to install the dependencies for both the frontend and backend:
+Below are the ports for all services in the Moments Event Platform (can be found in server_ports.txt):
+
+| Service Type | Service Name | URL |
+|--------------|-------------|-----|
+| **Frontend** | Web Application | `http://localhost:8090` |
+| **API Layer** | API Gateway | `http://localhost:9000` |
+| **Core Services** | Moment Service | `http://localhost:8081` |
+| | Order Service | `http://localhost:8082` |
+| | Customer Service | `http://localhost:8083` |
+| | Notification Service | `localhost:8084` |
+| **Infrastructure** | Naming Server (Eureka) | `http://localhost:8761` |
+| | Keycloak | `http://localhost:8181` |
+| **Messaging** | Schema Registry | `http://localhost:8085` |
+| | Kafka UI | `http://localhost:8086` |
+| | Zookeeper | `localhost:2181` |
+| | Kafka | `localhost:9092`, `localhost:29092` |
+| **Databases** | MySQL (Moments) | `localhost:3307` |
+| | MySQL (Orders) | `localhost:3308` |
+| | MySQL (Customers) | `localhost:3309` |
+
+## Step 3: Build the Application
+
+We recommend running applications including tests first since Eureka and databases must be running for those.  
+Then build all microservices.
 
 ```bash
-# Backend dependencies
-cd backend
-npm install
-
-# Frontend dependencies
-cd ../frontend
-npm install
+# Build services (skip tests for final build, to include them Eureka and databases must be running)
+./mvnw -f naming-server/pom.xml clean package -DskipTests
+./mvnw -f api-gateway/pom.xml clean package -DskipTests
+./mvnw -f moment-service/pom.xml clean package -DskipTests
+./mvnw -f order-service/pom.xml clean package -DskipTests
+./mvnw -f customer-service/pom.xml clean package -DskipTests
+./mvnw -f notification-service/pom.xml clean package -DskipTests
+./mvnw -f moments-web-app/pom.xml clean package -DskipTests
 ```
 
-### 3. Configure Environment Variables
+## Step 4: Run Applications with Environment Variables
+Launch each service with the appropriate configuration by providing environment variables when starting the applications:
 
-Create a `.env` file in the root of the project directory and fill it with the required environment variables for database connection, JWT secret, payment keys, etc.
+### Infrastructure Services
 
-Example `.env` file:
-
-```env
-DB_URI=mongodb://localhost:27017/ecommerce-platform
-JWT_SECRET=your-secret-key
-STRIPE_SECRET_KEY=your-stripe-secret-key
-SENDGRID_API_KEY=your-sendgrid-api-key
-PORT=3000
-```
-
-### 4. Run the Application
-
-Start the backend and frontend services in separate terminal windows:
+These services provide platform capabilities and don't require custom configuration for development:
 
 ```bash
-# Backend
-cd backend
-npm start
+# Naming Server (Eureka)
+java -jar naming-server/target/naming-server-0.0.1-SNAPSHOT.jar
 
-# Frontend
-cd frontend
-npm start
+# API Gateway
+java -jar api-gateway/target/api-gateway-0.0.1-SNAPSHOT.jar
+
+# Start Docker Infrastructure (Keycloak)
+docker-compose -f api-gateway/docker-compose.yml up -d
+
+# Start Messaging Infrastructure (Kafka ecosystem)
+docker-compose -f notification-service/docker-compose.yml up -d
+
+# Start Database Infrastructure (if not using existing databases)
+docker-compose -f moment-service/docker-compose.yml up -d
+docker-compose -f order-service/docker-compose.yml up -d
+docker-compose -f customer-service/docker-compose.yml up -d
 ```
 
-The backend will be running at `http://localhost:3000`, and the frontend at `http://localhost:3001`.
+### Core Services
+
+Databases are set to work out of the box with the ones provided by docker compose in a development environment (leave the environment variables for the database away then e.g. ava -jar target/moment-service-0.0.1-SNAPSHOT.jar), but should be changed for production.
+
+#### Moment Service
+```bash
+java -jar target/moment-service-0.0.1-SNAPSHOT.jar \
+  --spring.datasource.url=jdbc:mysql://localhost:3307/moments_db \
+  --spring.datasource.username=your_username \
+  --spring.datasource.password=your_password
+```
+
+#### Order Service
+```bash
+java -jar target/order-service-0.0.1-SNAPSHOT.jar \
+  --spring.datasource.url=jdbc:mysql://localhost:3308/orders_db \
+  --spring.datasource.username=your_username \
+  --spring.datasource.password=your_password
+```
+
+#### Customer Service
+```bash
+java -jar target/customer-service-0.0.1-SNAPSHOT.jar \
+  --spring.datasource.url=jdbc:mysql://localhost:3309/customers_db \
+  --spring.datasource.username=your_username \
+  --spring.datasource.password=your_password
+```
+
+#### Notification Service
+```bash
+java -jar target/notification-service-0.0.1-SNAPSHOT.jar \
+  --spring.mail.host=sandbox.smtp.mailtrap.io \
+  --spring.mail.port=2525 \
+  --spring.mail.username=your_username \
+  --spring.mail.password=your_password \
+  --email-address=your_email
+```
+
+> **Note:** For the Notification Service, you'll need to register for a [Mailtrap](https://mailtrap.io/) account (or an alternative SMTP service) to obtain your username and password credentials. Set these as environment variables or replace the placeholders directly.
+
+> **Database Configuration Note:** The development environment uses pre-configured database settings that work out of the box with the Docker setup. When moving to production, you should replace the database connection details with your production database parameters and implement proper security measures such as encrypted passwords and restricted database access.
+
+### Configure Keycloak
+
+For production change credentials after first login.
+
+1. Access Keycloak admin console at http://localhost:8181
+2. Login with the default credentials:
+   - Username: `admin`
+   - Password: `admin`
+3. The "moments" realm should be automatically created 
+4. Find the client "moments-web-app" in the clients section
+5. Reset the client secret:
+   - Go to the "Credentials" tab
+   - Click "Regenerate Secret"
+   - Copy the new client secret for the next step
+
+### Run the Web Application
+
+```bash
+java -jar target/moments-web-app-0.0.1-SNAPSHOT.jar \
+  --spring.security.oauth2.client.registration.moments-web-app.client-secret=YOUR_CLIENT_SECRET
+```
+
+## Verification
+
+1. Check Eureka dashboard (http://localhost:8761) to ensure all services are registered
+2. Visit the web app at http://localhost:8090
+3. Test API endpoints through the API gateway at http://localhost:9000
+   - Example: `http://localhost:9000/api/v1/moments` (note: no service name in path when using API gateway)
+
+## Troubleshooting
+
+- **Service not registering with Eureka**: Check if the service has the correct Eureka client configuration
+- **Database connection errors**: Verify MySQL is running and credentials are correct
+- **Keycloak authentication issues**: Ensure the client secret is correctly set in the web-app configuration
+- **Services cannot communicate**: Make sure client interfaces are correctly configured with proper URLs
 
 ## Folder Structure
 
-The project
+The Moments Event Platform follows a microservices architecture, with each service focused on specific business capabilities.
 
-is organized in a modular manner:
+The Service Structure is exemplified here by order-service.
 
 ```
-eCommerce-Platform/
-├── backend/                  # Backend API code
-│   ├── controllers/          # Logic for handling incoming API requests
-│   ├── models/               # Database models (Mongoose schemas)
-│   ├── routes/               # API route definitions
-│   ├── services/             # Business logic for each service (Product, Order, User)
-│   ├── config/               # Configuration files (DB, payment gateways, etc.)
-│   └── utils/                # Utility functions and helpers
-├── frontend/                 # Frontend code (React)
-│   ├── components/           # UI components (buttons, modals, etc.)
-│   ├── pages/                # Pages (Home, Product Detail, Checkout, etc.)
-│   ├── redux/                # Redux store and reducers
-│   └── public/               # Static assets (images, fonts, etc.)
-├── .env                      # Environment variables
-├── README.md                 # Project documentation
-└── package.json              # Project dependencies
+Moments-Event-Platform/
+│
+├── api-gateway/                   # API Gateway Service (entry point for requests)
+│
+├── customer-service/              # Customer Authentication and User Profiles
+│
+├── moment-service/                # Event/Moments Management Service
+│
+├── moments-web-app/               # Thymeleaf Frontend Application
+│   └── src/
+│       └── main/
+│           ├── java/              # Java backend code
+│           │   └── io/github/teamomo/momentswebapp/
+│           │       ├── client/    # API clients to communicate with backend services
+│           │       ├── config/    # Application configuration classes
+│           │       ├── controller/ # MVC controllers
+│           │       ├── dto/       # Data transfer objects
+│           │       ├── entity/    # Domain models
+│           │       ├── exception/ # Custom exception handling
+│           │       ├── mapper/    # Object mappers between DTOs and entities
+│           │       ├── security/  # Authentication and authorization
+│           │       ├── service/   # Business logic
+│           │       └── util/      # Helper utilities and common functions
+│           │
+│           └── resources/
+│               ├── static/        # Static assets
+│               │   ├── css/       # CSS stylesheets
+│               │   ├── js/        # JavaScript files
+│               │   └── img/       # Images
+│               │
+│               └── templates/     # Thymeleaf templates
+│                   ├── fragments/ # Reusable template fragments
+│                   └── [view templates]  # Individual page templates
+│
+├── naming-server/                 # Eureka Service Discovery
+│
+├── notification-service/          # Email and Notifications Service
+│
+├── order-service/                 # Order and Cart Management
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/
+│   │   │   │   └── io/github/teamomo/order/
+│   │   │   │       ├── client/    # API clients to other microservices
+│   │   │   │       ├── config/    # Service configuration
+│   │   │   │       ├── controller/ # REST API controllers
+│   │   │   │       ├── dto/       # Data transfer objects
+│   │   │   │       ├── entity/    # JPA entities 
+│   │   │   │       ├── exception/ # Custom exceptions
+│   │   │   │       ├── mapper/    # Object mappers
+│   │   │   │       ├── repository/ # Data access layer
+│   │   │   │       ├── security/  # Service security configuration
+│   │   │   │       ├── service/   # Business logic
+│   │   │   │       └── util/      # Utility classes
+│   │   │   │
+│   │   │   └── resources/
+│   │   │       ├── application.properties # Service configuration
+│   │   │       ├── avro/          # Avro schema definitions for messaging
+│   │   │       └── db/migration/           # SQL migration scripts
+│   │   │
+│   │   └── test/                  # Unit and integration tests
+│   │
+│   ├── docker/                    # Docker configuration and volumes
+│   │
+│   └── mysql/                     # MySQL database initialization script
 ```
+<br>  
+
+Each microservice follows a similar structure:
+
+### Controller Layer
+- **REST API endpoints** that handle HTTP requests and responses
+  - Responsible for input validation and request routing
+  - Maps DTOs to appropriate service methods
+
+### Service Layer
+- **Core business logic implementation**
+  - Transaction management
+  - Coordinates between repositories and external services
+  - Implements domain-specific operations
+
+### Repository Layer
+- **Data access abstractions**
+  - JPA repositories for database operations
+  - Custom query methods
+
+### Entity Layer
+- **JPA entities that map to database tables**
+  - Domain model with relationships and constraints
+
+### DTO Layer
+- **Data transfer objects for API communication**
+  - Separates internal models from external representations
+
+### Client Interfaces
+- **Communication with other microservices**
+  - Using Spring Declarative HTTP Interface Clients (RestClient)
+  - Circuit breakers and retry mechanisms for resilience
+
+### Infrastructure Components
+- **Docker**: Container configurations and volume mappings
+- **MySQL**: Database initialization and configuration
+- **Avro Schemas**: Message format definitions for event streaming
+
+### Frontend Structure (moments-web-app)
+
+The frontend is built using Spring Boot with Thymeleaf for server-side rendering:
+
+#### Controllers
+- **Handle HTTP requests and prepare model data for views**
+  - Map to specific URL paths
+  - Communicate with microservices via clients
+
+#### Templates
+- **Thymeleaf HTML templates**
+  - Organized by feature/page
+  - Use fragments for reusable components
+
+#### Static Resources
+- **CSS** for styling
+- **JavaScript** for client-side interactions
+- **Images** and other media
+
+This architecture enables the platform to scale individual services independently while maintaining clear separation of concerns and supporting independent development teams.
 
 ## API Documentation
 
-The API exposes various endpoints for handling products, orders, users, and payments.
+Each microservice's REST API is documented by **Swagger using OpenAPI v3.1.0**, aggregated
+on the API Gateway and can be found
+under: http://localhost:9000/swagger-ui/index.html
 
-* **POST** `/api/auth/register`: Registers a new user
-* **POST** `/api/auth/login`: Logs in a user and returns a JWT token
-* **GET** `/api/products`: Fetches a list of products
-* **POST** `/api/products`: Creates a new product (admin only)
-* **PUT** `/api/products/:id`: Updates a product (admin only)
-* **DELETE** `/api/products/:id`: Deletes a product (admin only)
+The API provides various endpoints for managing moments, orders, customers, and carts within the
+Moments Event Platform.
+All endpoints listed below are rerouted through a secured API Gateway, which ensures centralized
+authentication, authorisation, and request routing.
+
+### Moment Service
+**Base URL**: `/api/v1/moments`
+
+#### Moment Endpoints
+- **GET** : Retrieve all moments with optional filters.
+- **GET** `/{id}`: Retrieve a moment by its ID.
+- **POST** : Create a new moment.
+- **PUT** `/{id}`: Update a moment by its ID.
+- **DELETE** `/{id}`: Delete a moment by its ID.
+- **GET** `/host/{id}`: Retrieve all moments by host ID.
+<br><br>
+- **GET** `/{id}/check-availability`: Check ticket availability for a specific moment.
+- **POST** `/{id}/book-tickets`: Book tickets for a specific moment.
+- **POST** `/{id}/cancel-tickets`: Cancel ticket booking for a specific moment.
+<br><br>
+- **GET** `/categories`: Retrieve all categories by moments count.
+- **GET** `/categories/{id}`: Retrieve a category by its ID.
+- **GET** `/cities`: Retrieve all cities by moments count.
+- **POST** `/cart-items`: Retrieve cart items by moment IDs.
+
+---
+
+### Order Service
+
+#### Cart Endpoints
+**Base URL**: `/api/v1/orders/carts`
+
+- **GET** `/{customerId}`: Retrieve the cart for a specific customer. If no cart exists, a new one
+  will be created.
+- **POST** `/{customerId}`: Create a new cart for a specific customer.
+- **PUT** `/{customerId}`: Update the cart for a specific customer.
+- **DELETE** `/{customerId}`: Delete the cart for a specific customer.
+- **GET** `/{customerId}/items`: Fetch all items in the cart for a specific customer.
+- **POST** `/{customerId}/items`: Add a new item to the cart for a specific customer.
+- **PUT** `/{customerId}/items/{itemId}`: Update an item in the cart for a specific customer.
+- **DELETE** `/{customerId}/items/{itemId}`: Delete an item from the cart for a specific customer.
+
+#### Order Endpoints
+**Base URL**: `/api/v1/orders`
+
+- **GET** `/{orderId}`: Retrieve an order by its ID.
+- **POST** `/{customerId}`: Create an order for a specific customer.
+
+---
+
+### Customer Service
+**Base URL**: `/api/v1/customers`
+
+#### Customer Endpoints
+- **GET** `/{id}`: Retrieve a customer by its ID.
+- **POST** `/check`: Check if a customer exists by Keycloak user ID, create a new one if not.
+- **PUT** `/{id}`: Update a customer by its ID.
+- **PATCH** `/{id}/active`: Update the active status of a specific customer.
+- **DELETE** `/{id}`: Delete a customer by its ID.
+
 
 ## Contributing
 
-We welcome contributions to this project! Whether it's bug fixes, feature additions, or documentation improvements, your help is appreciated.
+We welcome contributions to this project! Whether it's bug fixes, feature additions, or
+documentation improvements, your help is appreciated.
 
 ## License
 
-This project is licensed under the **MIT License**. See the [LICENSE](./LICENSE) file for more information.
+This project is licensed under the **Apache-2.0 License**. See the [LICENSE](./LICENSE) file for more information.

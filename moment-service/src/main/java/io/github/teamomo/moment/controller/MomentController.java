@@ -183,6 +183,38 @@ public class MomentController {
     return createdMomentDto;
   }
 
+  @Operation(
+      summary = "Update a moment by ID",
+      description = "This endpoint updates the details of a specific moment by its unique ID.",
+      tags = {"Moments"}
+  )
+  @ApiResponses({
+      @ApiResponse(
+          responseCode = "200",
+          description = "HTTP Status OK - Moment updated successfully"
+      ),
+      @ApiResponse(
+          responseCode = "400",
+          description = "HTTP Status Bad Request - Invalid input data",
+          content = @Content(
+              schema = @Schema(implementation = ErrorResponseDto.class)
+          )
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "HTTP Status Not Found - Moment not found for the given ID",
+          content = @Content(
+              schema = @Schema(implementation = ErrorResponseDto.class)
+          )
+      ),
+      @ApiResponse(
+          responseCode = "500",
+          description = "HTTP Status Internal Server Error",
+          content = @Content(
+              schema = @Schema(implementation = ErrorResponseDto.class)
+          )
+      )
+  })
   @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   public MomentDto updateMoment(@PathVariable Long id, @Valid @RequestBody MomentDto momentDto) {
@@ -195,6 +227,31 @@ public class MomentController {
     return updatedMomentDto;
   }
 
+  @Operation(
+      summary = "Delete a moment by ID",
+      description = "This endpoint deletes a specific moment by its unique ID.",
+      tags = {"Moments"}
+  )
+  @ApiResponses({
+      @ApiResponse(
+          responseCode = "200",
+          description = "HTTP Status OK - Moment deleted successfully"
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "HTTP Status Not Found - Moment not found for the given ID",
+          content = @Content(
+              schema = @Schema(implementation = ErrorResponseDto.class)
+          )
+      ),
+      @ApiResponse(
+          responseCode = "500",
+          description = "HTTP Status Internal Server Error",
+          content = @Content(
+              schema = @Schema(implementation = ErrorResponseDto.class)
+          )
+      )
+  })
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   public void deleteMoment(@PathVariable Long id) {
@@ -240,6 +297,24 @@ public class MomentController {
     return momentDto;
   }
 
+  @Operation(
+      summary = "Retrieve all categories by moments count",
+      description = "This endpoint retrieves a list of all categories, sorted by the number of moments associated with each category.",
+      tags = {"Categories"}
+  )
+  @ApiResponses({
+      @ApiResponse(
+          responseCode = "200",
+          description = "HTTP Status OK - Categories retrieved successfully"
+      ),
+      @ApiResponse(
+          responseCode = "500",
+          description = "HTTP Status Internal Server Error",
+          content = @Content(
+              schema = @Schema(implementation = ErrorResponseDto.class)
+          )
+      )
+  })
   @GetMapping("/categories")
   @ResponseStatus(HttpStatus.OK)
   public List<CategoryDto> getAllCategoriesByMomentsCount(){
@@ -251,6 +326,32 @@ public class MomentController {
     return allCategoriesByMomentsCount;
   }
 
+  @Operation(
+      summary = "Retrieve a category by ID",
+      description = "This endpoint retrieves the details of a specific category by its unique ID.",
+      tags = {"Categories"}
+  )
+  @ApiResponses({
+          @ApiResponse(
+              responseCode = "200",
+              description = "HTTP Status OK - Category retrieved successfully"
+          ),
+          @ApiResponse(
+              responseCode = "404",
+              description = "HTTP Status Not Found - Category not found for the given ID",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          ),
+          @ApiResponse(
+              responseCode = "500",
+              description = "HTTP Status Internal Server Error",
+              content = @Content(
+                  schema = @Schema(implementation = ErrorResponseDto.class)
+              )
+          )
+      }
+  )
   @GetMapping("/categories/{id}")
   @ResponseStatus(HttpStatus.OK)
   public CategoryDto getCategoryById(@PathVariable Long id){
@@ -262,6 +363,24 @@ public class MomentController {
     return categoryDto;
   }
 
+  @Operation(
+      summary = "Retrieve all cities by moments count",
+      description = "This endpoint retrieves a list of all cities, sorted by the number of moments associated with each city.",
+      tags = {"Cities"}
+  )
+  @ApiResponses({
+      @ApiResponse(
+          responseCode = "200",
+          description = "HTTP Status OK - Cities retrieved successfully"
+      ),
+      @ApiResponse(
+          responseCode = "500",
+          description = "HTTP Status Internal Server Error",
+          content = @Content(
+              schema = @Schema(implementation = ErrorResponseDto.class)
+          )
+      )
+  })
   @GetMapping("/cities")
   @ResponseStatus(HttpStatus.OK)
   public List<CityDto> getAllCitiesByMomentsCount(){
@@ -273,6 +392,32 @@ public class MomentController {
     return allCitiesByMomentsCount;
   }
 
+
+  @Operation(
+      summary = "Retrieve cart items by moment IDs",
+      description = "This endpoint retrieves a list of cart items based on the provided list of moment IDs.",
+      tags = {"Cart Items"}
+  )
+  @ApiResponses({
+      @ApiResponse(
+          responseCode = "200",
+          description = "HTTP Status OK - Cart items retrieved successfully"
+      ),
+      @ApiResponse(
+          responseCode = "400",
+          description = "HTTP Status Bad Request - Invalid input data",
+          content = @Content(
+              schema = @Schema(implementation = ErrorResponseDto.class)
+          )
+      ),
+      @ApiResponse(
+          responseCode = "500",
+          description = "HTTP Status Internal Server Error",
+          content = @Content(
+              schema = @Schema(implementation = ErrorResponseDto.class)
+          )
+      )
+  })
   @PostMapping("/cart-items")
   @ResponseStatus(HttpStatus.OK)
   public List<CartItemDto> getCartItems(@RequestBody List<Long> momentIds){
