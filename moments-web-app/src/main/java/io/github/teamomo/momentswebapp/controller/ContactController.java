@@ -21,12 +21,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Slf4j
 public class ContactController {
 
+  @Value("${email-address}")
+  private String EMAIL_ADDRESS;
   private final JavaMailSender javaMailSender;
 
   public void sendEmail(String to, String subject, String text) {
     SimpleMailMessage message = new SimpleMailMessage();
     message.setFrom(to);
-    message.setTo("teamomoorg@gmail.com");
+    message.setTo(EMAIL_ADDRESS);
     message.setSubject(subject);
     message.setText(text);
     javaMailSender.send(message);
