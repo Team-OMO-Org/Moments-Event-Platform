@@ -11,7 +11,7 @@ schema-registry		localhost:8085
 kafka-ui		localhost:8086
 zookeeper		localhost:2181
 kafka			localhost:9092
-			localhost:29092
+				localhost:29092
 
 mysql_moments		localhost:3307
 mysql_orders		localhost:3308
