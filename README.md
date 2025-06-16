@@ -151,28 +151,39 @@ Below is a high-level system design diagram showcasing the different services an
 
 ### Keycloak:
 
-* Secure OAuth 2.0 and OpenID Connect (OIDC) server for both login and user registration with verified email.
+* Secure OAuth 2.0 and OpenID Connect (OIDC) server for both login and user registration with
+  verified email.
 
 ### Kafka, Zookeeper, Kafka UI, Avro, Schema registry:
 
-* To publish from order service, store and sent messages to the notification service, which in turn sends an email to the user with Javamail using Mailtrap.
+* To publish from order service, store and sent messages to the notification service, which in turn
+  sends an email to the user with Javamail using Mailtrap.
 
 ### Database Design:
 
 * **Customers**:  
- Stores customer profiles, linking users via their Keycloak identity. Includes details like name, email, profile picture, personal website URL, and a short description. Tracks account activity status and timestamps for creation and updates.
+  Stores customer profiles, linking users via their Keycloak identity. Includes details like name,
+  email, profile picture, personal website URL, and a short description. Tracks account activity
+  status and timestamps for creation and updates.
 * **Moments**:  
- Represents events or moments created by users. Contains information such as title, short description, thumbnail, pricing, ticket count, scheduling (including recurrence), and status (e.g., draft, live). Each moment is linked to a host, a category, and a location.
+  Represents events or moments created by users. Contains information such as title, short
+  description, thumbnail, pricing, ticket count, scheduling (including recurrence), and status (
+  e.g., draft, live). Each moment is linked to a host, a category, and a location.
 * **Moment Details**:  
- Holds extended descriptions for each moment, allowing richer content separate from the core moment data. Tracks creation and update timestamps and links directly to the corresponding moment.
+  Holds extended descriptions for each moment, allowing richer content separate from the core moment
+  data. Tracks creation and update timestamps and links directly to the corresponding moment.
 * **Categories**:  
- Maintains a catalog of moment categories, with each entry including a name and an optional description. Used to classify moments/events.
+  Maintains a catalog of moment categories, with each entry including a name and an optional
+  description. Used to classify moments/events.
 * **Locations**:  
- Defines geographic locations for moments. Includes city and address fields. Used to assign a specific place to each event.
+  Defines geographic locations for moments. Includes city and address fields. Used to assign a
+  specific place to each event.
 * **Carts**:  
- Represents shopping carts created by customers. Each cart belongs to a specific customer and tracks its creation and update times.
+  Represents shopping carts created by customers. Each cart belongs to a specific customer and
+  tracks its creation and update times.
 * **Cart Items**:  
- Tracks the contents of each cart, linking individual moments (events) with quantities to specific carts. Supports the process of assembling orders before purchase.
+  Tracks the contents of each cart, linking individual moments (events) with quantities to specific
+  carts. Supports the process of assembling orders before purchase.
 
 ### Database Schema Diagrams:
 
@@ -222,7 +233,8 @@ npm install
 
 ### 3. Configure Environment Variables
 
-Create a `.env` file in the root of the project directory and fill it with the required environment variables for database connection, JWT secret, payment keys, etc.
+Create a `.env` file in the root of the project directory and fill it with the required environment
+variables for database connection, JWT secret, payment keys, etc.
 
 Example `.env` file:
 
@@ -277,24 +289,30 @@ eCommerce-Platform/
 
 ## API Documentation
 
+Each microservice's REST API is documented by Swagger using OpenAPI v3.1.0, aggregated
+on the API Gateway and can be found
+under: http://localhost:9000/swagger-ui/index.html
+
 The API provides various endpoints for managing moments, orders, customers, and carts within the
 Moments Event Platform.
 All endpoints listed below are rerouted through a secured API Gateway, which ensures centralized
-authentication, authorization, and request routing.
+authentication, authorisation, and request routing.
 
 ## Moment Service
 **Base URL**: `/api/v1/moments`
 
 ### Moment Endpoints
-- **GET** `/`: Retrieve all moments with optional filters.
-- **GET** `/host/{id}`: Retrieve all moments by host ID.
-- **POST** `/`: Create a new moment.
+- **GET** : Retrieve all moments with optional filters.
+- **GET** `/{id}`: Retrieve a moment by its ID.
+- **POST** : Create a new moment.
 - **PUT** `/{id}`: Update a moment by its ID.
 - **DELETE** `/{id}`: Delete a moment by its ID.
-- **GET** `/{id}`: Retrieve a moment by its ID.
+- **GET** `/host/{id}`: Retrieve all moments by host ID.
+<br><br>
 - **GET** `/{id}/check-availability`: Check ticket availability for a specific moment.
 - **POST** `/{id}/book-tickets`: Book tickets for a specific moment.
 - **POST** `/{id}/cancel-tickets`: Cancel ticket booking for a specific moment.
+<br><br>
 - **GET** `/categories`: Retrieve all categories by moments count.
 - **GET** `/categories/{id}`: Retrieve a category by its ID.
 - **GET** `/cities`: Retrieve all cities by moments count.
@@ -320,8 +338,8 @@ authentication, authorization, and request routing.
 ### Order Endpoints
 **Base URL**: `/api/v1/orders`
 
-- **POST** `/{customerId}`: Create an order for a specific customer.
 - **GET** `/{orderId}`: Retrieve an order by its ID.
+- **POST** `/{customerId}`: Create an order for a specific customer.
 
 ---
 
@@ -329,8 +347,8 @@ authentication, authorization, and request routing.
 **Base URL**: `/api/v1/customers`
 
 ### Customer Endpoints
-- **POST** `/check`: Check if a customer exists by Keycloak user ID, create a new one if not.
 - **GET** `/{id}`: Retrieve a customer by its ID.
+- **POST** `/check`: Check if a customer exists by Keycloak user ID, create a new one if not.
 - **PUT** `/{id}`: Update a customer by its ID.
 - **PATCH** `/{id}/active`: Update the active status of a specific customer.
 - **DELETE** `/{id}`: Delete a customer by its ID.
@@ -338,8 +356,10 @@ authentication, authorization, and request routing.
 
 ## Contributing
 
-We welcome contributions to this project! Whether it's bug fixes, feature additions, or documentation improvements, your help is appreciated.
+We welcome contributions to this project! Whether it's bug fixes, feature additions, or
+documentation improvements, your help is appreciated.
 
 ## License
 
-This project is licensed under the **MIT License**. See the [LICENSE](./LICENSE) file for more information.
+This project is licensed under the **MIT License**. See the [LICENSE](./LICENSE) file for more
+information.
