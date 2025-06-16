@@ -38,91 +38,55 @@ public class EventController {
 //    System.out.println(oidcUser != null ? oidcUser.getSubject() : "no user");
 
     Long customerId = customerManager.getCustomerId();
+    List<MomentDto> moments = null;
+    try{
+      // CATEGORIES retrieval
+      log.debug("Retrieving list of moments for customer from backend");
+      moments = momentClientPublic.getMomentsByHostId(customerId);
+      // moments.stream().map()
+      log.info("Retrieved list of moments for customer from backend: {}",
+          moments.size());
 
-    // CATEGORIES retrieval
-    log.debug("Retrieving list of moments for customer from backend");
-    List<MomentDto> moments = momentClientPublic.getMomentsByHostId(customerId);
-   // moments.stream().map()
-    log.info("Retrieved list of moments for customer from backend: {}",
-        moments.size());
+      List<CategoryDto> categories = momentClientPublic.getAllCategoriesByMomentsCount();
 
-    List<CategoryDto> categories = momentClientPublic.getAllCategoriesByMomentsCount();
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM, yyyy");
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM, yyyy");
-
-    // Map categoryName to moments, formatting startDate
-    List<MomentDto> updatedMoments = moments.stream()
-        .map(moment -> {
-          return categories.stream()
-              .filter(category -> category.categoryId().equals(moment.categoryId()))
-              .findFirst()
-              .map(category -> moment.withCategoryName(category.categoryName()))
-              .orElse(moment); // If no category is found, keep the original moment
-        })
-        .toList();
-
-// Format startDate and update moments
-    List<MomentDto> formattedMoments = updatedMoments.stream()
-        .map(moment -> moment.withFormattedStartDate(moment.startDate().format(formatter)))
-        .toList();
-
-    log.info("FormattedStartDates for list of moments  {}",
-        formattedMoments.stream()
-            .map(MomentDto::formattedStartDate)
-            .distinct()
-            .toList());
-
-    model.addAttribute("moments", formattedMoments);
-  return "events";
-  }
-
-  @PostMapping("/events")
-  public String updateEvents(
-      Model model
-      ,HttpServletRequest request
-//    ,@AuthenticationPrincipal OidcUser oidcUser  // ToDo: if you need user info/keycloak user id
-  ) {
-//    System.out.println(oidcUser != null ? oidcUser.getSubject() : "no user");
-
-    Long customerId = customerManager.getCustomerId();
-
-    // CATEGORIES retrieval
-    log.debug("Retrieving list of moments for customer from backend");
-    List<MomentDto> moments = momentClientPublic.getMomentsByHostId(customerId);
-    // moments.stream().map()
-    log.info("Retrieved list of moments for customer from backend: {}",
-        moments.size());
-
-    List<CategoryDto> categories = momentClientPublic.getAllCategoriesByMomentsCount();
-
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM, yyyy");
-
-    // Map categoryName to moments, formatting startDate
-    List<MomentDto> updatedMoments = moments.stream()
-        .map(moment -> {
-          return categories.stream()
-              .filter(category -> category.categoryId().equals(moment.categoryId()))
-              .findFirst()
-              .map(category -> moment.withCategoryName(category.categoryName()))
-              .orElse(moment); // If no category is found, keep the original moment
-        })
-        .toList();
+      // Map categoryName to moments, formatting startDate
+      List<MomentDto> updatedMoments = moments.stream()
+          .map(moment -> {
+            return categories.stream()
+                .filter(category -> category.categoryId().equals(moment.categoryId()))
+                .findFirst()
+                .map(category -> moment.withCategoryName(category.categoryName()))
+                .orElse(moment); // If no category is found, keep the original moment
+          })
+          .toList();
 
 // Format startDate and update moments
-    List<MomentDto> formattedMoments = updatedMoments.stream()
-        .map(moment -> moment.withFormattedStartDate(moment.startDate().format(formatter)))
-        .toList();
+      List<MomentDto> formattedMoments = updatedMoments.stream()
+          .map(moment -> moment.withFormattedStartDate(moment.startDate().format(formatter)))
+          .toList();
 
-    log.info("FormattedStartDates for list of moments  {}",
-        formattedMoments.stream()
-            .map(MomentDto::formattedStartDate)
-            .distinct()
-            .toList());
+      log.info("FormattedStartDates for list of moments  {}",
+          formattedMoments.stream()
+              .map(MomentDto::formattedStartDate)
+              .distinct()
+              .toList());
+      model.addAttribute("moments", formattedMoments);
+    }
+    catch (RestClientException e) {
+      log.error("Failed to retrieve moments from backend", e);
+      model.addAttribute("message", "Failed to retrieve events. Please try again later.");
+    }
 
-    model.addAttribute("moments", formattedMoments);
+    if (moments == null || moments.isEmpty()) {
+      log.info("No moments found for customer with ID: {}", customerId);
+      model.addAttribute("moments", List.of()); // Add an empty list to avoid null pointer exceptions
+      model.addAttribute("message", "No events found.");
+    }
+
     return "events";
   }
-
 
   @GetMapping("/events/delete/{id}")
   public String deleteMoment(@PathVariable Long id, Model model) {
@@ -130,12 +94,12 @@ public class EventController {
       log.debug("Deleting moment in the backend");
       momentClient.deleteMoment(id);
       log.info("Moment deleted in the backend");
-     //  model.addAttribute("message", "Event cannot be deleted. If you want to cancel it, please change its status to CANCELLED.");
+      //  model.addAttribute("message", "Event cannot be deleted. If you want to cancel it, please change its status to CANCELLED.");
     }
     catch(Exception e){
       log.error("Failed to delete moment: {}", id, e);
       model.addAttribute("message", e.getMessage());
-    //  return "events";
+      //  return "events";
     }
     return "redirect:/events";
 
