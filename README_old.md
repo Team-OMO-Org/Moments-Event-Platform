@@ -137,3 +137,28 @@ Admin Panel
 AI Customer Service/Chatbot
 Favorite Items
 Presents, Coupons, Discounts
+
+
+
+## API Documentation
+
+All endpoints listed below are rerouted through a secured API Gateway, which ensures centralized
+authentication, authorization, and request routing.
+
+## Moment Service
+**Base URL**: `/api/v1/moments`
+
+### Moment Endpoints
+- **GET** `/`: Retrieve all moments with optional filters.
+- **GET** `/host/{id}`: Retrieve all moments by host ID.
+- **POST** `/`: Create a new moment.
+- **PUT** `/{id}`: Update a moment by its ID.
+- **DELETE** `/{id}`: Delete a moment by its ID.
+- **GET** `/{id}`: Retrieve a moment by its ID.
+- **GET** `/{id}/check-availability`: Check ticket availability for a specific moment.
+- **POST** `/{id}/book-tickets`: Book tickets for a specific moment.
+- **POST** `/{id}/cancel-tickets`: Cancel ticket booking for a specific moment.
+- **GET** `/categories`: Retrieve all categories by moments count.
+- **GET** `/categories/{id}`: Retrieve a category by its ID.
+- **GET** `/cities`: Retrieve all cities by moments count.
+- **POST** `/cart-items`: Retrieve cart items by moment IDs.

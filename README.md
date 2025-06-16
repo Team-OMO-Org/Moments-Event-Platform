@@ -277,14 +277,64 @@ eCommerce-Platform/
 
 ## API Documentation
 
-The API exposes various endpoints for handling products, orders, users, and payments.
+The API provides various endpoints for managing moments, orders, customers, and carts within the
+Moments Event Platform.
+All endpoints listed below are rerouted through a secured API Gateway, which ensures centralized
+authentication, authorization, and request routing.
 
-* **POST** `/api/auth/register`: Registers a new user
-* **POST** `/api/auth/login`: Logs in a user and returns a JWT token
-* **GET** `/api/products`: Fetches a list of products
-* **POST** `/api/products`: Creates a new product (admin only)
-* **PUT** `/api/products/:id`: Updates a product (admin only)
-* **DELETE** `/api/products/:id`: Deletes a product (admin only)
+## Moment Service
+**Base URL**: `/api/v1/moments`
+
+### Moment Endpoints
+- **GET** `/`: Retrieve all moments with optional filters.
+- **GET** `/host/{id}`: Retrieve all moments by host ID.
+- **POST** `/`: Create a new moment.
+- **PUT** `/{id}`: Update a moment by its ID.
+- **DELETE** `/{id}`: Delete a moment by its ID.
+- **GET** `/{id}`: Retrieve a moment by its ID.
+- **GET** `/{id}/check-availability`: Check ticket availability for a specific moment.
+- **POST** `/{id}/book-tickets`: Book tickets for a specific moment.
+- **POST** `/{id}/cancel-tickets`: Cancel ticket booking for a specific moment.
+- **GET** `/categories`: Retrieve all categories by moments count.
+- **GET** `/categories/{id}`: Retrieve a category by its ID.
+- **GET** `/cities`: Retrieve all cities by moments count.
+- **POST** `/cart-items`: Retrieve cart items by moment IDs.
+
+---
+
+## Order Service
+
+### Cart Endpoints
+**Base URL**: `/api/v1/orders/carts`
+
+- **GET** `/{customerId}`: Retrieve the cart for a specific customer. If no cart exists, a new one
+  will be created.
+- **POST** `/{customerId}`: Create a new cart for a specific customer.
+- **PUT** `/{customerId}`: Update the cart for a specific customer.
+- **DELETE** `/{customerId}`: Delete the cart for a specific customer.
+- **GET** `/{customerId}/items`: Fetch all items in the cart for a specific customer.
+- **POST** `/{customerId}/items`: Add a new item to the cart for a specific customer.
+- **PUT** `/{customerId}/items/{itemId}`: Update an item in the cart for a specific customer.
+- **DELETE** `/{customerId}/items/{itemId}`: Delete an item from the cart for a specific customer.
+
+### Order Endpoints
+**Base URL**: `/api/v1/orders`
+
+- **POST** `/{customerId}`: Create an order for a specific customer.
+- **GET** `/{orderId}`: Retrieve an order by its ID.
+
+---
+
+## Customer Service
+**Base URL**: `/api/v1/customers`
+
+### Customer Endpoints
+- **POST** `/check`: Check if a customer exists by Keycloak user ID, create a new one if not.
+- **GET** `/{id}`: Retrieve a customer by its ID.
+- **PUT** `/{id}`: Update a customer by its ID.
+- **PATCH** `/{id}/active`: Update the active status of a specific customer.
+- **DELETE** `/{id}`: Delete a customer by its ID.
+
 
 ## Contributing
 
