@@ -45,6 +45,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
 
+@Tag(
+    name = "REST APIs for Order Service in MomentsPlatform",
+    description = "REST APIs in MomentsPlatform to FETCH, CREATE, and MANAGE orders and their details"
+)
 @RestController
 @RequestMapping("/api/v1/orders")
 @RequiredArgsConstructor
@@ -187,6 +191,34 @@ public class OrderController {
     orderService.testKafka();
   }
 
+  @Operation(
+      summary = "Retrieve an order by ID",
+      description = "This endpoint retrieves the details of an order identified by its ID.",
+      tags = {"Orders"}
+  )
+  @ApiResponses({
+      @ApiResponse(
+          responseCode = "200",
+          description = "HTTP Status OK - Order retrieved successfully",
+          content = @Content(
+              schema = @Schema(implementation = OrderInfoDto.class)
+          )
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "HTTP Status Not Found - Order not found for the given ID",
+          content = @Content(
+              schema = @Schema(implementation = ErrorResponseDto.class)
+          )
+      ),
+      @ApiResponse(
+          responseCode = "500",
+          description = "HTTP Status Internal Server Error",
+          content = @Content(
+              schema = @Schema(implementation = ErrorResponseDto.class)
+          )
+      )
+  })
   @GetMapping("/{orderId}")
   public OrderInfoDto getOrderById(@PathVariable Long orderId) {
     log.info("Getting order with id: {}", orderId);
