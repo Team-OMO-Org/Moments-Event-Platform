@@ -160,6 +160,25 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<image>
+						<name>teamomoorg/${project.artifactId}</name>
+						<!--						<builder>paketobuildpacks/builder:tiny</builder>-->
+						<!--						<builder>paketobuildpacks/builder:base</builder>-->
+						<publish>true</publish>
+					</image>
+					<docker>
+						<publishRegistry>
+							<username>teamomoorg</username>
+							<password>${dockerPassword}</password>
+						</publishRegistry>
+					</docker>
+				</configuration>
+			</plugin>
+
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>

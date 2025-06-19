@@ -180,6 +180,18 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <configuration>
+          <image>
+            <name>teamomoorg/${project.artifactId}</name>
+            <!--						<builder>paketobuildpacks/builder:tiny</builder>-->
+            <!--						<builder>paketobuildpacks/builder:base</builder>-->
+            <publish>true</publish>
+          </image>
+          <docker>
+            <publishRegistry>
+              <username>teamomoorg</username>
+              <password>${dockerPassword}</password>
+            </publishRegistry>
+          </docker>
           <excludes>
             <exclude>
               <groupId>org.projectlombok</groupId>
